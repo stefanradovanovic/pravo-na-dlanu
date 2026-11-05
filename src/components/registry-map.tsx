@@ -5,13 +5,20 @@ import {
   ReactFlow,
   Background,
   Controls,
+  Panel,
   Handle,
   Position,
   type NodeProps,
   type Node,
   type Edge,
 } from "@xyflow/react";
-import { BookOpen, FolderOpen, Scale, ArrowUpRight } from "lucide-react";
+import {
+  BookOpen,
+  FolderOpen,
+  Scale,
+  ArrowUpRight,
+  ArrowLeft,
+} from "lucide-react";
 import type { RegistryRecord } from "@/lib/registry-types";
 import { categoryLabel, lawPath } from "@/lib/registry-types";
 import "@xyflow/react/dist/style.css";
@@ -20,6 +27,8 @@ type Data = {
   caption: string;
   kind: "root" | "category" | "law";
   target: string;
+  sourcePosition?: Position;
+  targetPosition?: Position;
   activate?: () => void;
 };
 type MapNode = Node<Data>;
@@ -38,7 +47,9 @@ function DocumentNode({ data }: NodeProps<MapNode>) {
         } as React.CSSProperties
       }
     >
-      <Handle type="target" position={Position.Left} />
+      {data.targetPosition && (
+        <Handle type="target" position={data.targetPosition} />
+      )}
       <span className="node-icon">
         <Icon size={20} />
       </span>
@@ -47,7 +58,9 @@ function DocumentNode({ data }: NodeProps<MapNode>) {
         <strong>{data.label}</strong>
       </div>
       <ArrowUpRight size={13} />
-      <Handle type="source" position={Position.Right} />
+      {data.sourcePosition && (
+        <Handle type="source" position={data.sourcePosition} />
+      )}
     </Button>
   );
 }
@@ -97,6 +110,7 @@ export function RegistryMap({
           caption: "КАТЕГОРИЈЕ ЗВАНИЧНОГ РЕГИСТРА",
           kind: "root",
           target: "all",
+          sourcePosition: Position.Bottom,
         },
         395,
         0,
@@ -110,6 +124,7 @@ export function RegistryMap({
             caption: `${c.count} ДОКУМЕНАТА`,
             kind: "category",
             target: c.name,
+            targetPosition: Position.Top,
           },
           (i % 4) * 285,
           145 + Math.floor(i / 4) * 135,
@@ -129,6 +144,7 @@ export function RegistryMap({
           caption: `ОБЛАСТ · ${total} ДОКУМЕНАТА`,
           kind: "category",
           target: "all",
+          sourcePosition: Position.Right,
         },
         0,
         200,
@@ -141,6 +157,7 @@ export function RegistryMap({
             caption: `${r.documentType.toUpperCase()} · ${r.citation.slice(r.title.length).match(/\d+\/\d{4}/)?.[0] ?? "ПИС"}`,
             kind: "law",
             target: r.id,
+            targetPosition: Position.Left,
           },
           350 + (i % 2) * 310,
           Math.floor(i / 2) * 145,
@@ -176,6 +193,17 @@ export function RegistryMap({
           nodesConnectable={false}
         >
           <Background color="#dedfd4" gap={20} size={1} />
+          {category !== "all" && (
+            <Panel position="top-left">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => onCategory("all")}
+              >
+                <ArrowLeft size={16} /> Назад на области
+              </Button>
+            </Panel>
+          )}
           <Controls showInteractive={false} />
         </ReactFlow>
       </div>
