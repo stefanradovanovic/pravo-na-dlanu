@@ -23,6 +23,14 @@ npm start
 
 `npm run build` creates a static site in `out/`; `npm start` serves that export. Run `npm run hosting:check` to verify the export. The checked-in Vercel configuration publishes it without runtime functions. See [free hosting setup and limits](docs/hosting.md).
 
+## Reading and search navigation
+
+HTML laws have an article contents panel and shareable fragments such as `#clan-12a`. Repeated article numbers in amendment texts receive occurrence suffixes (`#clan-1-2`); the source text stays in one document. Scan readers retain their existing page navigation.
+
+Search URLs preserve `q`, `category`, `mode`, `view`, and the one-based `page`. Result links carry a validated local `returnTo` URL. Full-text results lazily load original-script excerpts for visible laws and link to the matching article. These excerpts are derived search assets, not separate law documents. The index and excerpts are rebuilt together by `npm run search:index`.
+
+After building, run the desktop/mobile browser checks with `npx playwright install chromium` followed by `npm run test:e2e`. To use an installed Edge browser instead, set `PLAYWRIGHT_CHANNEL=msedge`. The tests serve the static export on port 3027.
+
 ## Content and sources
 
 - One law = one Markdown document in `content/corpus/` and one canonical `/propisi/{id}` page.
@@ -49,6 +57,14 @@ A daily GitHub Action refreshes public official sources, audits them and commits
 ## Stack
 
 Next.js App Router, React, TypeScript, Tailwind, shadcn/ui (Base UI), React Flow, sanitized Markdown, PDF.js and Pagefind. Existing input, button, tab and badge primitives are reused throughout. Searches normalize Serbian Cyrillic, Latin and diacritic-free input.
+
+### Dependency security
+
+Run `npm audit` to check the complete dependency tree, including development tools. Scoped overrides pin `serve`'s `compression` to 1.8.2 and the TypeScript ESLint parser's `minimatch` to 11.0.4 until those upstream packages adopt patched versions. The latter supports this project's Node.js 24 requirement; lint validates the parser integration.
+
+The shadcn CLI is not installed because its `deepmerge` dependency has no patched release. Existing shadcn/ui components remain in `src/components/ui/`. Their shared stylesheet is an unmodified copy of `shadcn@4.23.0/dist/tailwind.css` in `src/app/vendor/shadcn-tailwind.css`, with its MIT license alongside it. When updating it, copy the stylesheet and license from a reviewed upstream release; do not reintroduce the vulnerable CLI dependency.
+
+Advisories: [compression](https://github.com/advisories/GHSA-vc2v-76pw-4v95), [minimatch](https://github.com/advisories/GHSA-g3hv-75wg-m249), [deepmerge](https://github.com/advisories/GHSA-gcqx-w48m-w2h4).
 
 ## Project folder
 

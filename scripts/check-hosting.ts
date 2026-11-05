@@ -26,6 +26,12 @@ for (const record of registry.records) {
     paths.has(`propisi/${record.id}.html`),
     `Missing static law page: ${record.id}`,
   );
+  if (record.textStatus === "complete") {
+    assert.ok(
+      paths.has(`pagefind/passages/${record.id}.json`),
+      `Missing search excerpts: ${record.id}`,
+    );
+  }
   for (const part of record.facsimile?.parts ?? []) {
     assert.ok(paths.has(part.url.slice(1)), `Missing local scan: ${part.url}`);
   }

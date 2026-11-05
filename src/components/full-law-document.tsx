@@ -3,12 +3,15 @@ import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import rehypeRaw from "rehype-raw";
 import rehypeSanitize from "rehype-sanitize";
-import { ArrowLeft, ArrowUpRight, BookOpen, Info } from "lucide-react";
+import { ArrowUpRight, BookOpen, Info } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { buttonVariants } from "@/components/ui/button";
 import { DocumentActions } from "./document-actions";
 import { FacsimileReader } from "./facsimile-reader";
 import { categoryLabel, type RegistryRecord } from "@/lib/registry-types";
+import { articleHeadings } from "@/lib/document-navigation";
+import { ArticleNavigation } from "./article-navigation";
+import { ReaderBackLink } from "./reader-back-link";
 export function FullLawDocument({
   record,
   markdown,
@@ -18,11 +21,11 @@ export function FullLawDocument({
 }) {
   const sourceOnly = record.textStatus === "source-only";
   const scan = record.textStatus === "facsimile" ? record.facsimile : undefined;
+  const headings = articleHeadings(markdown);
+  const anchors = new Map(headings.map((heading) => [heading.line, heading]));
   return (
     <main id="main" className="reader full-document">
-      <Link className="back-link" href="/">
-        <ArrowLeft size={16} /> Назад на све законе
-      </Link>
+      <ReaderBackLink />
       <div className="reader-heading">
         <div className="eyebrow">
           {record.documentType.toLocaleUpperCase("sr")} · ЈЕДАН ДОКУМЕНТ
@@ -119,30 +122,50 @@ export function FullLawDocument({
           </a>
         </section>
       ) : (
-        <article className="legal-text complete-legal-text">
-          <ReactMarkdown
-            remarkPlugins={[remarkGfm]}
-            rehypePlugins={[rehypeRaw, rehypeSanitize]}
-            components={{
-              a: ({ children, href }) => (
-                <a href={href} target="_blank" rel="noreferrer">
-                  {children}
-                </a>
-              ),
-              img: ({ alt, src }) => (
-                <a
-                  href={typeof src === "string" ? src : record.sourceUrl}
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  [{alt || "Слика или графички прилог — отвори извор"}]
-                </a>
-              ),
-            }}
-          >
-            {markdown}
-          </ReactMarkdown>
-        </article>
+        <>
+          <ArticleNavigation headings={headings} />
+          <article id="tekst-zakona" className="legal-text complete-legal-text">
+            <ReactMarkdown
+              remarkPlugins={[remarkGfm]}
+              rehypePlugins={[rehypeRaw, rehypeSanitize]}
+              components={{
+                h2: ({ children, node }) => {
+                  const heading = anchors.get(node?.position?.start.line ?? -1);
+                  return (
+                    <h2 id={heading?.id} tabIndex={heading ? -1 : undefined}>
+                      {children}
+                      {heading && (
+                        <a
+                          className="article-permalink"
+                          href={`#${heading.id}`}
+                          aria-label={`Линк: ${heading.label}`}
+                        >
+                          #
+                        </a>
+                      )}
+                    </h2>
+                  );
+                },
+                a: ({ children, href }) => (
+                  <a href={href} target="_blank" rel="noreferrer">
+                    {children}
+                  </a>
+                ),
+                img: ({ alt, src }) => (
+                  <a
+                    href={typeof src === "string" ? src : record.sourceUrl}
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    [{alt || "Слика или графички прилог — отвори извор"}]
+                  </a>
+                ),
+              }}
+            >
+              {markdown}
+            </ReactMarkdown>
+          </article>
+        </>
       )}
       <div className="educational-note">
         <Info size={16} />

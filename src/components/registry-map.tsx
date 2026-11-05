@@ -28,6 +28,7 @@ import {
 } from "lucide-react";
 import type { RegistryRecord } from "@/lib/registry-types";
 import { categoryLabel, lawPath } from "@/lib/registry-types";
+import { documentUrl } from "@/lib/explorer-url";
 import "@xyflow/react/dist/style.css";
 type Data = {
   label: string;
@@ -115,6 +116,7 @@ export function RegistryMap({
   total,
   page,
   onPage,
+  returnTo,
 }: {
   categories: { name: string; count: number }[];
   records: RegistryRecord[];
@@ -123,6 +125,7 @@ export function RegistryMap({
   total: number;
   page: number;
   onPage: (n: number) => void;
+  returnTo: string;
 }) {
   const router = useRouter();
   const [fullscreen, setFullscreen] = useState(false);
@@ -154,7 +157,8 @@ export function RegistryMap({
         data: {
           ...data,
           activate: () => {
-            if (data.kind === "law") router.push(lawPath(data.target));
+            if (data.kind === "law")
+              router.push(documentUrl(lawPath(data.target), returnTo));
             else onCategory(data.target);
           },
         },
@@ -234,7 +238,7 @@ export function RegistryMap({
       });
     }
     return { nodes, edges };
-  }, [categories, category, records, total, onCategory, router]);
+  }, [categories, category, records, total, onCategory, router, returnTo]);
   return (
     <div className={`map-shell${fullscreen ? " is-fullscreen" : ""}`}>
       <div className="map-labels">

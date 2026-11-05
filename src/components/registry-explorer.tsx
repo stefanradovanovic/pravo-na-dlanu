@@ -20,6 +20,9 @@ import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { normalizeSearch } from "@/lib/search";
 import { categoryLabel, lawPath, type Registry } from "@/lib/registry-types";
+import { useExplorerLocation } from "./explorer-location";
+import { documentUrl, explorerUrl } from "@/lib/explorer-url";
+import { SearchSnippet } from "./search-snippet";
 const RegistryMap = dynamic(
   () => import("./registry-map").then((m) => m.RegistryMap),
   {
@@ -49,11 +52,18 @@ function loadSearch() {
 }
 
 export function RegistryExplorer({ registry }: { registry: Registry }) {
-  const [query, setQuery] = useState("");
-  const [category, setCategory] = useState("all");
-  const [view, setView] = useState("map");
-  const [page, setPage] = useState(0);
-  const [mode, setMode] = useState("titles");
+  const location = useExplorerLocation();
+  const { query, view, page, mode, update } = location;
+  const category =
+    location.category === "all" ||
+    registry.records.some((r) => r.categories.includes(location.category))
+      ? location.category
+      : "all";
+  const setQuery = (value: string) => update("query", value);
+  const setCategory = (value: string) => update("category", value);
+  const setView = (value: string) => update("view", value);
+  const setPage = (value: number) => update("page", value);
+  const setMode = (value: string) => update("mode", value);
   const [fullResults, setFullResults] = useState<{
     query: string;
     hits: SearchHit[];
@@ -61,6 +71,7 @@ export function RegistryExplorer({ registry }: { registry: Registry }) {
   }>({ query: "", hits: [] });
   const { records, report } = registry;
   const corpus = records;
+  const constitution = corpus.find((r) => r.title === "Устав Републике Србије");
   const categories = useMemo(
     () =>
       [...new Set(corpus.flatMap((r) => r.categories))].map((name) => ({
@@ -147,6 +158,13 @@ export function RegistryExplorer({ registry }: { registry: Registry }) {
   const size = showingMap ? 8 : 20;
   const pageCount = Math.max(1, Math.ceil(matches.length / size));
   const currentPage = Math.min(page, pageCount - 1);
+  const returnTo = explorerUrl({
+    query,
+    category,
+    view,
+    mode,
+    page: currentPage,
+  });
   const visible = matches.slice(currentPage * size, (currentPage + 1) * size);
   const waiting =
     mode === "full" && searching && fullResults.query !== normalized;
@@ -229,7 +247,7 @@ export function RegistryExplorer({ registry }: { registry: Registry }) {
       <div className="workspace">
         <aside className="browse-sidebar registry-sidebar">
           <p className="sidebar-label">ВАШ ВОДИЧ</p>
-          <Link className="side-link active" href="/">
+          <Link className="side-link active" href={returnTo}>
             <Network size={16} /> Истражи право
           </Link>
           <Link className="side-link" href="/ucenje">
@@ -271,7 +289,12 @@ export function RegistryExplorer({ registry }: { registry: Registry }) {
             <Scale size={25} />
             <h3>Све почиње Уставом.</h3>
             <p>Прочитајте цео Устав Републике Србије.</p>
-            <Link href="/zakoni/ustav">
+            <Link
+              href={documentUrl(
+                constitution ? lawPath(constitution.id) : "/zakoni/ustav",
+                returnTo,
+              )}
+            >
               Отвори документ <ArrowUpRight size={14} />
             </Link>
           </div>
@@ -343,24 +366,27 @@ export function RegistryExplorer({ registry }: { registry: Registry }) {
               total={matches.length}
               page={currentPage}
               onPage={setPage}
+              returnTo={returnTo}
             />
           ) : (
             <>
               <div className="law-list" aria-live="polite">
                 {visible.length ? (
                   visible.map((r, i) => (
-                    <Link
-                      prefetch={false}
-                      className="law-list-row"
-                      href={lawPath(r.id)}
-                      key={r.id}
-                    >
+                    <div className="law-list-row" key={r.id}>
                       <span className="law-index">
                         {currentPage * size + i + 1}
                       </span>
                       <BookOpen size={21} />
                       <div>
-                        <h3>{r.title}</h3>
+                        <h3>
+                          <Link
+                            prefetch={false}
+                            href={documentUrl(lawPath(r.id), returnTo)}
+                          >
+                            {r.title}
+                          </Link>
+                        </h3>
                         <p>{r.categories.map(categoryLabel).join(" · ")}</p>
                         <small>
                           {r.citation
@@ -375,9 +401,16 @@ export function RegistryExplorer({ registry }: { registry: Registry }) {
                                 ? "Потребна провера извора"
                                 : "Изворни PDF"}
                         </small>
+                        {mode === "full" && searching && (
+                          <SearchSnippet
+                            id={r.id}
+                            query={normalized}
+                            returnTo={returnTo}
+                          />
+                        )}
                       </div>
                       <ArrowUpRight size={19} />
-                    </Link>
+                    </div>
                   ))
                 ) : (
                   <div className="empty-state">
