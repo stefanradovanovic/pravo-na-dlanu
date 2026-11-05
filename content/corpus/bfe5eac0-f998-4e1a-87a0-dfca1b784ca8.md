@@ -11,14 +11,14 @@
   "groups": [
     "5. Оружје, муниција, опасне и експлозивне материје"
   ],
+  "register": 458,
   "sourceUrl": "https://www.pravno-informacioni-sistem.rs/viewAct/bfe5eac0-f998-4e1a-87a0-dfca1b784ca8",
   "contentUrl": "https://reg.pravno-informacioni-sistem.rs/api/viewAct/bfe5eac0-f998-4e1a-87a0-dfca1b784ca8?lawActId=419578",
-  "fetchedAt": "2026-11-05T10:02:05.081Z",
+  "fetchedAt": "2026-11-05T12:25:12.199Z",
   "sha256": "4efccdbc64198416b239b0073d019bda240c3319a5398cd447985b7a36f0651f",
   "characters": 4329,
   "hasTables": false,
   "hasImages": false,
-  "register": 458,
   "sourceFormat": "html",
   "textStatus": "complete",
   "textSha256": "8ece6fa40a40cb4e1910a9cb31a0e87a8bd209499da95fceb3aa6c6505ecb9f7"

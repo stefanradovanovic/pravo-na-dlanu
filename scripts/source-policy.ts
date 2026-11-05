@@ -16,6 +16,8 @@ export function assessSource(
   markdown: string,
   issues: SourceIssues,
 ) {
+  // Attach a separately validated scan only after assessing the current source response.
+  delete record.facsimile;
   const known = issues.wrongTexts[record.id];
   if (known) {
     if (record.sha256 !== known.sha256)

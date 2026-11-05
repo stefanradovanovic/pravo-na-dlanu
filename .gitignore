@@ -19,6 +19,7 @@
 /.next/
 /out/
 /public/pagefind/
+/public/pdfjs/
 
 # production
 /build

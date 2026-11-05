@@ -2,6 +2,7 @@
 
 - Use shadcn/ui for interface primitives. Reuse the existing components and tokens; do not introduce new input, pill, select, or button styles unless explicitly requested.
 - Keep the interface and educational content in Serbian Cyrillic. Search must accept Cyrillic, Latin, and input without diacritics.
+- Scope is the Constitution and domestic laws in the current PIS national and education registers (458, 459). Exclude treaty register 206 and the historical Gazette archive. Do not exclude a current-register law solely because of its publication year.
 - Store each complete law in one `content/corpus/*.md` document. Keep editorial learning examples in `content/learning.json`; never split a law into article documents or graph nodes. No CMS, database, or external AI service is required.
 - Keep quoted law, editorial explanations, and fictional examples clearly separated. Never describe an excerpt as a complete law or a source-access date as legal verification.
 - Every law needs a PIS source, the source's actual version, an access date, and an explicit coverage statement. Do not silently replace the law's wording.

@@ -28,7 +28,10 @@ jobs:
       - run: npm run laws:sync
       - run: npm run laws:audit
       - run: npm test
+      - run: npm run typecheck
+      - run: npm run lint
       - run: npm run build
+      - run: npm run hosting:check
       - name: Save validated source snapshot
         shell: bash
         run: |

@@ -11,14 +11,14 @@
   "groups": [
     "14. Детективска делатност и приватно обезбеђење"
   ],
+  "register": 458,
   "sourceUrl": "https://www.pravno-informacioni-sistem.rs/viewAct/79149ddf-ecae-4df9-bae6-f240e3d89de6",
   "contentUrl": "https://reg.pravno-informacioni-sistem.rs/api/viewAct/79149ddf-ecae-4df9-bae6-f240e3d89de6?lawActId=427026",
-  "fetchedAt": "2026-11-05T10:02:17.686Z",
+  "fetchedAt": "2026-11-05T12:25:20.037Z",
   "sha256": "b63731df595121d956252047c1b7435c445871f85b770cc430bb0e9dad7babbf",
   "characters": 98345,
   "hasTables": false,
   "hasImages": false,
-  "register": 458,
   "sourceFormat": "html",
   "textStatus": "complete",
   "textSha256": "cc4f5781d5903b2a9a4430129322047f9bb87fa5f39582f2a406307cb191005e"

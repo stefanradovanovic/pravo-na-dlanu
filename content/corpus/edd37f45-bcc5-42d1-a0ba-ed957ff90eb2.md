@@ -11,14 +11,14 @@
   "groups": [
     "13. Библиотеке, музеји и архиви"
   ],
+  "register": 458,
   "sourceUrl": "https://www.pravno-informacioni-sistem.rs/viewAct/edd37f45-bcc5-42d1-a0ba-ed957ff90eb2",
   "contentUrl": "https://reg.pravno-informacioni-sistem.rs/api/viewAct/edd37f45-bcc5-42d1-a0ba-ed957ff90eb2?lawActId=432840",
-  "fetchedAt": "2026-11-05T10:08:32.708Z",
+  "fetchedAt": "2026-11-05T12:30:13.558Z",
   "sha256": "937a6f67734f6f9b0ea202b7331091e61812a7756c1d2344429870289ba2fc27",
   "characters": 52572,
   "hasTables": false,
   "hasImages": false,
-  "register": 458,
   "sourceFormat": "html",
   "textStatus": "complete",
   "textSha256": "563796e23d655d3abba7f9b73692fc6437a623bba7a1ec6fd206614b6f1f074e"

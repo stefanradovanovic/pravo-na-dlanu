@@ -1508,10 +1508,76 @@ a {
 .registry-canvas {
   height: 600px;
 }
-.registry-scope {
-  max-width: 100%;
+.map-shell.is-fullscreen {
+  width: 100vw;
+  height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  border-radius: 0;
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+}
+.map-shell.is-fullscreen .registry-canvas {
+  flex: 1;
+  min-height: 0;
   height: auto;
+}
+.scan-toolbar form {
+  display: flex;
+  align-items: center;
   flex-wrap: wrap;
+  gap: 10px;
+}
+.scan-toolbar {
+  flex-wrap: wrap;
+}
+.scan-downloads {
+  margin: 18px 0;
+  font-size: 12px;
+}
+.scan-downloads summary {
+  cursor: pointer;
+  margin-bottom: 12px;
+}
+.scan-downloads .document-actions {
+  flex-wrap: wrap;
+}
+.scan-pages {
+  overflow-x: auto;
+}
+.scan-page {
+  --page-ratio: 595 / 842;
+  margin: 24px auto;
+  width: 100%;
+  max-width: 1050px;
+  scroll-margin-top: 20px;
+}
+.scan-pages.is-zoomed .scan-page {
+  width: 1400px;
+  max-width: none;
+}
+.scan-page figcaption {
+  font-size: 11px;
+  color: #838875;
+  margin-bottom: 10px;
+}
+.scan-paper {
+  position: relative;
+  aspect-ratio: var(--page-ratio);
+  background: white;
+  border: 1px solid var(--border);
+}
+.scan-paper canvas {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+.scan-paper p {
+  position: absolute;
+  inset: 24px;
+  margin: 0;
+  font-size: 13px;
 }
 .catalog-pagination {
   display: flex;

@@ -11,14 +11,14 @@
   "groups": [
     "6. Народна скупштина"
   ],
+  "register": 458,
   "sourceUrl": "https://www.pravno-informacioni-sistem.rs/viewAct/f4fac7ca-e4bc-4db4-a6fd-a521f95f5988",
   "contentUrl": "https://reg.pravno-informacioni-sistem.rs/api/viewAct/f4fac7ca-e4bc-4db4-a6fd-a521f95f5988?lawActId=423364",
-  "fetchedAt": "2026-11-05T10:01:15.240Z",
+  "fetchedAt": "2026-11-05T12:24:39.340Z",
   "sha256": "babada971b0bf1d1ea770c86f003f71a42917170efa0fdd45b334a562787272e",
   "characters": 38090,
   "hasTables": false,
   "hasImages": false,
-  "register": 458,
   "sourceFormat": "html",
   "textStatus": "complete",
   "textSha256": "38e0fd48ffbcdce5ff797a7797f5119c2dfb67ba852cd9f40120a016c5c3d982"

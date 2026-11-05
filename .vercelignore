@@ -1,0 +1,7 @@
+.cache
+work
+out
+.next
+node_modules
+.git
+*.log

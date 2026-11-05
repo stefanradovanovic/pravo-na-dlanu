@@ -11,14 +11,14 @@
   "groups": [
     "10. Рехабилитација, амнестија и помиловање"
   ],
+  "register": 458,
   "sourceUrl": "https://www.pravno-informacioni-sistem.rs/viewAct/c6d8f3f4-cb09-40ad-abb6-e8b34466deed",
   "contentUrl": "https://reg.pravno-informacioni-sistem.rs/api/viewAct/c6d8f3f4-cb09-40ad-abb6-e8b34466deed?lawActId=239081",
-  "fetchedAt": "2026-11-05T10:02:45.289Z",
+  "fetchedAt": "2026-11-05T12:25:37.067Z",
   "sha256": "7358b5bc86cf16a37cd858f91255d65b2a527a96bef99929ec1b4231cf6a0ad1",
   "characters": 2993,
   "hasTables": false,
   "hasImages": false,
-  "register": 458,
   "sourceFormat": "html",
   "textStatus": "complete",
   "textSha256": "0c79759ba6206a978aa79239126ff772d5133208c3572ac216d5463e70ad49bf"

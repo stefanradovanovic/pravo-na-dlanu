@@ -11,14 +11,14 @@
   "groups": [
     "11. Државна управа, управна инспекција и инспекцијски надзор"
   ],
+  "register": 458,
   "sourceUrl": "https://www.pravno-informacioni-sistem.rs/viewAct/8abb35ef-c4b9-499a-9220-ea98d5dcaddf",
   "contentUrl": "https://reg.pravno-informacioni-sistem.rs/api/viewAct/8abb35ef-c4b9-499a-9220-ea98d5dcaddf?lawActId=426156",
-  "fetchedAt": "2026-11-05T10:01:22.016Z",
+  "fetchedAt": "2026-11-05T12:24:44.199Z",
   "sha256": "12daaa1961cd12ad8a08afe539dcc9c9d1ac98de7808df7bb651999a2414a135",
   "characters": 43189,
   "hasTables": false,
   "hasImages": false,
-  "register": 458,
   "sourceFormat": "html",
   "textStatus": "complete",
   "textSha256": "ee04f98d21b7cc73dd7b1d8e424765b72542b0dc4e9cf32b52e2f04e2daadbb8"

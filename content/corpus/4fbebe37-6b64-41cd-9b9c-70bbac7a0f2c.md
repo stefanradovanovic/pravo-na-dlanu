@@ -11,14 +11,14 @@
   "groups": [
     "3. Правобранилаштво"
   ],
+  "register": 458,
   "sourceUrl": "https://www.pravno-informacioni-sistem.rs/viewAct/4fbebe37-6b64-41cd-9b9c-70bbac7a0f2c",
   "contentUrl": "https://reg.pravno-informacioni-sistem.rs/api/viewAct/4fbebe37-6b64-41cd-9b9c-70bbac7a0f2c?lawActId=397355",
-  "fetchedAt": "2026-11-05T10:02:26.412Z",
+  "fetchedAt": "2026-11-05T12:25:24.215Z",
   "sha256": "5bf3630d35ab65845df26e9737ee883fae64eeea822bfee3768d54e8736ffd16",
   "characters": 37877,
   "hasTables": false,
   "hasImages": false,
-  "register": 458,
   "sourceFormat": "html",
   "textStatus": "complete",
   "textSha256": "fdda3a4da2f2bd9cb5028367d361f9a4ff643ed7d17f9dd5cbad92c8e7c9de9f"

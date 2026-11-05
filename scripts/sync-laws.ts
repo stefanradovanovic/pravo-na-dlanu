@@ -1,8 +1,15 @@
 import fs from "node:fs/promises";
 import path from "node:path";
+import { createHash } from "node:crypto";
+import { DOMESTIC_REGISTERS, CATALOG_SCOPE } from "./catalog-scope";
 import { z } from "zod";
 import { assessSource, assertPisUrl, type SourceIssues } from "./source-policy";
 import { canonicalizeLaws } from "./canonicalize-laws";
+import {
+  attachFacsimile,
+  verifyFacsimileAssets,
+  type Facsimiles,
+} from "./facsimiles";
 import { convertLegalHtml, duplicateGroups, sha256 } from "./legal-source";
 import type { RegistryRecord } from "../src/lib/registry-types";
 const REG = "https://reg.pravno-informacioni-sistem.rs/api/",
@@ -116,7 +123,9 @@ async function collect(levels: number[]): Promise<Row[]> {
     );
   return rows;
 }
-const rows = await collect([]);
+const rows: Row[] = [];
+for (const register of DOMESTIC_REGISTERS)
+  rows.push(...(await collect([register])));
 await fs.writeFile(".cache/catalog.json", JSON.stringify(rows, null, 2));
 const groups = new Map<string, Row[]>();
 for (const row of rows) {
@@ -262,6 +271,53 @@ if (!failures.length)
       await fs.readFile(path.join(root, "source-corrections.json"), "utf8"),
     ),
   );
+const facsimileBodies = new Map<string, string>();
+try {
+  const scans: Facsimiles = JSON.parse(
+    await fs.readFile("content/facsimiles.json", "utf8"),
+  );
+  verifyFacsimileAssets(scans);
+  if (process.argv.includes("--refresh")) {
+    // The ordinary register download already checks scans from that endpoint.
+    // Recovered PDFs have separate public PIS source URLs.
+    const extraSources = new Map<string, string>();
+    for (const entry of Object.values(scans)) {
+      const scan = entry.facsimile;
+      if (scan.sourceSha256 !== entry.baseSourceSha256)
+        extraSources.set(scan.sourceUrl, scan.sourceSha256);
+    }
+    for (const [url, expected] of extraSources) {
+      assertPisUrl(url);
+      const response = await fetch(url, {
+        signal: AbortSignal.timeout(300_000),
+      });
+      if (!response.ok || !response.body)
+        throw new Error(
+          `Recovered PIS source unavailable: HTTP ${response.status}: ${url}`,
+        );
+      assertPisUrl(response.url);
+      const hash = createHash("sha256");
+      const reader = response.body.getReader();
+      try {
+        for (;;) {
+          const { done, value } = await reader.read();
+          if (done) break;
+          hash.update(value);
+        }
+      } finally {
+        reader.releaseLock();
+      }
+      if (hash.digest("hex") !== expected)
+        throw new Error(`PIS scan changed; review before publishing: ${url}`);
+    }
+  }
+  for (const record of records) {
+    if (scans[record.id])
+      facsimileBodies.set(record.id, attachFacsimile(record, scans[record.id]));
+  }
+} catch (error) {
+  failures.push({ id: "facsimile-validation", message: String(error) });
+}
 const duplicateTexts = duplicateGroups(
   records.filter((r) => r.textStatus === "complete"),
   (r) => r.textSha256 ?? r.sha256,
@@ -276,8 +332,7 @@ if (duplicateTexts.length)
   });
 const report = {
   schemaVersion: 3,
-  scope:
-    "All records classified as Закон or Устав in the official register, across national, education and international-treaty subregisters.",
+  scope: CATALOG_SCOPE,
   source: "https://www.pravno-informacioni-sistem.rs/reg-search",
   startedAt,
   finishedAt: new Date().toISOString(),
@@ -287,6 +342,7 @@ const report = {
   expectedUniqueRecords: failures.length ? groups.size : records.length,
   importedRecords: records.length,
   fullTextRecords: records.filter((r) => r.textStatus === "complete").length,
+  facsimileRecords: records.filter((r) => r.textStatus === "facsimile").length,
   sourceIssues: records
     .filter((r) => r.sourceIssue)
     .map((r) => ({ id: r.id, issue: r.sourceIssue, note: r.sourceNote })),
@@ -298,7 +354,7 @@ const report = {
   duplicateTexts,
   duplicateTitles,
   meaning:
-    "Catalog completeness means every enumerated PIS register record is represented, after documented deduplication. Known broken, incorrect or editorial-only responses are explicitly flagged and excluded from full-text search. PDF-only records are not full-text Markdown. Gazette PDFs may contain multiple acts. Linked HTML attachments are not downloaded. Register membership is not an independent determination of legal effect.",
+    "Catalog completeness means every enumerated PIS register record is represented, after documented deduplication. Complete HTML bodies, locally readable law facsimiles and unresolved source-only records are counted separately. Facsimiles preserve verified law page sequences and may retain neighboring text on boundary pages. OCR is not published as normative text or indexed for body search. Linked HTML attachments are not downloaded. Register membership and source retrieval dates are not independent determinations of current legal effect.",
 };
 await fs.writeFile(
   ".cache/sync-report.json",
@@ -318,9 +374,10 @@ if (failures.length) {
       "---\n" +
         JSON.stringify(record, null, 2) +
         "\n---\n\n" +
-        cached.markdown
-          .slice(cached.markdown.indexOf("\n---\n", 4) + 5)
-          .trim() +
+        (
+          facsimileBodies.get(record.id) ??
+          cached.markdown.slice(cached.markdown.indexOf("\n---\n", 4) + 5)
+        ).trim() +
         "\n",
     );
   }

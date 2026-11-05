@@ -11,14 +11,14 @@
   "groups": [
     "4. Робне резерве"
   ],
+  "register": 458,
   "sourceUrl": "https://www.pravno-informacioni-sistem.rs/viewAct/f216a7ab-1b5c-4705-afbe-1a7a2c11eaeb",
   "contentUrl": "https://reg.pravno-informacioni-sistem.rs/api/viewAct/f216a7ab-1b5c-4705-afbe-1a7a2c11eaeb?lawActId=439330",
-  "fetchedAt": "2026-11-05T10:07:06.278Z",
+  "fetchedAt": "2026-11-05T12:29:24.028Z",
   "sha256": "3a05d43cadca8f248b9e9530234edc35c1def9bf546c40bbd82869b5b276a112",
   "characters": 38910,
   "hasTables": false,
   "hasImages": false,
-  "register": 458,
   "sourceFormat": "html",
   "textStatus": "complete",
   "textSha256": "62ad55f4135128c2dd39b43bd2cee8ed31f3e6a568ee4fc49ce36dcdd6f1cc67"

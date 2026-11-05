@@ -11,14 +11,14 @@
   "groups": [
     "9. Задуживање и гаранције"
   ],
+  "register": 458,
   "sourceUrl": "https://www.pravno-informacioni-sistem.rs/viewAct/6db6e03f-e4c9-4e3e-bf6d-4aac3def0c8f",
   "contentUrl": "https://reg.pravno-informacioni-sistem.rs/api/viewAct/6db6e03f-e4c9-4e3e-bf6d-4aac3def0c8f?lawActId=422986",
-  "fetchedAt": "2026-11-05T10:04:24.866Z",
+  "fetchedAt": "2026-11-05T12:26:47.456Z",
   "sha256": "5256d365d09eb94630225f1c2bab9143925a2fda4553008254fa5a12dec4395f",
   "characters": 2981,
   "hasTables": false,
   "hasImages": false,
-  "register": 458,
   "sourceFormat": "html",
   "textStatus": "complete",
   "textSha256": "f7aca5a333a1bd0d335ef37ba1b1a1a9632e6a32caf2f6da5a81599a11215bd7"

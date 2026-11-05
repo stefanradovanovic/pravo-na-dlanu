@@ -11,14 +11,14 @@
   "groups": [
     "3. Информационе технологије"
   ],
+  "register": 458,
   "sourceUrl": "https://www.pravno-informacioni-sistem.rs/viewAct/ad1ba3ab-ac2a-4b7d-a08f-4faa6cfbcc26",
   "contentUrl": "https://reg.pravno-informacioni-sistem.rs/api/viewAct/ad1ba3ab-ac2a-4b7d-a08f-4faa6cfbcc26?lawActId=432251",
-  "fetchedAt": "2026-11-05T10:06:06.937Z",
+  "fetchedAt": "2026-11-05T12:28:12.949Z",
   "sha256": "3fac298951e859b13176c58f0ffc15bc0ead3e93c79e09e6a0278ff8e1fe3d5b",
   "characters": 86933,
   "hasTables": false,
   "hasImages": false,
-  "register": 458,
   "sourceFormat": "html",
   "textStatus": "complete",
   "textSha256": "58c4dae140db467168f3b069a7fdd8a7b27c11bed4e1815c9dc8f44a7be55986"

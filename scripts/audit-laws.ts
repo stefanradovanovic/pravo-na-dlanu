@@ -6,9 +6,25 @@ import { normalizeSearch } from "../src/lib/search";
 import { duplicateGroups, sha256 } from "./legal-source";
 import { lawIdentity } from "./canonicalize-laws";
 import { assertPisUrl } from "./source-policy";
+import { isDomesticRegister, CATALOG_SCOPE } from "./catalog-scope";
+import {
+  attachFacsimile,
+  verifyFacsimileAssets,
+  type Facsimiles,
+} from "./facsimiles";
 
 export function auditLaws() {
   const { records, report } = getRegistry();
+  assert.equal(report.scope, CATALOG_SCOPE, "Unexpected catalog scope");
+  const facsimiles: Facsimiles = JSON.parse(
+    fs.readFileSync("content/facsimiles.json", "utf8"),
+  );
+  verifyFacsimileAssets(facsimiles);
+  assert.equal(
+    Object.keys(facsimiles).length,
+    records.filter((r) => r.textStatus === "facsimile").length,
+    "Missing or orphaned scan manifests",
+  );
 
   const sourceIds = records.flatMap((r) => [
     r.registryId,
@@ -35,6 +51,17 @@ export function auditLaws() {
     "Import has not completed successfully",
   );
   assert.equal(report.failures.length, 0, "Unresolved source failures");
+  for (const [status, count] of [
+    ["complete", report.fullTextRecords],
+    ["facsimile", report.facsimileRecords],
+    ["source-only", report.sourceOnlyRecords],
+  ] as const) {
+    assert.equal(
+      records.filter((record) => record.textStatus === status).length,
+      count,
+      `Incorrect coverage count: ${status}`,
+    );
+  }
   assert.equal(
     records.length,
     report.expectedUniqueRecords,
@@ -55,8 +82,13 @@ export function auditLaws() {
     report.catalogRows,
     "Partition counts do not reconcile",
   );
-  for (const p of report.partitions)
+  for (const p of report.partitions) {
+    assert.ok(
+      isDomesticRegister(p.levels[0]),
+      "Out-of-scope catalog partition",
+    );
     assert.equal(p.expected, p.received, "Truncated partition");
+  }
   const files = fs
     .readdirSync(path.resolve("content/corpus"))
     .filter((f) => f.endsWith(".md"));
@@ -73,7 +105,10 @@ export function auditLaws() {
     assert.ok(
       r.categories.length && new Set(r.categories).size === r.categories.length,
     );
-    assert.ok(r.register === 458 || r.register === 459 || r.register === 206);
+    assert.ok(
+      isDomesticRegister(r.register),
+      "Out-of-scope law in domestic catalog",
+    );
     assertPisUrl(r.sourceUrl);
     assertPisUrl(r.contentUrl);
     for (const alias of r.aliases ?? []) assertPisUrl(alias.sourceUrl);
@@ -102,7 +137,17 @@ export function auditLaws() {
         r.registryId,
       );
     }
-    if (r.textStatus === "source-only") {
+    if (r.textStatus === "facsimile") {
+      const entry = facsimiles[r.id];
+      assert.ok(entry, `Missing scan provenance: ${r.id}`);
+      const expected = attachFacsimile({ ...r }, entry);
+      assert.equal(
+        markdown.trim(),
+        expected.trim(),
+        `Scan document mismatch: ${r.id}`,
+      );
+      assert.deepEqual(r.facsimile, entry.facsimile);
+    } else if (r.textStatus === "source-only") {
       assert.equal(r.characters, 0);
       if (r.sourceFormat === "html") assert.ok(r.sourceIssue);
     } else {
@@ -138,7 +183,10 @@ export function auditLaws() {
   return {
     catalogRecords: records.length,
     fullTexts: hashes.length,
-    sourceOnlyRecords: records.length - hashes.length,
+    facsimileRecords: records.filter((r) => r.textStatus === "facsimile")
+      .length,
+    sourceOnlyRecords: records.filter((r) => r.textStatus === "source-only")
+      .length,
     sourceIssues: records
       .filter((r) => r.sourceIssue)
       .map((r) => ({ id: r.id, issue: r.sourceIssue })),

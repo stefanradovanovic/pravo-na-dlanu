@@ -11,14 +11,14 @@
   "groups": [
     "5. Високо образовање"
   ],
+  "register": 458,
   "sourceUrl": "https://www.pravno-informacioni-sistem.rs/viewAct/e7c3fbac-c0b4-4188-af2d-b987ba50f3da",
   "contentUrl": "https://reg.pravno-informacioni-sistem.rs/api/viewAct/e7c3fbac-c0b4-4188-af2d-b987ba50f3da?lawActId=429052",
-  "fetchedAt": "2026-11-05T10:08:18.308Z",
+  "fetchedAt": "2026-11-05T12:30:04.905Z",
   "sha256": "bfecae022ff1bf8488909a6dc30116acd3a65135e249afc003379204547b1055",
   "characters": 25860,
   "hasTables": false,
   "hasImages": false,
-  "register": 458,
   "sourceFormat": "html",
   "textStatus": "complete",
   "textSha256": "68942f2acfee3dbaa535484b2666ad05a632db9e3d2b000607bcdc31333a6f60"

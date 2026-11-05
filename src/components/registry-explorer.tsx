@@ -19,12 +19,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { normalizeSearch } from "@/lib/search";
-import {
-  categoryLabel,
-  isTreaty,
-  lawPath,
-  type Registry,
-} from "@/lib/registry-types";
+import { categoryLabel, lawPath, type Registry } from "@/lib/registry-types";
 const RegistryMap = dynamic(
   () => import("./registry-map").then((m) => m.RegistryMap),
   {
@@ -56,7 +51,6 @@ function loadSearch() {
 export function RegistryExplorer({ registry }: { registry: Registry }) {
   const [query, setQuery] = useState("");
   const [category, setCategory] = useState("all");
-  const [scope, setScope] = useState("national");
   const [view, setView] = useState("map");
   const [page, setPage] = useState(0);
   const [mode, setMode] = useState("titles");
@@ -66,15 +60,7 @@ export function RegistryExplorer({ registry }: { registry: Registry }) {
     error?: string;
   }>({ query: "", hits: [] });
   const { records, report } = registry;
-  const corpus = useMemo(
-    () =>
-      records.filter(
-        (r) =>
-          scope === "all" ||
-          (scope === "treaties" ? isTreaty(r) : !isTreaty(r)),
-      ),
-    [records, scope],
-  );
+  const corpus = records;
   const categories = useMemo(
     () =>
       [...new Set(corpus.flatMap((r) => r.categories))].map((name) => ({
@@ -324,20 +310,6 @@ export function RegistryExplorer({ registry }: { registry: Registry }) {
               </TabsList>
             </Tabs>
           </div>
-          <Tabs
-            value={scope}
-            onValueChange={(v) => {
-              setScope(String(v));
-              setCategory("all");
-              setPage(0);
-            }}
-          >
-            <TabsList className="registry-scope" aria-label="Збирка">
-              <TabsTrigger value="national">Домаћи закони</TabsTrigger>
-              <TabsTrigger value="treaties">Потврђивање уговора</TabsTrigger>
-              <TabsTrigger value="all">Сви закони</TabsTrigger>
-            </TabsList>
-          </Tabs>
           <div className="collection-bar">
             <span>
               <SlidersHorizontal size={14} />
@@ -397,9 +369,11 @@ export function RegistryExplorer({ registry }: { registry: Registry }) {
                           ·{" "}
                           {r.textStatus === "complete"
                             ? "Цео текст ПИС-а"
-                            : r.sourceIssue
-                              ? "Потребна провера извора"
-                              : "Изворни PDF"}
+                            : r.textStatus === "facsimile"
+                              ? "Цео закон у факсимилу"
+                              : r.sourceIssue
+                                ? "Потребна провера извора"
+                                : "Изворни PDF"}
                         </small>
                       </div>
                       <ArrowUpRight size={19} />
@@ -416,7 +390,6 @@ export function RegistryExplorer({ registry }: { registry: Registry }) {
                       variant="outline"
                       onClick={() => {
                         setQuery("");
-                        setScope("all");
                         chooseCategory("all");
                       }}
                     >
@@ -459,11 +432,17 @@ export function RegistryExplorer({ registry }: { registry: Registry }) {
               </strong>
               <p>
                 {report.fullTextRecords?.toLocaleString("sr-RS")} HTML текстова;{" "}
-                {report.sourceOnlyRecords?.toLocaleString("sr-RS")} записа са
-                везом ка извору, без локалног пуног текста. Сваки закон има
-                један документ. Регистар обухвата и историјске акте који нису
-                изричито укинути. Погледајте обухват и проверу извора.
+                {(report.facsimileRecords ?? 0).toLocaleString("sr-RS")} у
+                факсимилу. Домаћи закони и Устав из актуелног регистра ПИС-а.
+                Сваки закон има један документ. Погледајте обухват и проверу
+                извора.
               </p>
+              {!!report.sourceOnlyRecords && (
+                <p className="source-warning">
+                  {report.sourceOnlyRecords.toLocaleString("sr-RS")} записа још
+                  нема локални пуни документ.
+                </p>
+              )}
               {report.failures.length > 0 && (
                 <p className="source-warning">
                   {report.failures.length} текстова није преузето. Обухват још

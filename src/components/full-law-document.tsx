@@ -7,6 +7,7 @@ import { ArrowLeft, ArrowUpRight, BookOpen, Info } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { buttonVariants } from "@/components/ui/button";
 import { DocumentActions } from "./document-actions";
+import { FacsimileReader } from "./facsimile-reader";
 import { categoryLabel, type RegistryRecord } from "@/lib/registry-types";
 export function FullLawDocument({
   record,
@@ -15,7 +16,8 @@ export function FullLawDocument({
   record: RegistryRecord;
   markdown: string;
 }) {
-  const sourceOnly = record.textStatus !== "complete";
+  const sourceOnly = record.textStatus === "source-only";
+  const scan = record.textStatus === "facsimile" ? record.facsimile : undefined;
   return (
     <main id="main" className="reader full-document">
       <Link className="back-link" href="/">
@@ -29,17 +31,22 @@ export function FullLawDocument({
         <p>{record.categories.map(categoryLabel).join(" · ")}</p>
         <div className="reader-meta">
           <Badge variant="outline">
-            {sourceOnly
-              ? record.sourceIssue
-                ? "Текст захтева проверу"
-                : "Извор у PDF издању"
-              : "Цео HTML текст ПИС-а"}
+            {scan
+              ? "Цео закон у факсимилу"
+              : sourceOnly
+                ? record.sourceIssue
+                  ? "Текст захтева проверу"
+                  : "Извор у PDF издању"
+                : "Цео HTML текст ПИС-а"}
           </Badge>
           <span>
             Преузето{" "}
-            {new Date(record.fetchedAt).toLocaleDateString("sr-RS", {
-              timeZone: "Europe/Belgrade",
-            })}
+            {new Date(scan?.fetchedAt ?? record.fetchedAt).toLocaleDateString(
+              "sr-RS",
+              {
+                timeZone: "Europe/Belgrade",
+              },
+            )}
           </span>
         </div>
       </div>
@@ -47,9 +54,10 @@ export function FullLawDocument({
         <Info size={18} />
         <div>
           <strong>Правно-информациони систем Републике Србије</strong>
-          <p>{record.citation}</p>
+          <p>{scan?.version ?? record.citation}</p>
           <small>
-            {record.sourceNote ??
+            {scan?.coverage ??
+              record.sourceNote ??
               (sourceOnly
                 ? "Оригинално службено гласило може садржати више аката. Овај запис представља само наведени закон."
                 : "Пренет је цео доступни HTML текст ПИС-а, укључујући напомене извора. Прилози и слике остају на извору.")}{" "}
@@ -63,7 +71,11 @@ export function FullLawDocument({
             </small>
           )}
         </div>
-        <a href={record.sourceUrl} target="_blank" rel="noreferrer">
+        <a
+          href={scan?.sourceUrl ?? record.sourceUrl}
+          target="_blank"
+          rel="noreferrer"
+        >
           Провери извор <ArrowUpRight size={14} />
         </a>
       </div>
@@ -71,12 +83,18 @@ export function FullLawDocument({
         <div>
           <BookOpen size={16} />
           <span>
-            {sourceOnly ? "Изворни запис ПИС-а" : "Непрекинут текст документа"}
+            {scan
+              ? "Непрекинут факсимил документа"
+              : sourceOnly
+                ? "Изворни запис ПИС-а"
+                : "Непрекинут текст документа"}
           </span>
         </div>
-        <DocumentActions />
+        <DocumentActions printable={!scan} />
       </div>
-      {sourceOnly ? (
+      {scan ? (
+        <FacsimileReader document={scan} />
+      ) : sourceOnly ? (
         <section className="pdf-source">
           <BookOpen size={32} />
           <h2>

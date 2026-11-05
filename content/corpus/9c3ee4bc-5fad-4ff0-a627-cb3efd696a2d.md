@@ -11,14 +11,14 @@
   "groups": [
     "3. Војна опрема, наоружање и роба двоструке намене"
   ],
+  "register": 458,
   "sourceUrl": "https://www.pravno-informacioni-sistem.rs/viewAct/9c3ee4bc-5fad-4ff0-a627-cb3efd696a2d",
   "contentUrl": "https://reg.pravno-informacioni-sistem.rs/api/viewAct/9c3ee4bc-5fad-4ff0-a627-cb3efd696a2d?lawActId=438304",
-  "fetchedAt": "2026-11-05T10:01:58.436Z",
+  "fetchedAt": "2026-11-05T12:25:08.478Z",
   "sha256": "c974fdb0b44e5b86cb2da2dff14e457997e2e01ce0b1596cdfb25aa9b955114e",
   "characters": 29763,
   "hasTables": false,
   "hasImages": false,
-  "register": 458,
   "sourceFormat": "html",
   "textStatus": "complete",
   "textSha256": "17b3c74f4cfa29bb458c08a470ab6d038e9dc60ad484632afd27ff1618f6ab5b"

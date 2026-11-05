@@ -1,4 +1,6 @@
 import fs from "node:fs/promises";
+import path from "node:path";
+import assert from "node:assert/strict";
 import * as pagefind from "pagefind";
 import { getRegistry, getLawDocument } from "../src/lib/registry";
 import { normalizeSearch } from "../src/lib/search";
@@ -22,7 +24,15 @@ try {
     if (errors.length) throw new Error(`${record.id}: ${errors.join("\n")}`);
     count++;
   }
-  const output = await index.writeFiles({ outputPath: "public/pagefind" });
+  // Discard stale search fragments when the catalog changes scope.
+  const projectRoot = path.resolve();
+  const outputPath = path.resolve(projectRoot, "public/pagefind");
+  assert.equal(
+    path.relative(projectRoot, outputPath).replaceAll("\\", "/"),
+    "public/pagefind",
+  );
+  await fs.rm(outputPath, { recursive: true, force: true });
+  const output = await index.writeFiles({ outputPath });
   if (output.errors.length) throw new Error(output.errors.join("\n"));
   await fs.writeFile(
     "public/pagefind/coverage.json",

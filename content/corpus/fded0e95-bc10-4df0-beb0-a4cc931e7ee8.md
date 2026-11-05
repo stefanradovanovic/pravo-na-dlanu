@@ -11,14 +11,14 @@
   "groups": [
     "7. Кривична дела и кривични поступак"
   ],
+  "register": 458,
   "sourceUrl": "https://www.pravno-informacioni-sistem.rs/viewAct/fded0e95-bc10-4df0-beb0-a4cc931e7ee8",
   "contentUrl": "https://reg.pravno-informacioni-sistem.rs/api/viewAct/fded0e95-bc10-4df0-beb0-a4cc931e7ee8?lawActId=418721",
-  "fetchedAt": "2026-11-05T10:02:33.942Z",
+  "fetchedAt": "2026-11-05T12:25:29.144Z",
   "sha256": "6f1ce72e2dfe6f3f0a1c157bcaa852cd318a21f24e50c797d23ad4f97480faf9",
   "characters": 8006,
   "hasTables": false,
   "hasImages": false,
-  "register": 458,
   "sourceFormat": "html",
   "textStatus": "complete",
   "textSha256": "a1b00e464c7e94060e19d5d5db342482e113a51044d23ba1dd24f64aca46e201"

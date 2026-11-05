@@ -11,14 +11,14 @@
   "groups": [
     "9. Извршење кривичних санкција и алтернативних санкција и мера"
   ],
+  "register": 458,
   "sourceUrl": "https://www.pravno-informacioni-sistem.rs/viewAct/fbfa83e8-9aea-4c8e-b81b-1e713b5ef2cf",
   "contentUrl": "https://reg.pravno-informacioni-sistem.rs/api/viewAct/fbfa83e8-9aea-4c8e-b81b-1e713b5ef2cf?lawActId=427018",
-  "fetchedAt": "2026-11-05T10:02:43.759Z",
+  "fetchedAt": "2026-11-05T12:25:36.026Z",
   "sha256": "da9ba2e099ac9c3ca2ff9026b86155922cb449e013b14af21be244dcfdce0134",
   "characters": 35271,
   "hasTables": false,
   "hasImages": false,
-  "register": 458,
   "sourceFormat": "html",
   "textStatus": "complete",
   "textSha256": "7d0b505968f544cb1cda99b17d5ccbc1503a7c2ab08cb1b58d2fb55ecda6f861"

@@ -11,14 +11,14 @@
   "groups": [
     "1. Привредна друштва, предузећа и предузетници"
   ],
+  "register": 458,
   "sourceUrl": "https://www.pravno-informacioni-sistem.rs/viewAct/2d0bdaed-40ce-4706-bee7-fc70f62cbe1f",
   "contentUrl": "https://reg.pravno-informacioni-sistem.rs/api/viewAct/2d0bdaed-40ce-4706-bee7-fc70f62cbe1f?lawActId=425342",
-  "fetchedAt": "2026-11-05T10:06:16.036Z",
+  "fetchedAt": "2026-11-05T12:28:24.342Z",
   "sha256": "c50b1f45a4921300ea919e5e5a342a5bbcafa2c9355a80cb8a3d1b179e3fb45f",
   "characters": 13357,
   "hasTables": false,
   "hasImages": false,
-  "register": 458,
   "sourceFormat": "html",
   "textStatus": "complete",
   "textSha256": "51017ca3da06523304627dd5a56f90e8194262f95d8f5437a7aa8e27ddcaa1f9"

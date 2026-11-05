@@ -11,14 +11,14 @@
   "groups": [
     "4. Научноистраживачка делатност"
   ],
+  "register": 458,
   "sourceUrl": "https://www.pravno-informacioni-sistem.rs/viewAct/3b3eeabc-632f-48ef-bca6-37e11ddb570e",
   "contentUrl": "https://reg.pravno-informacioni-sistem.rs/api/viewAct/3b3eeabc-632f-48ef-bca6-37e11ddb570e?lawActId=427240",
-  "fetchedAt": "2026-11-05T10:08:14.935Z",
+  "fetchedAt": "2026-11-05T12:30:02.561Z",
   "sha256": "ee9775039911d90e3834a555b58ccdb02fc9424de6b5d077f255e50beee17539",
   "characters": 19962,
   "hasTables": false,
   "hasImages": false,
-  "register": 458,
   "sourceFormat": "html",
   "textStatus": "complete",
   "textSha256": "43e1214b37b9085fc844d24d0b59b83cde911947d2134a59062747b705969084"

@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { Copy, Check, Printer } from "lucide-react";
 import { Button } from "@/components/ui/button";
-export function DocumentActions() {
+export function DocumentActions({ printable = true }: { printable?: boolean }) {
   const [message, setMessage] = useState("");
   async function copy() {
     try {
@@ -17,9 +17,11 @@ export function DocumentActions() {
       <Button variant="outline" size="sm" onClick={copy}>
         {message === "Линк је копиран" ? <Check /> : <Copy />} Копирај линк
       </Button>
-      <Button variant="outline" size="sm" onClick={() => window.print()}>
-        <Printer /> Штампај
-      </Button>
+      {printable && (
+        <Button variant="outline" size="sm" onClick={() => window.print()}>
+          <Printer /> Штампај
+        </Button>
+      )}
       <span role="status">{message}</span>
     </div>
   );

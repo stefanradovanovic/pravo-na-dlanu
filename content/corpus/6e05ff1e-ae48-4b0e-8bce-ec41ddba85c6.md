@@ -11,14 +11,14 @@
   "groups": [
     "10. Социјална заштита и друштвена брига о деци"
   ],
+  "register": 458,
   "sourceUrl": "https://www.pravno-informacioni-sistem.rs/viewAct/6e05ff1e-ae48-4b0e-8bce-ec41ddba85c6",
   "contentUrl": "https://reg.pravno-informacioni-sistem.rs/api/viewAct/6e05ff1e-ae48-4b0e-8bce-ec41ddba85c6?lawActId=434597",
-  "fetchedAt": "2026-11-05T10:08:56.923Z",
+  "fetchedAt": "2026-11-05T12:30:27.360Z",
   "sha256": "13c652962092ee35c9ea4781edf3f2873c203bc2533dbe26bc7d08a55c67b23b",
   "characters": 11419,
   "hasTables": false,
   "hasImages": false,
-  "register": 458,
   "sourceFormat": "html",
   "textStatus": "complete",
   "textSha256": "e0d0043d1929b48255933da8fc9f92417a9da9af92918fb479c18a8d54e9f657"

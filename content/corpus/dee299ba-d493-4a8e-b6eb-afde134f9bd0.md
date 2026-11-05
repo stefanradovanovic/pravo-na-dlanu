@@ -11,14 +11,14 @@
   "groups": [
     "4. Заштита биља"
   ],
+  "register": 458,
   "sourceUrl": "https://www.pravno-informacioni-sistem.rs/viewAct/dee299ba-d493-4a8e-b6eb-afde134f9bd0",
   "contentUrl": "https://reg.pravno-informacioni-sistem.rs/api/viewAct/dee299ba-d493-4a8e-b6eb-afde134f9bd0?lawActId=428009",
-  "fetchedAt": "2026-11-05T10:07:31.122Z",
+  "fetchedAt": "2026-11-05T12:29:38.313Z",
   "sha256": "11f83a0d86207b5f789015fe001f3c1a43cf73d4173695851f5ac78c1b744b78",
   "characters": 112823,
   "hasTables": false,
   "hasImages": false,
-  "register": 458,
   "sourceFormat": "html",
   "textStatus": "complete",
   "textSha256": "878a03dfe203396f904b5c66a787962c9f946bd1bbe1b21bb2e48799ccf83fed"

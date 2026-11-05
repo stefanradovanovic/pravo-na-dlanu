@@ -1,5 +1,5 @@
 "use client";
-import { useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import {
   ReactFlow,
@@ -8,6 +8,11 @@ import {
   Panel,
   Handle,
   Position,
+  BaseEdge,
+  useReactFlow,
+  useNodesInitialized,
+  useStore,
+  type EdgeProps,
   type NodeProps,
   type Node,
   type Edge,
@@ -18,6 +23,8 @@ import {
   Scale,
   ArrowUpRight,
   ArrowLeft,
+  Maximize,
+  Minimize,
 } from "lucide-react";
 import type { RegistryRecord } from "@/lib/registry-types";
 import { categoryLabel, lawPath } from "@/lib/registry-types";
@@ -65,6 +72,41 @@ function DocumentNode({ data }: NodeProps<MapNode>) {
   );
 }
 const nodeTypes = { document: DocumentNode };
+// Route category membership through the gutters, never behind another card.
+function MembershipEdge({
+  id,
+  sourceX,
+  sourceY,
+  targetX,
+  targetY,
+  data,
+  style,
+}: EdgeProps) {
+  const overview = data?.overview === true;
+  const railX = targetX - 28;
+  const busY = overview ? 140 : -35;
+  const path = overview
+    ? `M ${sourceX} ${sourceY} V ${busY} H ${railX} V ${targetY} H ${targetX}`
+    : `M ${sourceX} ${sourceY} H 290 V ${busY} H ${railX} V ${targetY} H ${targetX}`;
+  return <BaseEdge id={id} path={path} style={style} interactionWidth={0} />;
+}
+const edgeTypes = { membership: MembershipEdge };
+function FitCanvas() {
+  const { fitView } = useReactFlow();
+  const ready = useNodesInitialized();
+  const width = useStore((state) => state.width);
+  const height = useStore((state) => state.height);
+  useEffect(() => {
+    if (!ready) return;
+    let frame = requestAnimationFrame(() => {
+      frame = requestAnimationFrame(() => {
+        void fitView({ padding: 0.12 });
+      });
+    });
+    return () => cancelAnimationFrame(frame);
+  }, [width, height, ready, fitView]);
+  return null;
+}
 export function RegistryMap({
   categories,
   records,
@@ -83,6 +125,24 @@ export function RegistryMap({
   onPage: (n: number) => void;
 }) {
   const router = useRouter();
+  const [fullscreen, setFullscreen] = useState(false);
+  useEffect(() => {
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setFullscreen(false);
+    };
+    document.addEventListener("keydown", onKey);
+    return () => {
+      document.removeEventListener("keydown", onKey);
+    };
+  }, []);
+  useEffect(() => {
+    if (!fullscreen) return;
+    const previous = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = previous;
+    };
+  }, [fullscreen]);
   const { nodes, edges } = useMemo(() => {
     const nodes: MapNode[] = [];
     const edges: Edge[] = [];
@@ -112,7 +172,7 @@ export function RegistryMap({
           target: "all",
           sourcePosition: Position.Bottom,
         },
-        395,
+        480,
         0,
       );
       categories.forEach((c, i) => {
@@ -124,15 +184,17 @@ export function RegistryMap({
             caption: `${c.count} ДОКУМЕНАТА`,
             kind: "category",
             target: c.name,
-            targetPosition: Position.Top,
+            targetPosition: Position.Left,
           },
-          (i % 4) * 285,
-          145 + Math.floor(i / 4) * 135,
+          (i % 4) * 320,
+          180 + Math.floor(i / 4) * 145,
         );
         edges.push({
           id: `e-${id}`,
           source: rootId,
           target: id,
+          type: "membership",
+          data: { overview: true },
           style: { stroke: "#c4c7b7" },
         });
       });
@@ -166,6 +228,7 @@ export function RegistryMap({
           id: `e-${r.id}`,
           source: rootId,
           target: r.id,
+          type: "membership",
           style: { stroke: "#c4c7b7" },
         });
       });
@@ -173,7 +236,7 @@ export function RegistryMap({
     return { nodes, edges };
   }, [categories, category, records, total, onCategory, router]);
   return (
-    <div className="map-shell">
+    <div className={`map-shell${fullscreen ? " is-fullscreen" : ""}`}>
       <div className="map-labels">
         <span>ИСТРАЖИТЕ ОБЛАСТ</span>
         <span>ЈЕДАН ЗАКОН · ЈЕДАН ДОКУМЕНТ</span>
@@ -181,10 +244,16 @@ export function RegistryMap({
       </div>
       <div className="map-canvas registry-canvas">
         <ReactFlow
-          key={`${category}-${page}`}
+          key={`${category}-${page}-${fullscreen}`}
           nodes={nodes}
           edges={edges}
           nodeTypes={nodeTypes}
+          edgeTypes={edgeTypes}
+          ariaLabelConfig={{
+            "controls.fitView.ariaLabel": "Прикажи целу мапу",
+            "controls.zoomIn.ariaLabel": "Увећај мапу",
+            "controls.zoomOut.ariaLabel": "Умањи мапу",
+          }}
           fitView
           fitViewOptions={{ padding: 0.12 }}
           minZoom={0.25}
@@ -192,7 +261,19 @@ export function RegistryMap({
           nodesDraggable={false}
           nodesConnectable={false}
         >
+          <FitCanvas />
           <Background color="#dedfd4" gap={20} size={1} />
+          <Panel position="top-right">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setFullscreen((value) => !value)}
+              aria-pressed={fullscreen}
+            >
+              {fullscreen ? <Minimize size={16} /> : <Maximize size={16} />}
+              {fullscreen ? "Смањи приказ" : "Цео екран"}
+            </Button>
+          </Panel>
           {category !== "all" && (
             <Panel position="top-left">
               <Button

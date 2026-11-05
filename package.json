@@ -4,8 +4,8 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "predev": "npm run search:index",
-    "build": "npm run search:index && next build",
+    "predev": "npm run pdf:prepare && npm run search:index",
+    "build": "npm run pdf:prepare && npm run search:index && next build",
     "start": "serve out",
     "lint": "eslint",
     "typecheck": "next typegen && tsc --noEmit",
@@ -13,7 +13,13 @@
     "search:index": "tsx scripts/index-search.ts",
     "laws:sync": "tsx scripts/sync-laws.ts --refresh",
     "laws:resume": "tsx scripts/sync-laws.ts",
-    "laws:audit": "tsx scripts/audit-laws.ts"
+    "laws:audit": "tsx scripts/audit-laws.ts",
+    "laws:scans": "tsx scripts/import-facsimiles.ts",
+    "hosting:check": "tsx scripts/check-hosting.ts",
+    "pdf:prepare": "tsx scripts/prepare-pdf-reader.ts"
+  },
+  "engines": {
+    "node": "24.x"
   },
   "dependencies": {
     "@base-ui/react": "^1.9.0",
@@ -23,6 +29,7 @@
     "gray-matter": "^4.0.3",
     "lucide-react": "^1.69.0",
     "next": "16.4.5",
+    "pdfjs-dist": "^6.5.438",
     "react": "19.3.0",
     "react-dom": "19.3.0",
     "react-markdown": "^10.1.0",

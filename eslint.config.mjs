@@ -12,6 +12,8 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "public/pagefind/**",
+    "public/pdfjs/**",
+    "work/**",
     ".cache/**",
     "next-env.d.ts",
   ]),

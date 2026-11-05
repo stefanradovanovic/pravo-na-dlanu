@@ -11,14 +11,14 @@
   "groups": [
     "7. Основно и предшколско образовање и васпитање"
   ],
+  "register": 458,
   "sourceUrl": "https://www.pravno-informacioni-sistem.rs/viewAct/1b4aec96-a7be-4ba6-8ffb-d19ef87b4f9a",
   "contentUrl": "https://reg.pravno-informacioni-sistem.rs/api/viewAct/1b4aec96-a7be-4ba6-8ffb-d19ef87b4f9a?lawActId=438306",
-  "fetchedAt": "2026-11-05T10:08:20.204Z",
+  "fetchedAt": "2026-11-05T12:30:06.485Z",
   "sha256": "da8e4f69e33f9eb8802604bb3bf911f6a9e0069452497ac7a3cbe791db47d48e",
   "characters": 93091,
   "hasTables": false,
   "hasImages": false,
-  "register": 458,
   "sourceFormat": "html",
   "textStatus": "complete",
   "textSha256": "2cf4e93be7cbf739129b8f56bec8cc302ca032f787b3aed5e94631625488c180"

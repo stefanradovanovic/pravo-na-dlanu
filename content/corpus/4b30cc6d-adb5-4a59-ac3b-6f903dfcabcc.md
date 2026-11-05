@@ -11,14 +11,14 @@
   "groups": [
     "14. Јавно-приватно партнерство и концесије"
   ],
+  "register": 458,
   "sourceUrl": "https://www.pravno-informacioni-sistem.rs/viewAct/4b30cc6d-adb5-4a59-ac3b-6f903dfcabcc",
   "contentUrl": "https://reg.pravno-informacioni-sistem.rs/api/viewAct/4b30cc6d-adb5-4a59-ac3b-6f903dfcabcc?lawActId=419536",
-  "fetchedAt": "2026-11-05T10:05:49.786Z",
+  "fetchedAt": "2026-11-05T12:27:58.519Z",
   "sha256": "faec7e83c90d9b6443f310cd2fa53dff0708a1e9048a1b0809d85d072c0ccca5",
   "characters": 95487,
   "hasTables": false,
   "hasImages": false,
-  "register": 458,
   "sourceFormat": "html",
   "textStatus": "complete",
   "textSha256": "f3513c03976f425528b192b736b2d46c2e14178ae8570f665d2282cee9946d35"

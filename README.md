@@ -21,15 +21,15 @@ npm run build
 npm start
 ```
 
-`npm run build` creates a static site in `out/`; `npm start` serves that export. Deploy `out/` to any static host, or use a Next.js-compatible host with this build command.
+`npm run build` creates a static site in `out/`; `npm start` serves that export. Run `npm run hosting:check` to verify the export. The checked-in Vercel configuration publishes it without runtime functions. See [free hosting setup and limits](docs/hosting.md).
 
 ## Content and sources
 
 - One law = one Markdown document in `content/corpus/` and one canonical `/propisi/{id}` page.
 - Official register categories connect to laws on the canvas. Articles stay headings within a continuous document.
 - `content/registry.json` records exact coverage, source IDs, citations, checksums and retrieval dates.
-- The catalog covers every record classified as Закон or Устав across all three PIS subregisters, including treaty ratification laws. It does not mean every kind of regulation or municipal act.
-- The snapshot reconciles 2,995 PIS source entries into 2,978 documents after merging 17 duplicates. It contains 1,859 whole HTML responses and 1,119 source-only records. Older treaty laws may be available only as whole Gazette PDFs; seven HTML pages contain editorial notes, two return a different act, and three PDF endpoints return errors. These cases are explicitly marked, and wrong texts are not published. Their full text is not copied into Markdown or included in body search. Linked attachments are also not locally archived.
+- The catalog covers records classified as Закон or Устав in PIS's current national and education registers (458, 459): domestic laws and the Constitution. Treaty register 206 and the historical Gazette archive are excluded. Older laws still in the current register are retained; publication year alone does not determine legal status.
+- The snapshot contains 846 documents, all readable in the app: 845 whole HTML bodies and one complete local scan. One incorrect PIS HTML response is quarantined; the correct law is displayed from its PIS Gazette scan with explicit page provenance. Each scan keeps one Markdown document and reader, backed by local PDF assets. Body search covers HTML texts; scans are searchable by title and citation. Linked HTML attachments are not locally archived.
 - Learning examples are explicitly fictional, machine-prepared editorial drafts, not professionally reviewed legal advice. Their source references lead to complete laws.
 
 Legal sources are **PIS only**. No alternate publishers or Parliament fallbacks are used.
@@ -48,7 +48,7 @@ A daily GitHub Action refreshes public official sources, audits them and commits
 
 ## Stack
 
-Next.js App Router, React, TypeScript, Tailwind, shadcn/ui (Base UI), React Flow, sanitized Markdown and Pagefind. Existing input, button, tab and badge primitives are reused throughout. Searches normalize Serbian Cyrillic, Latin and diacritic-free input.
+Next.js App Router, React, TypeScript, Tailwind, shadcn/ui (Base UI), React Flow, sanitized Markdown, PDF.js and Pagefind. Existing input, button, tab and badge primitives are reused throughout. Searches normalize Serbian Cyrillic, Latin and diacritic-free input.
 
 ## Project folder
 
