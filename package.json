@@ -10,6 +10,7 @@
     "lint": "eslint",
     "typecheck": "next typegen && tsc --noEmit",
     "test": "tsx --test tests/*.test.ts",
+    "test:e2e": "playwright test",
     "search:index": "tsx scripts/index-search.ts",
     "laws:sync": "tsx scripts/sync-laws.ts --refresh",
     "laws:resume": "tsx scripts/sync-laws.ts",
@@ -36,10 +37,13 @@
     "rehype-raw": "^7.0.0",
     "rehype-sanitize": "^6.0.0",
     "remark-gfm": "^4.0.1",
+    "remark-parse": "^11.0.0",
     "tw-animate-css": "^1.4.0",
+    "unified": "^11.0.5",
     "zod": "^4.6.7"
   },
   "devDependencies": {
+    "@playwright/test": "^1.65.0",
     "@tailwindcss/turbopack": "^4",
     "@types/node": "^20",
     "@types/react": "^19",
@@ -52,12 +56,19 @@
     "pagefind": "^1.6.0",
     "prettier": "^3.9.10",
     "serve": "^14.2.6",
-    "shadcn": "^4.23.0",
     "tailwindcss": "^4",
     "tsx": "^4.23.15",
     "turndown": "^7.2.5",
     "turndown-plugin-gfm": "^1.0.2",
     "typescript": "^5"
+  },
+  "overrides": {
+    "serve": {
+      "compression": "1.8.2"
+    },
+    "@typescript-eslint/typescript-estree": {
+      "minimatch": "11.0.4"
+    }
   },
   "type": "module"
 }
