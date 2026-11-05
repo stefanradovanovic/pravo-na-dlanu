@@ -1,0 +1,13 @@
+{
+  "wrongTexts": {
+    "1df8926b-40ee-49bf-920d-aa56adf7b21c": {
+      "sha256": "f28fdefda710e7ae6631447fd9a1ec1270a3b725e1c79d4d5c221a9249decfad",
+      "reason": "PIS HTML response contains a different act; checked against the catalog title on 2026-11-05."
+    },
+    "8334b60c-0f4c-4cf3-be34-65ea8834cdf8": {
+      "sha256": "f4f97da7599e2e44504a1acb8162e548502fafcb275cedae526cbfe0fdbfc16b",
+      "reason": "PIS HTML response contains a different act; checked against the catalog title on 2026-11-05."
+    }
+  },
+  "unavailablePdfs": ["410971", "410972", "414264"]
+}

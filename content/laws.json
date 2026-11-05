@@ -1,0 +1,62 @@
+[
+  {
+    "id": "ustav",
+    "title": "Устав Републике Србије",
+    "shortTitle": "Устав Србије",
+    "description": "Темељ правног поретка. Права, слободе и правила која обавезују и грађане и државу.",
+    "topics": ["rad", "privatnost", "informacije", "ravnopravnost"],
+    "sourceUrl": "https://www.pravno-informacioni-sistem.rs/viewAct/f0d72ce3-dad2-4395-a2c1-c3d3226f22c2",
+    "sourceName": "Правно-информациони систем Републике Србије",
+    "sourceVersion": "Устав Републике Србије:  98/2006-3, 115/2021-3 (Амандмани I-XXIX), 16/2022-3",
+    "accessedAt": "2026-11-05",
+    "coverage": "learning"
+  },
+  {
+    "id": "zakon-o-radu",
+    "title": "Закон о раду",
+    "shortTitle": "Закон о раду",
+    "description": "Уговор, зарада, одмор и једнак третман на радном месту.",
+    "topics": ["rad", "ravnopravnost"],
+    "sourceUrl": "https://www.pravno-informacioni-sistem.rs/viewAct/694cbad4-4727-4f93-b894-0b100b62c808",
+    "sourceName": "Правно-информациони систем Републике Србије",
+    "sourceVersion": "Закон о раду: 24/2005-3, 61/2005-69, 54/2009-26, 32/2013-13, 75/2014-3, 13/2017-64 (УС), 113/2017-273, 95/2018-441 (Аутентично тумачење), 109/2025-268 (др. закон)",
+    "accessedAt": "2026-11-05",
+    "coverage": "learning"
+  },
+  {
+    "id": "zastita-podataka",
+    "title": "Закон о заштити података о личности",
+    "shortTitle": "Заштита података",
+    "description": "Правила за прикупљање и коришћење података који се односе на вас.",
+    "topics": ["privatnost"],
+    "sourceUrl": "https://www.pravno-informacioni-sistem.rs/viewAct/611b2ebf-189d-4421-bf11-b8906ed7ff54",
+    "sourceName": "Правно-информациони систем Републике Србије",
+    "sourceVersion": "Закон о заштити података о личности: 87/2018-54",
+    "accessedAt": "2026-11-05",
+    "coverage": "learning"
+  },
+  {
+    "id": "pristup-informacijama",
+    "title": "Закон о слободном приступу информацијама од јавног значаја",
+    "shortTitle": "Приступ информацијама",
+    "description": "Како да сазнате шта раде органи власти и затражите документе.",
+    "topics": ["informacije"],
+    "sourceUrl": "https://www.pravno-informacioni-sistem.rs/viewAct/0b7f7931-f230-45cf-b550-a1495539249d",
+    "sourceName": "Правно-информациони систем Републике Србије",
+    "sourceVersion": "Закон о слободном приступу информацијама од јавног значаја: 120/2004-5, 54/2007-3, 104/2009-25, 36/2010-10,105/2021-8",
+    "accessedAt": "2026-11-05",
+    "coverage": "learning"
+  },
+  {
+    "id": "zabrana-diskriminacije",
+    "title": "Закон о забрани дискриминације",
+    "shortTitle": "Забрана дискриминације",
+    "description": "Заштита од неједнаког поступања заснованог на личном својству.",
+    "topics": ["ravnopravnost", "rad"],
+    "sourceUrl": "https://www.pravno-informacioni-sistem.rs/viewAct/6c70fc8b-2d6e-45dc-a283-e63bcd77c3c8",
+    "sourceName": "Правно-информациони систем Републике Србије",
+    "sourceVersion": "Закон о забрани дискриминације: 22/2009-3, 52/2021-4",
+    "accessedAt": "2026-11-05",
+    "coverage": "learning"
+  }
+]

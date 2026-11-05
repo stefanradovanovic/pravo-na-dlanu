@@ -1,36 +1,55 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Право на длану
 
-## Getting Started
+A Serbian Cyrillic guide to the Constitution and laws of Serbia: PIS categories, an interactive law map, whole-document readers, cross-script search and fictional learning examples.
 
-First, run the development server:
+## Run locally
 
-```bash
+Requires Node.js 24 and npm. No database, CMS, API key or paid service.
+
+```sh
+npm ci
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open http://localhost:3000. The predev step builds a local Pagefind index from Markdown. To use the existing preview port, run `npm run dev -- --hostname 127.0.0.1 --port 3017`.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```sh
+npm test
+npm run typecheck
+npm run lint
+npm run build
+npm start
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+`npm run build` creates a static site in `out/`; `npm start` serves that export. Deploy `out/` to any static host, or use a Next.js-compatible host with this build command.
 
-## Learn More
+## Content and sources
 
-To learn more about Next.js, take a look at the following resources:
+- One law = one Markdown document in `content/corpus/` and one canonical `/propisi/{id}` page.
+- Official register categories connect to laws on the canvas. Articles stay headings within a continuous document.
+- `content/registry.json` records exact coverage, source IDs, citations, checksums and retrieval dates.
+- The catalog covers every record classified as Закон or Устав across all three PIS subregisters, including treaty ratification laws. It does not mean every kind of regulation or municipal act.
+- The snapshot reconciles 2,995 PIS source entries into 2,978 documents after merging 17 duplicates. It contains 1,859 whole HTML responses and 1,119 source-only records. Older treaty laws may be available only as whole Gazette PDFs; seven HTML pages contain editorial notes, two return a different act, and three PDF endpoints return errors. These cases are explicitly marked, and wrong texts are not published. Their full text is not copied into Markdown or included in body search. Linked attachments are also not locally archived.
+- Learning examples are explicitly fictional, machine-prepared editorial drafts, not professionally reviewed legal advice. Their source references lead to complete laws.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Legal sources are **PIS only**. No alternate publishers or Parliament fallbacks are used.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Read [the source contract](docs/sources.md) for exact scope and limitations. The visible website always distinguishes catalog coverage from full-text coverage. Do not market this snapshot as a legally verified, permanently current archive.
 
-## Deploy on Vercel
+## Refresh sources
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+```sh
+npm run laws:sync
+npm run laws:audit
+npm run search:index
+```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+A daily GitHub Action refreshes public official sources, audits them and commits only a successfully validated snapshot. Manual runs are available in Actions. For an interrupted local download use `npm run laws:resume`; this uses cache and is not a fresh legal check. A deployed site must rebuild after source changes. Explanations require separate editorial review when the relevant laws change.
+
+## Stack
+
+Next.js App Router, React, TypeScript, Tailwind, shadcn/ui (Base UI), React Flow, sanitized Markdown and Pagefind. Existing input, button, tab and badge primitives are reused throughout. Searches normalize Serbian Cyrillic, Latin and diacritic-free input.
+
+## Project folder
+
+The initial local checkout is `D:\code\pravo-na-dlanu`, alongside the other projects. Open that folder as a Codex project.

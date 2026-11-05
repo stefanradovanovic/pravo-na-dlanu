@@ -1,0 +1,22 @@
+[
+  {
+    "canonical": "reg-408650",
+    "duplicates": ["reg-412582"],
+    "reason": "Gazette SCG International Treaties 6/2005, table of contents: Uvac/Ustibar border agreement starts on printed page 18, not 13. Same title and identical PDF bytes. Checked 2026-11-05."
+  },
+  {
+    "canonical": "reg-410988",
+    "duplicates": ["reg-410987"],
+    "reason": "Gazette SCG International Treaties 2/2005, table of contents: Iran investment agreement starts on printed page 6, not 10. Same title and identical PDF bytes. Checked 2026-11-05."
+  },
+  {
+    "canonical": "reg-414622",
+    "duplicates": ["reg-414618", "reg-414621"],
+    "reason": "Gazette SCG International Treaties 4/2006, table of contents: Egypt culture/education/sport agreement starts on printed page 33, not 3. Same title and identical PDF bytes. Checked 2026-11-05."
+  },
+  {
+    "canonical": "reg-411075",
+    "duplicates": ["reg-411076"],
+    "reason": "Gazette SCG International Treaties 2/2004 lists the Black Sea Charter ratification at page 15. Duplicate record wrongly cites 2/2003 and its PDF returns an unrelated pharmaceutical classification issue. Preserve the erroneous record as provenance only. Checked original PDFs 2026-11-05."
+  }
+]

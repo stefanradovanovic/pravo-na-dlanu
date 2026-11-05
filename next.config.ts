@@ -1,9 +1,9 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
-  cacheComponents: true,
-  partialPrefetching: true,
+  // Bound parallel rendering: some treaty documents contain large legal tables.
+  experimental: { cpus: 2, staticGenerationMaxConcurrency: 2 },
+  output: "export",
   turbopack: {
     rules: {
       "*.css": {
