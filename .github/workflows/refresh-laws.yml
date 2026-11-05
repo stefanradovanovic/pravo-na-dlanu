@@ -1,5 +1,10 @@
 name: Refresh official legal sources
 on:
+  # Register and syntax-check this workflow on its first push to a new repo.
+  # Source downloads run only on the schedule or an explicit manual dispatch.
+  push:
+    branches: [master, main]
+    paths: [".github/workflows/refresh-laws.yml"]
   workflow_dispatch:
   schedule:
     - cron: "17 4 * * *"
@@ -10,6 +15,7 @@ concurrency:
   cancel-in-progress: false
 jobs:
   refresh:
+    if: github.event_name != 'push'
     runs-on: ubuntu-latest
     timeout-minutes: 90
     steps:
