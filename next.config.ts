@@ -2,7 +2,8 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   // Bound parallel rendering: some treaty documents contain large legal tables.
-  experimental: { cpus: 2, staticGenerationMaxConcurrency: 2 },
+  experimental: { cpus: 2, staticGenerationMaxConcurrency: 1 },
+  staticPageGenerationTimeout: 300,
   output: "export",
   turbopack: {
     rules: {
