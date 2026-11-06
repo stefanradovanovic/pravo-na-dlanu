@@ -27,5 +27,5 @@ export default async function LawPage({
   const { slug } = await params;
   const law = findLearningLaw(slug);
   if (!law) notFound();
-  redirect(lawPath(law.id));
+  redirect(lawPath(law));
 }

@@ -23,6 +23,10 @@ assert.ok(paths.has("index.html"), "Missing static homepage");
 assert.ok(paths.has("404.html"), "Missing static 404 page");
 for (const record of registry.records) {
   assert.ok(
+    paths.has(`propisi/${record.slug}.html`),
+    `Missing readable law page: ${record.slug}`,
+  );
+  assert.ok(
     paths.has(`propisi/${record.id}.html`),
     `Missing static law page: ${record.id}`,
   );

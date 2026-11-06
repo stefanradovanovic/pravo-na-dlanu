@@ -158,7 +158,7 @@ export function RegistryMap({
           ...data,
           activate: () => {
             if (data.kind === "law")
-              router.push(documentUrl(lawPath(data.target), returnTo));
+              router.push(documentUrl(data.target, returnTo));
             else onCategory(data.target);
           },
         },
@@ -222,7 +222,7 @@ export function RegistryMap({
             label: r.title,
             caption: `${r.documentType.toUpperCase()} · ${r.citation.slice(r.title.length).match(/\d+\/\d{4}/)?.[0] ?? "ПИС"}`,
             kind: "law",
-            target: r.id,
+            target: lawPath(r),
             targetPosition: Position.Left,
           },
           350 + (i % 2) * 310,

@@ -7,14 +7,15 @@ import {
   type SearchSnippet as Snippet,
 } from "@/lib/search-snippet";
 import { documentUrl } from "@/lib/explorer-url";
-import { lawPath } from "@/lib/registry-types";
 
 export function SearchSnippet({
   id,
+  href,
   query,
   returnTo,
 }: {
   id: string;
+  href: string;
   query: string;
   returnTo: string;
 }) {
@@ -68,10 +69,7 @@ export function SearchSnippet({
         <mark>{snippet.match}</mark>
         {snippet.after}
       </p>
-      <Link
-        prefetch={false}
-        href={documentUrl(lawPath(id), returnTo, snippet.anchor)}
-      >
+      <Link prefetch={false} href={documentUrl(href, returnTo, snippet.anchor)}>
         Прочитај у контексту →
       </Link>
     </div>

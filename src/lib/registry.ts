@@ -1,3 +1,4 @@
+import { withLawSlugs } from "./registry-types";
 import fs from "node:fs";
 import path from "node:path";
 import type { Registry, RegistryRecord } from "./registry-types";
@@ -6,8 +7,11 @@ let snapshot: { mtime: number; value: Registry } | undefined;
 export function getRegistry(): Registry {
   const file = path.join(process.cwd(), "content/registry.json"),
     mtime = fs.statSync(file).mtimeMs;
-  if (!snapshot || snapshot.mtime !== mtime)
-    snapshot = { mtime, value: JSON.parse(fs.readFileSync(file, "utf8")) };
+  if (!snapshot || snapshot.mtime !== mtime) {
+    const value: Registry = JSON.parse(fs.readFileSync(file, "utf8"));
+    value.records = withLawSlugs(value.records);
+    snapshot = { mtime, value };
+  }
   return snapshot.value;
 }
 export function getLawDocument(id: string) {

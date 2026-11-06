@@ -17,7 +17,7 @@ try {
     const passages = documentPassages(document.markdown);
     snippetFiles.push({ id: record.id, json: JSON.stringify(passages) });
     const { errors } = await index.addCustomRecord({
-      url: lawPath(record.id),
+      url: lawPath(record),
       content: normalizeSearch(
         record.title + " " + passages.map((passage) => passage.text).join(" "),
       ),
