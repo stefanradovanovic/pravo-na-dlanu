@@ -31,6 +31,16 @@ Search URLs preserve `q`, `category`, `mode`, `view`, and the one-based `page`. 
 
 After building, run the desktop/mobile browser checks with `npx playwright install chromium` followed by `npm run test:e2e`. To use an installed Edge browser instead, set `PLAYWRIGHT_CHANNEL=msedge`. The tests serve the static export on port 3027.
 
+## Learning through everyday situations
+
+`/ucenje` offers three learning paths: work, personal data, and access to public information. The initial bank has 32 questions and six paired “what if” variations, including six research questions that open the existing search and whole-law readers. Ordinary sessions contain five questions; “what if” sessions keep two original/changed pairs together. Every answer has an explanation and an article link into the canonical complete law.
+
+The homepage, navigation (including mobile), and relevant law readers link to learning. Topic search accepts Cyrillic, Latin, and input without diacritics. Progress and the active session are stored only in this browser under `pravo-na-dlanu.learning.v1`. Missed questions are available for immediate review; successive correct answers schedule review after 1, 3, 7, and 14 days. Users can resume a session, review their progress, or erase it. Storage failures leave the session usable in memory with a visible notice.
+
+Questions remain in `content/learning.json` alongside the existing editorial material. Each question group pins the source's actual citation, SHA-256 and the date of source comparison. A changed citation or source checksum holds the affected questions and lessons for editorial review. Updating the pin requires comparing the content again; the daily source refresh does not update these pins. Question/content revisions invalidate incompatible saved answers and sessions. `getLearningCatalog()` validates IDs, choices and article anchors during the build; `tests/learning.test.ts` checks learning behavior and source-change handling.
+
+All scenarios are fictional and the explanations remain machine-prepared editorial material without professional legal review. Source comparison is not legal verification. The full quoted laws stay in their original complete Markdown documents.
+
 ## Content and sources
 
 - One law = one Markdown document in `content/corpus/` and one canonical `/propisi/{id}` page.

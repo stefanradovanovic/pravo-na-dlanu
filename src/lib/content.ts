@@ -3,6 +3,7 @@ import path from "node:path";
 import { z } from "zod";
 import { topics } from "./topics";
 import type { Library } from "./types";
+import { practiceSchema } from "./learning-schema";
 
 const topic = z.enum(["rad", "privatnost", "informacije", "ravnopravnost"]);
 const lawSchema = z.object({
@@ -32,6 +33,7 @@ const articleSchema = z.object({
   scope: z.string().min(1),
   explanation: z.string().min(1),
   related: z.array(z.string()),
+  practice: practiceSchema.optional(),
   examples: z.array(
     z.object({
       title: z.string().min(1),

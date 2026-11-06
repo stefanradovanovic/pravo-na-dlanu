@@ -2,6 +2,7 @@ import { getLibrary } from "./content";
 import { findLearningLaw } from "./registry";
 import type { ArticleHeading } from "./document-navigation";
 import type { LawExamplesProps } from "@/components/law-examples";
+import { learningTopics } from "./learning";
 
 export function getLawExamples(
   recordId: string,
@@ -26,6 +27,12 @@ export function getLawExamples(
       })),
     );
   return examples.length
-    ? { law: { shortTitle: law.shortTitle }, examples }
+    ? {
+        law: { shortTitle: law.shortTitle },
+        examples,
+        learningHref: learningTopics.some((t) => t.lawId === law.id)
+          ? `/ucenje?tema=${learningTopics.find((t) => t.lawId === law.id)!.id}`
+          : undefined,
+      }
     : null;
 }
