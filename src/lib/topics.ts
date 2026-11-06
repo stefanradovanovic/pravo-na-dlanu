@@ -2,6 +2,13 @@ import type { Topic } from "./types";
 
 export const topics: Topic[] = [
   {
+    id: "potrosaci",
+    title: "Куповина и потрошачка права",
+    description: "Разумите правила куповине и рекламације.",
+    color: "#a56535",
+    constitutionArticle: 90,
+  },
+  {
     id: "rad",
     title: "Рад и запошљавање",
     description: "Од првог уговора до годишњег одмора.",

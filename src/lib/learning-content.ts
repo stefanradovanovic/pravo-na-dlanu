@@ -3,6 +3,7 @@ import { getLibrary } from "./content";
 import { findLearningLaw, getLawDocument } from "./registry";
 import { lawPath } from "./registry-types";
 import { articleHeadings } from "./document-navigation";
+import { learningSourceChanged } from "./learning-source";
 import {
   learningTopics,
   type LearningCatalog,
@@ -28,9 +29,7 @@ export function getLearningCatalog(): LearningCatalog {
       )
     )
       throw new Error(`Invalid learning source: ${article.id}`);
-    const needsReview =
-      practice.sourceVersion !== law.citation ||
-      practice.sourceSha256 !== law.sha256;
+    const needsReview = learningSourceChanged(practice, law);
     const source: LearningSource = {
       title: law.title,
       article: article.number,

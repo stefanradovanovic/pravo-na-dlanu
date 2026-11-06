@@ -22,6 +22,7 @@ import { categoryLabel, lawPath, type Registry } from "@/lib/registry-types";
 import { useExplorerLocation } from "./explorer-location";
 import { documentUrl, explorerUrl } from "@/lib/explorer-url";
 import { SearchSnippet } from "./search-snippet";
+import { learningTopics } from "@/lib/learning";
 const RegistryMap = dynamic(
   () => import("./registry-map").then((m) => m.RegistryMap),
   {
@@ -163,15 +164,17 @@ export function RegistryExplorer({ registry }: { registry: Registry }) {
           сваки закон као цео документ.
         </p>
         <div className="home-learning-link">
-          <Link
-            href="/ucenje"
-            className={buttonVariants({ variant: "outline", size: "lg" })}
-          >
+          <Link href="/ucenje" className={buttonVariants({ size: "lg" })}>
             <BookOpen /> Учи и провери знање <ArrowUpRight />
           </Link>
-          <span>Кратки квизови из свакодневног живота</span>
+          <Link
+            href="/vodic"
+            className={buttonVariants({ variant: "outline", size: "lg" })}
+          >
+            Како читати закон <ArrowUpRight />
+          </Link>
         </div>
-        <div className="search-wrap">
+        <div id="pretraga" className="search-wrap" tabIndex={-1}>
           <Search size={16} aria-hidden="true" />
           <Input
             className="pl-9 pr-20"
@@ -237,6 +240,31 @@ export function RegistryExplorer({ registry }: { registry: Registry }) {
           ))}
         </div>
       </div>
+      {!searching && category === "all" && (
+        <section
+          className="citizen-start"
+          aria-labelledby="citizen-start-title"
+        >
+          <div className="learning-section-heading">
+            <div>
+              <span className="eyebrow">ОД СИТУАЦИЈЕ ДО ПРАВИЛА</span>
+              <h2 id="citizen-start-title">Не морате да знате назив закона.</h2>
+              <p>Изаберите тему, упознајте правило и проверите га у извору.</p>
+            </div>
+          </div>
+          <div className="citizen-topic-list">
+            {learningTopics.map((topic) => (
+              <Link
+                key={topic.id}
+                href={`/ucenje?tema=${topic.id}`}
+                className={buttonVariants({ variant: "outline" })}
+              >
+                {topic.title} <ArrowUpRight />
+              </Link>
+            ))}
+          </div>
+        </section>
+      )}
       <div className="workspace">
         <aside className="browse-sidebar registry-sidebar">
           <p className="sidebar-label">ВАШ ВОДИЧ</p>

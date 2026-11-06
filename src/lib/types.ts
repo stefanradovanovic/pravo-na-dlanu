@@ -1,5 +1,6 @@
 import type { PracticeContent } from "./learning-schema";
-export type TopicId = "rad" | "privatnost" | "informacije" | "ravnopravnost";
+export type TopicId =
+  "rad" | "privatnost" | "informacije" | "ravnopravnost" | "potrosaci";
 export type Topic = {
   id: TopicId;
   title: string;

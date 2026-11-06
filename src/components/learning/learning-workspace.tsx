@@ -13,6 +13,8 @@ import {
   RotateCcw,
   Search,
   ShieldCheck,
+  Scale,
+  ShoppingBag,
   Shuffle,
 } from "lucide-react";
 import { Button, buttonVariants } from "@/components/ui/button";
@@ -54,6 +56,8 @@ import { QuestionCard } from "./question-card";
 import { SourceDetails } from "./source-details";
 
 const topicIcons = {
+  ustav: Scale,
+  potrosaci: ShoppingBag,
   rad: BriefcaseBusiness,
   privatnost: ShieldCheck,
   informacije: Landmark,
@@ -111,33 +115,58 @@ function SessionResults({
         Тачних одговора у овој сесији. Сваки покушај је прилика да боље разумете
         правило.
       </p>
-      <div className="learning-result-list">
+      <p className="learning-caption">
+        Отворите питање да поново прочитате одговор и објашњење.
+      </p>
+      <Accordion className="learning-answer-review">
         {attempted.map((q) => (
-          <div key={q.id}>
-            {session.answers[q.id] === q.correctChoiceId ? (
-              <Check size={18} />
-            ) : (
-              <RotateCcw size={18} />
-            )}
-            <span>
-              <strong>{q.title}</strong>
-              <small>
-                {session.answers[q.id] === q.correctChoiceId
-                  ? "Тачно"
-                  : "За поновно вежбање"}
-              </small>
-            </span>
-            <a
-              href={q.source.href}
-              target="_blank"
-              rel="noreferrer"
-              className="text-link"
-            >
-              Члан {q.source.article} ↗
-            </a>
-          </div>
+          <AccordionItem key={q.id} value={q.id}>
+            <AccordionTrigger>
+              <span className="learning-result-heading">
+                {session.answers[q.id] === q.correctChoiceId ? (
+                  <Check size={18} />
+                ) : (
+                  <RotateCcw size={18} />
+                )}
+                <span>
+                  <strong>{q.title}</strong>
+                  <small>
+                    {session.answers[q.id] === q.correctChoiceId
+                      ? "Тачно"
+                      : "За поновно вежбање"}
+                  </small>
+                </span>
+              </span>
+            </AccordionTrigger>
+            <AccordionContent>
+              <p>
+                <strong>Измишљена ситуација:</strong> {q.scenario}
+              </p>
+              <p>{q.prompt}</p>
+              <p>
+                <strong>Ваш одговор:</strong>{" "}
+                {q.choices.find((c) => c.id === session.answers[q.id])?.text}
+              </p>
+              {session.answers[q.id] !== q.correctChoiceId && (
+                <p>
+                  {
+                    q.choices.find((c) => c.id === session.answers[q.id])
+                      ?.explanation
+                  }
+                </p>
+              )}
+              <p>
+                <strong>Тачан одговор:</strong>{" "}
+                {q.choices.find((c) => c.id === q.correctChoiceId)?.text}
+              </p>
+              <p>
+                {q.choices.find((c) => c.id === q.correctChoiceId)?.explanation}
+              </p>
+              <SourceDetails source={q.source} />
+            </AccordionContent>
+          </AccordionItem>
         ))}
-      </div>
+      </Accordion>
       <div className="learning-actions">
         {correct.length < attempted.length && (
           <Button onClick={onRetry}>
@@ -193,15 +222,22 @@ export function LearningWorkspace({ catalog }: { catalog: LearningCatalog }) {
   const latestCorrect = answered.filter(
     (q) => progress.answers[q.id].choiceId === q.correctChoiceId,
   );
+  const nextReviewAt = answered.reduce<number | null>((earliest, q) => {
+    const dueAt = progress.answers[q.id].dueAt;
+    return dueAt > now && (earliest === null || dueAt < earliest)
+      ? dueAt
+      : earliest;
+  }, null);
   const relevant = topic
     ? available.filter((q) => q.topicId === topic.id)
     : available;
+  const topicLessons = lessons.filter((lesson) => lesson.topicId === topic?.id);
   const modeAvailable = relevant.some(
     (q) => q.kind === (mode === "practice" ? "scenario" : mode),
   );
   const filteredTopics = learningTopics.filter((t) =>
     normalizeSearch(
-      `${t.title} ${t.description} ${lessons
+      `${t.title} ${t.description} ${t.keywords} ${lessons
         .filter((l) => l.topicId === t.id)
         .map((l) => l.title)
         .join(" ")}`,
@@ -329,38 +365,87 @@ export function LearningWorkspace({ catalog }: { catalog: LearningCatalog }) {
                   </Link>
                   <h2>{topic.title}</h2>
                   <p>{topic.description}</p>
-                  <Accordion>
-                    <AccordionItem value="lessons">
-                      <AccordionTrigger>
-                        Пре вежбе: упознајте правила
-                      </AccordionTrigger>
-                      <AccordionContent>
-                        <div className="learning-lessons">
-                          {lessons
-                            .filter((l) => l.topicId === topic.id)
-                            .map((l) => (
-                              <article key={l.id}>
-                                <h3>{l.title}</h3>
-                                {l.needsReview ? (
-                                  <p>
-                                    Објашњење је на поновној провери због
-                                    промене извора.
-                                  </p>
-                                ) : (
-                                  <>
-                                    <p>{l.text}</p>
-                                    <SourceDetails source={l.source} />
-                                  </>
-                                )}
-                              </article>
-                            ))}
-                        </div>
-                      </AccordionContent>
-                    </AccordionItem>
-                  </Accordion>
+                  <div className="learning-actions">
+                    <a
+                      href="#vezba"
+                      className={buttonVariants({ variant: "outline" })}
+                    >
+                      Пређи на вежбу <ArrowRight />
+                    </a>
+                    <Link href="/vodic" className="text-link">
+                      Помоћ за читање закона
+                    </Link>
+                  </div>
+                  <div className="learning-outcomes">
+                    <h3>Шта ћете научити</h3>
+                    <ul>
+                      {topic.outcomes.map((outcome) => (
+                        <li key={outcome}>
+                          <Check size={17} aria-hidden="true" />
+                          {outcome}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                  <section
+                    className="learning-lessons"
+                    aria-label="Кратке лекције"
+                  >
+                    <h3>1. Упознајте правила</h3>
+                    <p className="learning-caption">
+                      Уредничка објашњења. За изворни текст отворите везу ка
+                      члану у целом закону.
+                    </p>
+                    <Accordion
+                      defaultValue={topicLessons[0] ? [topicLessons[0].id] : []}
+                      key={topic.id}
+                    >
+                      {topicLessons.map((l) => (
+                        <AccordionItem value={l.id} key={l.id}>
+                          <AccordionTrigger>{l.title}</AccordionTrigger>
+                          <AccordionContent>
+                            <article aria-label={l.title}>
+                              {l.needsReview ? (
+                                <p>
+                                  Објашњење је на поновној провери због промене
+                                  извора.
+                                </p>
+                              ) : (
+                                <>
+                                  <p>{l.text}</p>
+                                  <SourceDetails source={l.source} />
+                                </>
+                              )}
+                            </article>
+                          </AccordionContent>
+                        </AccordionItem>
+                      ))}
+                    </Accordion>
+                  </section>
                 </section>
               ) : (
                 <>
+                  <section
+                    className="learning-orientation"
+                    aria-labelledby="learning-orientation-title"
+                  >
+                    <div>
+                      <span className="eyebrow">ПРВИ ПУТ СТЕ ОВДЕ?</span>
+                      <h2 id="learning-orientation-title">
+                        Од читања до разумевања.
+                      </h2>
+                      <p>
+                        Научите како да пронађете члан и проверите извор. Затим
+                        изаберите тему и испробајте кратку вежбу.
+                      </p>
+                    </div>
+                    <Link
+                      href="/vodic"
+                      className={buttonVariants({ variant: "outline" })}
+                    >
+                      Водич за читање закона <ArrowRight />
+                    </Link>
+                  </section>
                   <div className="learning-section-heading">
                     <div>
                       <h2>Која тема вас занима?</h2>
@@ -370,14 +455,14 @@ export function LearningWorkspace({ catalog }: { catalog: LearningCatalog }) {
                       <Search size={17} />
                       <Input
                         aria-label="Претрага тема за учење"
-                        placeholder="Посао, подаци, информације…"
+                        placeholder="Посао, куповина, подаци…"
                         value={query}
                         onChange={(e) => setQuery(e.target.value)}
                       />
                     </div>
                   </div>
                   <div className="learning-topic-grid">
-                    {filteredTopics.map((t, i) => {
+                    {filteredTopics.map((t) => {
                       const Icon = topicIcons[t.id];
                       const topicQuestions = available.filter(
                         (q) => q.topicId === t.id,
@@ -390,7 +475,11 @@ export function LearningWorkspace({ catalog }: { catalog: LearningCatalog }) {
                           <div className="learning-row">
                             <Icon size={25} />
                             <span className="eyebrow">
-                              ТЕМА {String(i + 1).padStart(2, "0")}
+                              ТЕМА{" "}
+                              {String(learningTopics.indexOf(t) + 1).padStart(
+                                2,
+                                "0",
+                              )}
                             </span>
                           </div>
                           <h3>{t.title}</h3>
@@ -422,23 +511,29 @@ export function LearningWorkspace({ catalog }: { catalog: LearningCatalog }) {
                   {filteredTopics.length === 0 && (
                     <div className="learning-empty">
                       <p>
-                        Нема теме за „{query}“. Пробајте „рад“, „подаци“ или
-                        „информације“.
+                        Нема теме за „{query}“. Пробајте „рад“, „куповина“,
+                        „подаци“ или „Устав“.
                       </p>
                       <Button variant="ghost" onClick={() => setQuery("")}>
                         Прикажи све теме
                       </Button>
+                      <Link
+                        href={`/?q=${encodeURIComponent(query)}&mode=full&view=list`}
+                        className={buttonVariants({ variant: "outline" })}
+                      >
+                        Потражи у тексту закона <ArrowRight />
+                      </Link>
                     </div>
                   )}
                 </>
               )}
-              <section className="learning-practice-panel">
+              <section id="vezba" className="learning-practice-panel">
                 <div className="learning-section-heading">
                   <div>
                     <span className="eyebrow">МАЛА ВЕЖБА, ЈАСНИЈЕ ПРАВИЛО</span>
                     <h2>
                       {topic
-                        ? "Како желите да вежбате?"
+                        ? "2. Проверите разумевање"
                         : "Испробајте питања из свих тема"}
                     </h2>
                   </div>
@@ -548,8 +643,10 @@ export function LearningWorkspace({ catalog }: { catalog: LearningCatalog }) {
                     </p>
                     {due.length === 0 && (
                       <p className="learning-notice">
-                        Све је спремно за данас. Истражите нову тему или се
-                        вратите касније на понављање.
+                        {nextReviewAt !== null
+                          ? `Следеће понављање: ${new Date(nextReviewAt).toLocaleString("sr-RS", { timeZone: "Europe/Belgrade", day: "numeric", month: "long", hour: "2-digit", minute: "2-digit" })} (београдско време). `
+                          : "Нема питања за понављање. "}
+                        У међувремену можете да истражите нову тему.
                       </p>
                     )}
                     <div className="learning-result-list">

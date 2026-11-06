@@ -1,9 +1,11 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { SiteHeader } from "@/components/site-header";
+import { MobileNavigation } from "@/components/mobile-navigation";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import Link from "next/link";
 import "./globals.css";
 import "./site.css";
+export const viewport: Viewport = { viewportFit: "cover" };
 export const metadata: Metadata = {
   title: {
     default: "Право на длану — разумите своја права",
@@ -31,6 +33,7 @@ export default function RootLayout({
             <span>Право које разумете. Знање које делите.</span>
             <Link href="/o-projektu">О збирци и изворима ↗</Link>
           </footer>
+          <MobileNavigation />
         </TooltipProvider>
       </body>
     </html>

@@ -1,5 +1,6 @@
 import { test, expect, type Page } from "@playwright/test";
 import { getLearningCatalog } from "../../src/lib/learning-content";
+import { learningTopics } from "../../src/lib/learning";
 const questions = getLearningCatalog().questions;
 const storageKey = "pravo-na-dlanu.learning.v1";
 
@@ -51,7 +52,9 @@ test("homepage and mobile navigation expose learning; topic search accepts all S
   await search.fill("ништа-не-постоји");
   await expect(page.getByText("Нема теме за", { exact: false })).toBeVisible();
   await page.getByRole("button", { name: "Прикажи све теме" }).click();
-  await expect(page.locator(".learning-topic-card")).toHaveCount(3);
+  await expect(page.locator(".learning-topic-card")).toHaveCount(
+    learningTopics.length,
+  );
   expect(
     await page.evaluate(
       () => document.documentElement.scrollWidth <= innerWidth,
@@ -111,6 +114,15 @@ test("quiz confirms once, resumes after reload, links to the real article and re
     page.getByRole("heading", { name: "Сесија је завршена." }),
   ).toBeFocused();
   await expect(page.locator(".learning-score")).toHaveText("4 / 5");
+  await page
+    .locator(".learning-answer-review")
+    .getByRole("button", {
+      name: new RegExp(first.title.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")),
+    })
+    .click();
+  await expect(page.locator(".learning-answer-review")).toContainText(
+    first.choices.find((c) => c.id === first.correctChoiceId)!.explanation,
+  );
   await page
     .getByRole("button", { name: "Понови питања која су била тешка" })
     .click();
