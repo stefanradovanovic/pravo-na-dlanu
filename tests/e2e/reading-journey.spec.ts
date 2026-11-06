@@ -65,8 +65,10 @@ test("full-text search opens a Cyrillic passage and returns to the same search",
 test("article navigation and permalink work by keyboard", async ({ page }) => {
   await page.goto("/propisi/0092c8ed-9252-4dcf-951e-c6488818f2b3");
   const summary = page.getByRole("button", { name: /Садржај закона/ });
-  await summary.focus();
-  await page.keyboard.press("Enter");
+  if (await summary.isVisible()) {
+    await summary.focus();
+    await page.keyboard.press("Enter");
+  }
   await page.getByRole("textbox", { name: "Иди на члан" }).fill("12");
   const link = page
     .getByRole("navigation", { name: "Садржај закона" })
@@ -75,6 +77,7 @@ test("article navigation and permalink work by keyboard", async ({ page }) => {
   await page.keyboard.press("Enter");
   await expect(page).toHaveURL(/#clan-12$/);
   await expect(page.locator("#clan-12")).toBeInViewport();
+  await expect(link).toHaveAttribute("aria-current", "location");
   await expect(
     page.getByRole("link", { name: "Линк: Члан 12.", exact: true }),
   ).toHaveAttribute("href", "#clan-12");
@@ -83,6 +86,31 @@ test("article navigation and permalink work by keyboard", async ({ page }) => {
       () => document.documentElement.scrollWidth <= window.innerWidth,
     ),
   ).toBe(true);
+});
+
+test("contents follow the current article while scrolling", async ({
+  page,
+}) => {
+  await page.goto("/propisi/694cbad4-4727-4f93-b894-0b100b62c808#clan-104");
+  const desktop = page.viewportSize()!.width >= 1024;
+  if (!desktop) {
+    await page.getByRole("button", { name: /Садржај закона/ }).click();
+  }
+  const navigation = page.getByRole("navigation", { name: "Садржај закона" });
+  for (const number of [104, 105, 18]) {
+    await page
+      .locator(`#clan-${number}`)
+      .evaluate((element) => element.scrollIntoView());
+    const current = navigation.getByRole("link", {
+      name: `Члан ${number}.`,
+      exact: true,
+    });
+    await expect(current).toHaveAttribute("aria-current", "location");
+    if (desktop) {
+      await expect(current).toBeInViewport();
+      await expect(navigation).toHaveCSS("position", "sticky");
+    }
+  }
 });
 
 test("query, category, view and pagination survive reload and history navigation", async ({

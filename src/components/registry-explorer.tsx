@@ -10,7 +10,6 @@ import {
   BookOpen,
   ArrowUpRight,
   Scale,
-  Sparkles,
   Info,
   SlidersHorizontal,
 } from "lucide-react";
@@ -224,9 +223,6 @@ export function RegistryExplorer({ registry }: { registry: Registry }) {
           <p className="sidebar-label">ВАШ ВОДИЧ</p>
           <Link className="side-link active" href={returnTo}>
             <Network size={16} /> Истражи право
-          </Link>
-          <Link className="side-link" href="/ucenje">
-            <Sparkles size={16} /> Примери из живота
           </Link>
           <div className="sidebar-divider" />
           <p className="sidebar-label">ПРАВНЕ ОБЛАСТИ</p>

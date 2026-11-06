@@ -1,4 +1,3 @@
-import Link from "next/link";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import rehypeRaw from "rehype-raw";
@@ -12,6 +11,7 @@ import { categoryLabel, type RegistryRecord } from "@/lib/registry-types";
 import { articleHeadings } from "@/lib/document-navigation";
 import { ArticleNavigation } from "./article-navigation";
 import { ReaderBackLink } from "./reader-back-link";
+import { LawExamples } from "./law-examples";
 export function FullLawDocument({
   record,
   markdown,
@@ -82,6 +82,7 @@ export function FullLawDocument({
           Провери извор <ArrowUpRight size={14} />
         </a>
       </div>
+      <LawExamples recordId={record.id} headings={headings} />
       <div className="document-toolbar">
         <div>
           <BookOpen size={16} />
@@ -122,7 +123,7 @@ export function FullLawDocument({
           </a>
         </section>
       ) : (
-        <>
+        <div className={headings.length ? "law-reading-layout" : undefined}>
           <ArticleNavigation headings={headings} />
           <article id="tekst-zakona" className="legal-text complete-legal-text">
             <ReactMarkdown
@@ -133,7 +134,6 @@ export function FullLawDocument({
                   const heading = anchors.get(node?.position?.start.line ?? -1);
                   return (
                     <h2 id={heading?.id} tabIndex={heading ? -1 : undefined}>
-                      {children}
                       {heading && (
                         <a
                           className="article-permalink"
@@ -143,6 +143,7 @@ export function FullLawDocument({
                           #
                         </a>
                       )}
+                      {children}
                     </h2>
                   );
                 },
@@ -165,7 +166,7 @@ export function FullLawDocument({
               {markdown}
             </ReactMarkdown>
           </article>
-        </>
+        </div>
       )}
       <div className="educational-note">
         <Info size={16} />
@@ -173,9 +174,6 @@ export function FullLawDocument({
           Текст извора је одвојен од наших објашњења. Измишљени примери служе
           учењу и нису правни савет.
         </p>
-        <Link href="/ucenje">
-          Примери из живота <ArrowUpRight size={13} />
-        </Link>
       </div>
     </main>
   );

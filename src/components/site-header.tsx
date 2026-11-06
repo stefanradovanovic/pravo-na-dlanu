@@ -18,7 +18,6 @@ export function SiteHeader() {
       <nav aria-label="Главна навигација">
         <Link href="/">Истражи право</Link>
         <Link href="/zakoni/ustav">Устав Србије</Link>
-        <Link href="/ucenje">Примери</Link>
         <Link href="/o-projektu">О пројекту</Link>
       </nav>
       <a
