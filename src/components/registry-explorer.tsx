@@ -172,8 +172,9 @@ export function RegistryExplorer({ registry }: { registry: Registry }) {
           <span>Кратки квизови из свакодневног живота</span>
         </div>
         <div className="search-wrap">
-          <Search size={21} />
+          <Search size={16} aria-hidden="true" />
           <Input
+            className="pl-9 pr-20"
             aria-label="Претрага закона"
             placeholder="Претражите законе — нпр. рад, саобраћај, заштита потрошача…"
             value={query}
@@ -185,7 +186,7 @@ export function RegistryExplorer({ registry }: { registry: Registry }) {
           {query && (
             <Button
               variant="ghost"
-              size="icon"
+              size="icon-xs"
               aria-label="Обриши претрагу"
               onClick={() => {
                 setQuery("");
@@ -195,7 +196,7 @@ export function RegistryExplorer({ registry }: { registry: Registry }) {
               <X />
             </Button>
           )}
-          <span className="search-hint">Ћир / Lat</span>
+          {!query && <span className="search-hint">Ћир / лат</span>}
         </div>
         <div className="suggestions">
           <Tabs
@@ -239,7 +240,13 @@ export function RegistryExplorer({ registry }: { registry: Registry }) {
       <div className="workspace">
         <aside className="browse-sidebar registry-sidebar">
           <p className="sidebar-label">ВАШ ВОДИЧ</p>
-          <Link className="side-link active" href={returnTo}>
+          <Link
+            className={buttonVariants({
+              variant: "ghost",
+              className: "side-link active",
+            })}
+            href={returnTo}
+          >
             <Network size={16} /> Истражи право
           </Link>
           <div className="sidebar-divider" />
@@ -264,9 +271,7 @@ export function RegistryExplorer({ registry }: { registry: Registry }) {
                 <span
                   className="topic-dot"
                   style={{
-                    background: ["#7c8e71", "#ae8c63", "#8d88a0", "#82a1a3"][
-                      i % 4
-                    ],
+                    background: `var(--chart-${(i % 4) + 1})`,
                   }}
                 />
                 <span className="category-name">{categoryLabel(c.name)}</span>

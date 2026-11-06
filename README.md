@@ -68,6 +68,10 @@ A daily GitHub Action refreshes public official sources, audits them and commits
 
 Next.js App Router, React, TypeScript, Tailwind, shadcn/ui (Base UI), React Flow, sanitized Markdown, PDF.js and Pagefind. Existing input, button, tab and badge primitives are reused throughout. Searches normalize Serbian Cyrillic, Latin and diacritic-free input.
 
+### Design system
+
+Open `/dizajn-sistem` for the living component reference: colors, Cyrillic typography, spacing, interactive shadcn/ui states, and legal-content patterns. Shared tokens in `src/app/design-tokens.css` are applied across the catalog, map, learning screens, and standalone law reader. See [the design system and Figma mapping](docs/design-system.md) before adding or changing UI patterns.
+
 ### Dependency security
 
 Run `npm audit` to check the complete dependency tree, including development tools. Scoped overrides pin `serve`'s `compression` to 1.8.2 and the TypeScript ESLint parser's `minimatch` to 11.0.4 until those upstream packages adopt patched versions. The latter supports this project's Node.js 24 requirement; lint validates the parser integration.

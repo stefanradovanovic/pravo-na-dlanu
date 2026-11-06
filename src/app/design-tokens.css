@@ -1,0 +1,121 @@
+/* Shared by shadcn/ui, the catalog, and the standalone law readers.
+   Keep Figma variables aligned with these semantic names. See docs/design-system.md. */
+:root {
+  color-scheme: light;
+  --background: #faf9f6;
+  --foreground: #282824;
+  --card: #fffefa;
+  --card-foreground: #282824;
+  --popover: #fffefa;
+  --popover-foreground: #282824;
+  --primary: #292d28;
+  --primary-foreground: #fffefa;
+  --secondary: #eeede8;
+  --secondary-foreground: #282824;
+  --muted: #eeede8;
+  --muted-foreground: #686b60;
+  --accent: #efede6;
+  --accent-foreground: #292d28;
+  --destructive: #b3261e;
+  --border: #e3e1d9;
+  --input: #dbd9d1;
+  --ring: #963e35;
+
+  --brand: #963e35;
+  --brand-foreground: #fff9ee;
+  --surface-subtle: #f5f4ee;
+  --surface-map: #f6f5f0;
+  --editorial: #eff0e7;
+  --editorial-foreground: #536145;
+  --editorial-border: #969f7c;
+  --warning: #f8eee3;
+  --warning-foreground: #80502e;
+  --highlight: #f2dfb1;
+  --highlight-foreground: #282824;
+
+  --chart-1: #963e35;
+  --chart-2: #536145;
+  --chart-3: #80502e;
+  --chart-4: #686b60;
+  --chart-5: #292d28;
+  --sidebar: #fffefa;
+  --sidebar-foreground: #282824;
+  --sidebar-primary: #292d28;
+  --sidebar-primary-foreground: #fffefa;
+  --sidebar-accent: #eeede8;
+  --sidebar-accent-foreground: #292d28;
+  --sidebar-border: #e3e1d9;
+  --sidebar-ring: #963e35;
+
+  --type-ui: Arial, Helvetica, sans-serif;
+  --type-editorial: Georgia, "Times New Roman", serif;
+  --type-code: Consolas, "Liberation Mono", monospace;
+  --text-caption: 0.75rem;
+  --text-body: 0.875rem;
+  --text-reading: 1rem;
+  --text-title: 1.5rem;
+  --text-display: 2.75rem;
+  --leading-body: 1.6;
+  --leading-reading: 1.5;
+  --leading-title: 1.2;
+
+  /* A four-pixel base, matching Tailwind's default spacing scale. */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+  --space-12: 3rem;
+  --space-16: 4rem;
+  --radius: 0.55rem;
+  --measure-reading: 72ch;
+  --layout-wide: 85rem;
+}
+
+/* Component theme only: a full-site dark-mode switch is not enabled. */
+.dark {
+  color-scheme: dark;
+  --background: #20221f;
+  --foreground: #f3f1e9;
+  --card: #292c27;
+  --card-foreground: #f3f1e9;
+  --popover: #292c27;
+  --popover-foreground: #f3f1e9;
+  --primary: #e7ebde;
+  --primary-foreground: #292d28;
+  --secondary: #343930;
+  --secondary-foreground: #f3f1e9;
+  --muted: #343930;
+  --muted-foreground: #b2b4a8;
+  --accent: #3a4035;
+  --accent-foreground: #f3f1e9;
+  --destructive: #f19990;
+  --border: #484e42;
+  --input: #626b58;
+  --ring: #e2a396;
+  --brand: #e2a396;
+  --brand-foreground: #291b18;
+  --surface-subtle: #262a23;
+  --surface-map: #242820;
+  --editorial: #303a29;
+  --editorial-foreground: #c5d3b5;
+  --editorial-border: #879b70;
+  --warning: #3e3023;
+  --warning-foreground: #edc69d;
+  --highlight: #6d5424;
+  --highlight-foreground: #fff3d7;
+  --chart-1: #e2a396;
+  --chart-2: #c5d3b5;
+  --chart-3: #edc69d;
+  --chart-4: #b2b4a8;
+  --chart-5: #e7ebde;
+  --sidebar: #292c27;
+  --sidebar-foreground: #f3f1e9;
+  --sidebar-primary: #e7ebde;
+  --sidebar-primary-foreground: #292d28;
+  --sidebar-accent: #343930;
+  --sidebar-accent-foreground: #f3f1e9;
+  --sidebar-border: #484e42;
+  --sidebar-ring: #e2a396;
+}
