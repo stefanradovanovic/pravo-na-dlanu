@@ -20,7 +20,7 @@ export function ArticleNavigation({
   const [query, setQuery] = useState("");
   const [open, setOpen] = useState<string[]>([]);
   const [active, setActive] = useState(-1);
-  const [fontSize, setFontSize] = useState(18);
+  const [fontSize, setFontSize] = useState(16);
   const [desktop, setDesktop] = useState(false);
   const list = useRef<HTMLUListElement>(null);
   const navigation = useRef<HTMLElement>(null);

@@ -1623,8 +1623,8 @@ a {
 }
 .complete-legal-text {
   font-family: Georgia, "Times New Roman", serif;
-  font-size: var(--reader-font-size, 18px);
-  line-height: var(--reader-line-height, 27px);
+  font-size: var(--reader-font-size, 16px);
+  line-height: var(--reader-line-height, 24px);
   min-width: 0;
   overflow-wrap: anywhere;
   margin-top: 40px;
@@ -1646,6 +1646,10 @@ a {
 }
 .complete-legal-text h3 {
   font-size: 19px;
+}
+.complete-legal-text .article-subtitle {
+  font-size: var(--reader-font-size, 16px);
+  font-weight: 400;
 }
 .complete-legal-text a {
   text-decoration: underline;
