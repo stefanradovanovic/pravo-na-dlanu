@@ -50,7 +50,10 @@ function DocumentNode({ data }: NodeProps<MapNode>) {
       onClick={data.activate}
       style={
         {
-          "--node-color": data.kind === "root" ? "#963e35" : "#738363",
+          "--node-color":
+            data.kind === "root"
+              ? "var(--brand)"
+              : "var(--editorial-foreground)",
         } as React.CSSProperties
       }
     >
@@ -189,7 +192,7 @@ export function RegistryMap({
             targetPosition: Position.Left,
           },
           (i % 4) * 320,
-          180 + Math.floor(i / 4) * 145,
+          180 + Math.floor(i / 4) * 168,
         );
         edges.push({
           id: `e-${id}`,
@@ -197,7 +200,7 @@ export function RegistryMap({
           target: id,
           type: "membership",
           data: { overview: true },
-          style: { stroke: "#c4c7b7" },
+          style: { stroke: "var(--editorial-border)" },
         });
       });
     } else {
@@ -224,14 +227,14 @@ export function RegistryMap({
             targetPosition: Position.Left,
           },
           350 + (i % 2) * 310,
-          Math.floor(i / 2) * 145,
+          Math.floor(i / 2) * 168,
         );
         edges.push({
           id: `e-${r.id}`,
           source: rootId,
           target: r.id,
           type: "membership",
-          style: { stroke: "#c4c7b7" },
+          style: { stroke: "var(--editorial-border)" },
         });
       });
     }
@@ -264,7 +267,7 @@ export function RegistryMap({
           nodesConnectable={false}
         >
           <FitCanvas />
-          <Background color="#dedfd4" gap={20} size={1} />
+          <Background color="var(--border)" gap={20} size={1} />
           <Panel position="top-right">
             <Button
               variant="outline"

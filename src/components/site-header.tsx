@@ -25,6 +25,7 @@ export function SiteHeader() {
       </nav>
       <a
         className={buttonVariants({ variant: "outline" })}
+        aria-label="Званични прописи — ПИС (нови прозор)"
         href="https://www.pravno-informacioni-sistem.rs/"
         target="_blank"
         rel="noreferrer"
