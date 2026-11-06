@@ -201,18 +201,27 @@ export function RegistryExplorer({ registry }: { registry: Registry }) {
               <TabsTrigger value="full">Цео текст</TabsTrigger>
             </TabsList>
           </Tabs>
-          {["Рад", "Саобраћај", "Потрошач"].map((s) => (
+          {[
+            { label: "Рад", title: "Закон о раду" },
+            {
+              label: "Саобраћај",
+              title: "Закон о безбедности саобраћаја на путевима",
+            },
+            { label: "Потрошач", title: "Закон о заштити потрошача" },
+          ].map(({ label, title }) => (
             <Button
               variant="ghost"
               size="sm"
-              key={s}
+              key={label}
+              title={title}
               onClick={() => {
-                setQuery(s);
+                setQuery(title);
+                setMode("titles");
                 setCategory("all");
                 setPage(0);
               }}
             >
-              {s}
+              {label}
               <ArrowUpRight size={12} />
             </Button>
           ))}

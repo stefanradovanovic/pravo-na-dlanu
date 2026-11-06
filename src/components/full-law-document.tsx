@@ -1,7 +1,7 @@
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import rehypeRaw from "rehype-raw";
-import rehypeSanitize from "rehype-sanitize";
+import rehypeSanitize, { defaultSchema } from "rehype-sanitize";
 import { ArrowUpRight, BookOpen, Info } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { buttonVariants } from "@/components/ui/button";
@@ -12,6 +12,18 @@ import { articleHeadings } from "@/lib/document-navigation";
 import { ArticleNavigation } from "./article-navigation";
 import { ReaderBackLink } from "./reader-back-link";
 import { LawExamples } from "./law-examples";
+import { normalizeDocumentTitle } from "@/lib/document-presentation";
+import { remarkArticleSubtitles } from "@/lib/article-subtitles";
+const legalTextSchema = {
+  ...defaultSchema,
+  attributes: {
+    ...defaultSchema.attributes,
+    span: [
+      ...(defaultSchema.attributes?.span ?? []),
+      ["className", "article-subtitle"],
+    ],
+  },
+};
 export function FullLawDocument({
   record,
   markdown,
@@ -21,14 +33,15 @@ export function FullLawDocument({
 }) {
   const sourceOnly = record.textStatus === "source-only";
   const scan = record.textStatus === "facsimile" ? record.facsimile : undefined;
-  const headings = articleHeadings(markdown);
+  const displayMarkdown = normalizeDocumentTitle(markdown, record.title);
+  const headings = articleHeadings(displayMarkdown);
   const anchors = new Map(headings.map((heading) => [heading.line, heading]));
   return (
     <main id="main" className="reader full-document">
       <ReaderBackLink />
       <div className="reader-heading">
         <div className="eyebrow">
-          {record.documentType.toLocaleUpperCase("sr")} · ЈЕДАН ДОКУМЕНТ
+          {record.documentType.toLocaleUpperCase("sr")}
         </div>
         <h1>{record.title}</h1>
         <p>{record.categories.map(categoryLabel).join(" · ")}</p>
@@ -66,13 +79,6 @@ export function FullLawDocument({
                 : "Пренет је цео доступни HTML текст ПИС-а, укључујући напомене извора. Прилози и слике остају на извору.")}{" "}
             Датум преузимања не представља правну потврду важења.
           </small>
-          {!!record.aliases?.length && (
-            <small>
-              Обједињено {record.aliases.length + 1} записа регистра који се
-              односе на исти закон. Изворни подаци и разлози обједињавања
-              сачувани су у извештају збирке.
-            </small>
-          )}
         </div>
         <a
           href={scan?.sourceUrl ?? record.sourceUrl}
@@ -127,8 +133,8 @@ export function FullLawDocument({
           <ArticleNavigation headings={headings} />
           <article id="tekst-zakona" className="legal-text complete-legal-text">
             <ReactMarkdown
-              remarkPlugins={[remarkGfm]}
-              rehypePlugins={[rehypeRaw, rehypeSanitize]}
+              remarkPlugins={[remarkGfm, remarkArticleSubtitles]}
+              rehypePlugins={[rehypeRaw, [rehypeSanitize, legalTextSchema]]}
               components={{
                 h2: ({ children, node }) => {
                   const heading = anchors.get(node?.position?.start.line ?? -1);
@@ -163,7 +169,7 @@ export function FullLawDocument({
                 ),
               }}
             >
-              {markdown}
+              {displayMarkdown}
             </ReactMarkdown>
           </article>
         </div>
