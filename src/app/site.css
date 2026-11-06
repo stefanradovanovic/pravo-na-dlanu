@@ -1623,8 +1623,8 @@ a {
 }
 .complete-legal-text {
   font-family: Georgia, "Times New Roman", serif;
-  font-size: 18px;
-  line-height: 26px;
+  font-size: var(--reader-font-size, 18px);
+  line-height: var(--reader-line-height, 27px);
   min-width: 0;
   overflow-wrap: anywhere;
   margin-top: 40px;
@@ -1830,6 +1830,9 @@ a {
   margin-top: 18px;
 }
 .article-navigation {
+  position: sticky;
+  top: 12px;
+  z-index: 20;
   margin-block: 24px;
   padding: 16px;
   border: 1px solid var(--border);
@@ -1840,12 +1843,35 @@ a {
   display: block;
   margin-block: 16px 8px;
 }
+.reading-controls,
+.reading-control-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.reading-controls {
+  flex-wrap: wrap;
+  margin-bottom: 12px;
+}
+.current-article {
+  flex: 1;
+  min-width: 120px;
+  font-weight: 600;
+}
+.article-jump-help {
+  margin-top: 8px;
+  color: var(--muted-foreground);
+  font-size: 12px;
+}
+.article-navigation [data-slot="accordion-content"] {
+  animation: none;
+}
 .article-navigation ul {
   max-height: 280px;
   overflow-y: auto;
   margin-top: 16px;
 }
-.article-navigation a {
+.article-navigation li a {
   display: block;
   padding: 3px 10px;
   border-left: 2px solid transparent;
@@ -1853,11 +1879,11 @@ a {
   font-size: 13px;
   line-height: 1.4;
 }
-.article-navigation a:hover {
+.article-navigation li a:hover {
   background: var(--accent);
   color: var(--accent-foreground);
 }
-.article-navigation a[aria-current="location"] {
+.article-navigation li a[aria-current="location"] {
   border-left-color: var(--primary);
   background: var(--accent);
   color: var(--accent-foreground);
@@ -1890,7 +1916,7 @@ a {
     color: var(--muted-foreground);
   }
   .article-navigation ul {
-    max-height: calc(100dvh - 240px);
+    max-height: calc(100dvh - 390px);
     overscroll-behavior: contain;
   }
   .article-navigation-mobile {
@@ -1902,7 +1928,7 @@ a {
   text-underline-offset: 3px;
 }
 .complete-legal-text h2[id] {
-  scroll-margin-top: 100px;
+  scroll-margin-top: var(--reader-navigation-offset, 100px);
 }
 .complete-legal-text h2:target {
   background: var(--accent);

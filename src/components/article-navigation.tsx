@@ -1,6 +1,8 @@
 "use client";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type MouseEvent } from "react";
+import { ArrowLeft, ArrowRight, Minus, Plus } from "lucide-react";
 import { Input } from "@/components/ui/input";
+import { Button, buttonVariants } from "@/components/ui/button";
 import {
   Accordion,
   AccordionContent,
@@ -16,52 +18,112 @@ export function ArticleNavigation({
   headings: ArticleHeading[];
 }) {
   const [query, setQuery] = useState("");
-  const [activeId, setActiveId] = useState("");
-  const desktopList = useRef<HTMLUListElement>(null);
+  const [open, setOpen] = useState<string[]>([]);
+  const [active, setActive] = useState(-1);
+  const [fontSize, setFontSize] = useState(18);
+  const [desktop, setDesktop] = useState(false);
+  const list = useRef<HTMLUListElement>(null);
+  const navigation = useRef<HTMLElement>(null);
+  const selectedPosition = useRef<{ index: number; y: number } | null>(null);
 
   useEffect(() => {
-    const elements = headings.flatMap(({ id }) => {
-      const element = document.getElementById(id);
-      return element ? [element] : [];
-    });
-    let frame = 0;
-    const update = () => {
-      frame = 0;
-      // Find the last article above the reading line, including long articles.
-      let low = 0;
-      let high = elements.length;
-      while (low < high) {
-        const middle = Math.floor((low + high) / 2);
-        if (elements[middle].getBoundingClientRect().top <= 120)
-          low = middle + 1;
-        else high = middle;
-      }
-      setActiveId(elements[Math.max(0, low - 1)]?.id ?? "");
-    };
-    const schedule = () => {
-      if (!frame) frame = requestAnimationFrame(update);
-    };
+    const media = window.matchMedia("(min-width: 1024px)");
+    const update = () => setDesktop(media.matches);
     update();
-    window.addEventListener("scroll", schedule, { passive: true });
-    window.addEventListener("resize", schedule);
-    return () => {
-      cancelAnimationFrame(frame);
-      window.removeEventListener("scroll", schedule);
-      window.removeEventListener("resize", schedule);
-    };
-  }, [headings]);
+    media.addEventListener("change", update);
+    return () => media.removeEventListener("change", update);
+  }, []);
 
   useEffect(() => {
-    const list = desktopList.current;
-    const link = list?.querySelector<HTMLElement>('[aria-current="location"]');
-    if (!list || !link) return;
-    const bounds = list.getBoundingClientRect();
+    const container = list.current;
+    const link = container?.querySelector<HTMLElement>(
+      '[aria-current="location"]',
+    );
+    if (!desktop || !container || !link) return;
+    const bounds = container.getBoundingClientRect();
     const item = link.getBoundingClientRect();
     if (item.top < bounds.top || item.bottom > bounds.bottom) {
-      list.scrollTop +=
-        item.top - bounds.top - list.clientHeight / 2 + item.height / 2;
+      container.scrollTop +=
+        item.top - bounds.top - container.clientHeight / 2 + item.height / 2;
     }
-  }, [activeId, query]);
+  }, [active, desktop, query]);
+
+  useEffect(() => {
+    const nav = navigation.current;
+    const reader = nav?.closest<HTMLElement>(".full-document");
+    if (!nav || !reader) return;
+    const elements = headings.map((heading) =>
+      document.getElementById(heading.id),
+    );
+    let frame = 0;
+    const measure = () => {
+      frame = 0;
+      const offset = desktop ? 100 : nav.offsetHeight + 24;
+      reader.style.setProperty("--reader-navigation-offset", `${offset}px`);
+      // Near the end, a short article cannot always reach the top of the viewport.
+      // Keep the explicitly selected article until the reader scrolls away.
+      const selected = selectedPosition.current;
+      if (selected && Math.abs(window.scrollY - selected.y) < 2) {
+        setActive(selected.index);
+        return;
+      }
+      selectedPosition.current = null;
+      // Binary search keeps scrolling cheap even in laws with hundreds of articles.
+      let low = 0;
+      let high = elements.length - 1;
+      while (low <= high) {
+        const middle = Math.floor((low + high) / 2);
+        if (
+          (elements[middle]?.getBoundingClientRect().top ?? Infinity) <=
+          offset + 2
+        )
+          low = middle + 1;
+        else high = middle - 1;
+      }
+      setActive(high);
+    };
+    const schedule = () => {
+      if (!frame) frame = requestAnimationFrame(measure);
+    };
+    const followHash = () => {
+      const index = headings.findIndex(
+        (heading) => `#${heading.id}` === window.location.hash,
+      );
+      if (index >= 0 && elements[index]) {
+        elements[index].scrollIntoView({ block: "start" });
+        selectedPosition.current = { index, y: window.scrollY };
+        schedule();
+      }
+    };
+    const observer = new ResizeObserver(schedule);
+    observer.observe(nav);
+    observer.observe(reader);
+    window.addEventListener("scroll", schedule, { passive: true });
+    window.addEventListener("resize", schedule);
+    window.addEventListener("hashchange", followHash);
+    frame = requestAnimationFrame(() => {
+      measure();
+      followHash();
+    });
+    return () => {
+      cancelAnimationFrame(frame);
+      observer.disconnect();
+      window.removeEventListener("scroll", schedule);
+      window.removeEventListener("resize", schedule);
+      window.removeEventListener("hashchange", followHash);
+      reader.style.removeProperty("--reader-navigation-offset");
+    };
+  }, [headings, desktop]);
+
+  useEffect(() => {
+    const reader = navigation.current?.closest<HTMLElement>(".full-document");
+    reader?.style.setProperty("--reader-font-size", `${fontSize}px`);
+    reader?.style.setProperty("--reader-line-height", `${fontSize * 1.5}px`);
+    return () => {
+      reader?.style.removeProperty("--reader-font-size");
+      reader?.style.removeProperty("--reader-line-height");
+    };
+  }, [fontSize]);
 
   if (!headings.length) return null;
   const number = normalizeSearch(query)
@@ -70,49 +132,177 @@ export function ArticleNavigation({
   const visible = headings.filter(
     (heading) => !number || heading.id.split("-")[1] === number,
   );
-  const contents = (desktop: boolean) => (
-    <>
-      <label htmlFor={desktop ? "article-number-desktop" : "article-number"}>
-        Иди на члан
-      </label>
-      <Input
-        id={desktop ? "article-number-desktop" : "article-number"}
-        placeholder="Број члана, нпр. 12 или 12а"
-        value={query}
-        onChange={(event) => setQuery(event.target.value)}
-      />
-      <ul ref={desktop ? desktopList : undefined}>
-        {visible.map((heading) => (
-          <li key={heading.id}>
-            <a
-              href={`#${heading.id}`}
-              aria-current={activeId === heading.id ? "location" : undefined}
-            >
-              {heading.label}
-            </a>
-          </li>
-        ))}
-      </ul>
-      {!visible.length && <p role="status">Нема члана са тим бројем.</p>}
-    </>
-  );
+  function jump(id: string) {
+    setOpen([]);
+    requestAnimationFrame(() => {
+      const nav = navigation.current;
+      const target = document.getElementById(id);
+      if (!nav || !target) return;
+      nav
+        .closest<HTMLElement>(".full-document")
+        ?.style.setProperty(
+          "--reader-navigation-offset",
+          `${desktop ? 100 : nav.offsetHeight + 24}px`,
+        );
+      target.scrollIntoView({ block: "start" });
+      target.focus({ preventScroll: true });
+      const index = headings.findIndex((heading) => heading.id === id);
+      selectedPosition.current = { index, y: window.scrollY };
+      setActive(index);
+    });
+  }
+  function follow(event: MouseEvent<HTMLAnchorElement>, id: string) {
+    if (
+      event.button ||
+      event.metaKey ||
+      event.ctrlKey ||
+      event.shiftKey ||
+      event.altKey
+    )
+      return;
+    // Keep native fragment history and modified-click behavior.
+    jump(id);
+  }
+  const previous = headings[active - 1];
+  const next = headings[active + 1];
   return (
-    <nav className="article-navigation" aria-label="Садржај закона">
-      <div className="article-navigation-desktop">
-        <h2>Садржај закона</h2>
-        <p>{headings.length} чланова</p>
-        {contents(true)}
+    <nav
+      ref={navigation}
+      className="article-navigation"
+      aria-label="Садржај закона"
+    >
+      <div className="reading-controls">
+        <span className="current-article" aria-label="Тренутни члан">
+          {headings[active]?.label ?? "Почетак документа"}
+        </span>
+        <div
+          className="reading-control-group"
+          aria-label="Кретање по члановима"
+        >
+          {previous ? (
+            <a
+              className={buttonVariants({ variant: "outline", size: "icon" })}
+              href={`#${previous.id}`}
+              onClick={(event) => follow(event, previous.id)}
+              aria-label="Претходни члан"
+              title={`Претходни: ${previous.label}`}
+            >
+              <ArrowLeft />
+            </a>
+          ) : (
+            <Button
+              variant="outline"
+              size="icon"
+              disabled
+              aria-label="Претходни члан"
+            >
+              <ArrowLeft />
+            </Button>
+          )}
+          {next ? (
+            <a
+              className={buttonVariants({ variant: "outline", size: "icon" })}
+              href={`#${next.id}`}
+              onClick={(event) => follow(event, next.id)}
+              aria-label="Следећи члан"
+              title={`Следећи: ${next.label}`}
+            >
+              <ArrowRight />
+            </a>
+          ) : (
+            <Button
+              variant="outline"
+              size="icon"
+              disabled
+              aria-label="Следећи члан"
+            >
+              <ArrowRight />
+            </Button>
+          )}
+        </div>
+        <div
+          className="reading-control-group"
+          role="group"
+          aria-label="Величина текста"
+        >
+          <Button
+            variant="outline"
+            size="icon"
+            aria-label="Смањи текст"
+            disabled={fontSize <= 16}
+            onClick={() => setFontSize((size) => size - 2)}
+          >
+            <Minus />
+          </Button>
+          <Button
+            variant="ghost"
+            size="sm"
+            aria-label="Врати подразумевану величину текста"
+            title="Врати подразумевану величину текста"
+            onClick={() => setFontSize(18)}
+          >
+            {fontSize} px
+          </Button>
+          <Button
+            variant="outline"
+            size="icon"
+            aria-label="Увећај текст"
+            disabled={fontSize >= 24}
+            onClick={() => setFontSize((size) => size + 2)}
+          >
+            <Plus />
+          </Button>
+        </div>
       </div>
-      <div className="article-navigation-mobile">
-        <Accordion>
-          <AccordionItem value="contents">
-            <AccordionTrigger>
-              Садржај закона · {headings.length} чланова
-            </AccordionTrigger>
-            <AccordionContent>{contents(false)}</AccordionContent>
-          </AccordionItem>
-        </Accordion>
-      </div>
+      <h2 className="article-navigation-desktop">Садржај закона</h2>
+      <Accordion value={desktop ? ["contents"] : open} onValueChange={setOpen}>
+        <AccordionItem value="contents">
+          <AccordionTrigger className="article-navigation-mobile">
+            Садржај закона · {headings.length} чланова
+          </AccordionTrigger>
+          <AccordionContent>
+            <form
+              onSubmit={(event) => {
+                event.preventDefault();
+                if (number && visible.length === 1) {
+                  window.location.hash = visible[0].id;
+                  jump(visible[0].id);
+                }
+              }}
+            >
+              <label htmlFor="article-number">Иди на члан</label>
+              <Input
+                id="article-number"
+                placeholder="Број члана, нпр. 12 или 12а"
+                value={query}
+                onChange={(event) => setQuery(event.target.value)}
+                aria-describedby="article-jump-help"
+              />
+              <p id="article-jump-help" className="article-jump-help">
+                Унесите број и притисните Enter, или изаберите члан испод.
+              </p>
+            </form>
+            <ul ref={list}>
+              {visible.map((heading) => (
+                <li key={heading.id}>
+                  <a
+                    href={`#${heading.id}`}
+                    aria-current={
+                      headings[active]?.id === heading.id
+                        ? "location"
+                        : undefined
+                    }
+                    onClick={(event) => follow(event, heading.id)}
+                  >
+                    {heading.label}
+                  </a>
+                </li>
+              ))}
+            </ul>
+            {!visible.length && <p role="status">Нема члана са тим бројем.</p>}
+          </AccordionContent>
+        </AccordionItem>
+      </Accordion>
     </nav>
   );
 }
