@@ -239,7 +239,7 @@ export function ArticleNavigation({
             size="sm"
             aria-label="Врати подразумевану величину текста"
             title="Врати подразумевану величину текста"
-            onClick={() => setFontSize(18)}
+            onClick={() => setFontSize(16)}
           >
             {fontSize} px
           </Button>
