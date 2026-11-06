@@ -18,7 +18,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { normalizeSearch } from "@/lib/search";
+import { normalizeSearch, searchLawTitles } from "@/lib/search";
 import { categoryLabel, lawPath, type Registry } from "@/lib/registry-types";
 import { useExplorerLocation } from "./explorer-location";
 import { documentUrl, explorerUrl } from "@/lib/explorer-url";
@@ -80,16 +80,6 @@ export function RegistryExplorer({ registry }: { registry: Registry }) {
       })),
     [corpus],
   );
-  const prepared = useMemo(
-    () =>
-      new Map(
-        records.map((r) => [
-          r.id,
-          normalizeSearch(`${r.title} ${r.citation} ${r.groups.join(" ")}`),
-        ]),
-      ),
-    [records],
-  );
   const normalized = normalizeSearch(query);
   useEffect(() => {
     if (mode !== "full" || !normalized) return;
@@ -133,26 +123,11 @@ export function RegistryExplorer({ registry }: { registry: Registry }) {
         );
         list = list.filter((r) => ids.has(r.id));
       } else {
-        const tokens = normalized.split(" ");
-        list = list.filter((r) =>
-          tokens.every((t) =>
-            prepared
-              .get(r.id)!
-              .split(" ")
-              .some((word) => (t.length < 3 ? word === t : word.startsWith(t))),
-          ),
-        );
-        list.sort(
-          (a, b) =>
-            Number(normalizeSearch(b.title) === normalized) -
-              Number(normalizeSearch(a.title) === normalized) ||
-            Number(normalizeSearch(b.title).includes(normalized)) -
-              Number(normalizeSearch(a.title).includes(normalized)),
-        );
+        list = searchLawTitles(list, normalized);
       }
     }
     return list;
-  }, [corpus, category, normalized, mode, fullResults, prepared]);
+  }, [corpus, category, normalized, mode, fullResults]);
   const searching = !!normalized;
   const showingMap = view === "map" && !searching;
   const size = showingMap ? 8 : 20;
@@ -312,7 +287,7 @@ export function RegistryExplorer({ registry }: { registry: Registry }) {
               </h2>
               <p>
                 {searching
-                  ? `${matches.length} докумената · ${mode === "full" ? "претрага фразе у тексту" : "претрага назива и библиографских података"}`
+                  ? `${matches.length} докумената · ${mode === "full" ? "претрага фразе у тексту" : "претрага назива закона"}`
                   : "Изаберите област и истражите законе који јој припадају."}
               </p>
             </div>

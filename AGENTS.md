@@ -1,5 +1,6 @@
 # Project conventions
 
+- Before starting work in a worktree, inspect its Git status and pull the latest remote changes with `git pull --ff-only`. If the branch has no upstream, fetch the remote and fast-forward from the task's intended remote base branch before editing. Preserve local changes; if synchronization fails or requires resolving divergence, report the blocker before proceeding with task edits.
 - Use shadcn/ui for interface primitives. Reuse the existing components and tokens; do not introduce new input, pill, select, or button styles unless explicitly requested.
 - Keep the interface and educational content in Serbian Cyrillic. Search must accept Cyrillic, Latin, and input without diacritics.
 - Scope is the Constitution and domestic laws in the current PIS national and education registers (458, 459). Exclude treaty register 206 and the historical Gazette archive. Do not exclude a current-register law solely because of its publication year.
