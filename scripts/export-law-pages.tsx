@@ -16,6 +16,7 @@ import {
 } from "../src/lib/registry";
 import { getLibrary } from "../src/lib/content";
 import { lawPath } from "../src/lib/registry-types";
+import { MobileNavigationLinks } from "../src/components/mobile-navigation-links";
 
 const root = path.resolve("out");
 const records = getRegistry().records;
@@ -33,6 +34,12 @@ $("script, link[as=script], link[rel=modulepreload]").remove();
 $("title").text("LAW_PAGE_TITLE_PLACEHOLDER");
 $('link[rel="canonical"]').attr("href", "LAW_PAGE_CANONICAL_PLACEHOLDER");
 $("main#main").replaceWith("LAW_PAGE_BODY_PLACEHOLDER");
+assert.equal(
+  $("nav.mobile-navigation").length,
+  1,
+  "Missing mobile navigation shell",
+);
+$("nav.mobile-navigation").replaceWith("LAW_PAGE_NAVIGATION_PLACEHOLDER");
 
 async function resetGeneratedDirectory(name: string) {
   assert.ok(["propisi", "zakoni", "reader-assets"].includes(name));
@@ -131,7 +138,12 @@ for (const [index, record] of records.entries()) {
     .replace("LAW_PAGE_CANONICAL_PLACEHOLDER", () =>
       escapeHtml(lawPath(record)),
     )
-    .replace("LAW_PAGE_BODY_PLACEHOLDER", () => body);
+    .replace("LAW_PAGE_BODY_PLACEHOLDER", () => body)
+    .replace("LAW_PAGE_NAVIGATION_PLACEHOLDER", () =>
+      renderToStaticMarkup(
+        <MobileNavigationLinks pathname={lawPath(record)} />,
+      ),
+    );
   await fs.writeFile(path.join(root, "propisi", `${record.slug}.html`), html);
   await writeRedirect(
     path.join(root, "propisi", `${record.id}.html`),

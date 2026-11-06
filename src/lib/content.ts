@@ -5,7 +5,13 @@ import { topics } from "./topics";
 import type { Library } from "./types";
 import { practiceSchema } from "./learning-schema";
 
-const topic = z.enum(["rad", "privatnost", "informacije", "ravnopravnost"]);
+const topic = z.enum([
+  "rad",
+  "privatnost",
+  "informacije",
+  "ravnopravnost",
+  "potrosaci",
+]);
 const lawSchema = z.object({
   id: z.string().regex(/^[a-z0-9-]+$/),
   title: z.string().min(1),

@@ -29,8 +29,11 @@ function start(): LearningProgress {
 }
 
 test("question bank has canonical source references, all formats and unique IDs", () => {
-  assert.equal(catalog.questions.length, 38);
-  assert.equal(new Set(catalog.questions.map((q) => q.id)).size, 38);
+  assert.ok(catalog.questions.length >= 58);
+  assert.equal(
+    new Set(catalog.questions.map((q) => q.id)).size,
+    catalog.questions.length,
+  );
   for (const t of learningTopics) {
     const questions = catalog.questions.filter((q) => q.topicId === t.id);
     assert.ok(questions.length >= 10);

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
+import Link from "next/link";
 import { LearningWorkspace } from "@/components/learning/learning-workspace";
 import { getLearningCatalog } from "@/lib/learning-content";
 
@@ -24,7 +25,7 @@ export default function LearningPage() {
         <p>
           Размислите, изаберите одговор и откријте правило.
           <br />
-          Кратке вежбе о послу, личним подацима и односу са државом.
+          Кратке вежбе о Уставу, послу, куповини, подацима и јавној власти.
         </p>
         <ol className="learning-steps" aria-label="Како учимо">
           <li>01 · Ситуација</li>
@@ -42,6 +43,23 @@ export default function LearningPage() {
       >
         <LearningWorkspace catalog={catalog} />
       </Suspense>
+      <noscript>
+        <div className="learning-workspace">
+          <p>
+            За интерактивне вежбе потребан је JavaScript.{" "}
+            <Link href="/vodic" className="text-link">
+              Водич за читање закона
+            </Link>{" "}
+            и{" "}
+            {/* Standalone laws use full document navigation. */}
+            {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
+            <a href="/zakoni/ustav" className="text-link">
+              цео текст Устава
+            </a>{" "}
+            доступни су и без њега.
+          </p>
+        </div>
+      </noscript>
     </main>
   );
 }

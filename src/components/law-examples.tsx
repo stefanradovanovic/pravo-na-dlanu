@@ -12,6 +12,7 @@ import {
 
 export type LawExamplesProps = {
   learningHref?: string;
+  heldExamples?: number;
   law: Pick<Law, "shortTitle">;
   examples: {
     article: Pick<Article, "id" | "number">;
@@ -19,7 +20,12 @@ export type LawExamplesProps = {
     sourceHref?: string;
   }[];
 };
-export function LawExamples({ law, examples, learningHref }: LawExamplesProps) {
+export function LawExamples({
+  law,
+  examples,
+  learningHref,
+  heldExamples = 0,
+}: LawExamplesProps) {
   return (
     <section
       id="primeri-iz-zivota"
@@ -47,27 +53,36 @@ export function LawExamples({ law, examples, learningHref }: LawExamplesProps) {
           </a>
         </div>
       )}
-      <Accordion>
-        <AccordionItem value="examples">
-          <AccordionTrigger>
-            Примери из живота · {examples.length}
-          </AccordionTrigger>
-          <AccordionContent>
-            <div className="examples-grid">
-              {examples.map(({ article, example, sourceHref }, index) => (
-                <ExampleCard
-                  key={`${article.id}-${index}`}
-                  article={article}
-                  example={example}
-                  law={law}
-                  index={index}
-                  sourceHref={sourceHref}
-                />
-              ))}
-            </div>
-          </AccordionContent>
-        </AccordionItem>
-      </Accordion>
+      {heldExamples > 0 && (
+        <p className="learning-notice">
+          Примери на поновној провери: {heldExamples}. Извор или веза ка члану
+          више не одговарају сачуваном објашњењу. Ти примери су привремено
+          изостављени; цео текст прописа остаје доступан.
+        </p>
+      )}
+      {examples.length > 0 && (
+        <Accordion>
+          <AccordionItem value="examples">
+            <AccordionTrigger>
+              Примери из живота · {examples.length}
+            </AccordionTrigger>
+            <AccordionContent>
+              <div className="examples-grid">
+                {examples.map(({ article, example, sourceHref }, index) => (
+                  <ExampleCard
+                    key={`${article.id}-${index}`}
+                    article={article}
+                    example={example}
+                    law={law}
+                    index={index}
+                    sourceHref={sourceHref}
+                  />
+                ))}
+              </div>
+            </AccordionContent>
+          </AccordionItem>
+        </Accordion>
+      )}
     </section>
   );
 }

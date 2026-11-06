@@ -58,5 +58,17 @@
     "sourceVersion": "Закон о забрани дискриминације: 22/2009-3, 52/2021-4",
     "accessedAt": "2026-11-05",
     "coverage": "learning"
+  },
+  {
+    "id": "zastita-potrosaca",
+    "title": "Закон о заштити потрошача",
+    "shortTitle": "Заштита потрошача",
+    "description": "Куповина за личне потребе, одустанак од куповине на даљину и рекламација.",
+    "topics": ["potrosaci"],
+    "sourceUrl": "https://www.pravno-informacioni-sistem.rs/viewAct/be0650dc-af85-4a3d-8539-4a4796616ee6",
+    "sourceName": "Правно-информациони систем Републике Србије",
+    "sourceVersion": "Закон о заштити потрошача: 35/2026-3",
+    "accessedAt": "2026-11-05",
+    "coverage": "learning"
   }
 ]
