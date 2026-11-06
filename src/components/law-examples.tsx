@@ -1,7 +1,6 @@
+"use client";
 import { Info } from "lucide-react";
-import { getLibrary } from "@/lib/content";
-import { findLearningLaw } from "@/lib/registry";
-import type { ArticleHeading } from "@/lib/document-navigation";
+import type { Article, Example, Law } from "@/lib/types";
 import { ExampleCard } from "./example-card";
 import {
   Accordion,
@@ -10,25 +9,15 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 
-export function LawExamples({
-  recordId,
-  headings,
-}: {
-  recordId: string;
-  headings: ArticleHeading[];
-}) {
-  const library = getLibrary();
-  const law = library.laws.find(
-    (item) => findLearningLaw(item.id)?.id === recordId,
-  );
-  if (!law) return null;
-  const examples = library.articles
-    .filter((article) => article.lawId === law.id)
-    .flatMap((article) =>
-      article.examples.map((example) => ({ article, example })),
-    );
-  if (!examples.length) return null;
-
+export type LawExamplesProps = {
+  law: Pick<Law, "shortTitle">;
+  examples: {
+    article: Pick<Article, "id" | "number">;
+    example: Example;
+    sourceHref?: string;
+  }[];
+};
+export function LawExamples({ law, examples }: LawExamplesProps) {
   return (
     <section
       id="primeri-iz-zivota"
@@ -52,20 +41,14 @@ export function LawExamples({
           </AccordionTrigger>
           <AccordionContent>
             <div className="examples-grid">
-              {examples.map(({ article, example }, index) => (
+              {examples.map(({ article, example, sourceHref }, index) => (
                 <ExampleCard
                   key={`${article.id}-${index}`}
                   article={article}
                   example={example}
                   law={law}
                   index={index}
-                  sourceHref={
-                    headings.some(
-                      (heading) => heading.id === `clan-${article.number}`,
-                    )
-                      ? `#clan-${article.number}`
-                      : undefined
-                  }
+                  sourceHref={sourceHref}
                 />
               ))}
             </div>

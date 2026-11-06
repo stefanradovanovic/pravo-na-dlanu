@@ -1,6 +1,5 @@
 "use client";
 import { useEffect } from "react";
-import Link from "next/link";
 
 /** Static hosting has no server redirects; preserve legacy query and article links. */
 export function LawUrlRedirect({ href }: { href: string }) {
@@ -12,7 +11,7 @@ export function LawUrlRedirect({ href }: { href: string }) {
   return (
     <main>
       <p>Пропис је премештен на читљиву адресу.</p>
-      <Link href={href}>Отворите пропис →</Link>
+      <a href={href}>Отворите пропис →</a>
     </main>
   );
 }

@@ -1,6 +1,5 @@
 "use client";
 import { useEffect, useSyncExternalStore } from "react";
-import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 
 import { safeReturnUrl } from "@/lib/explorer-url";
@@ -47,9 +46,9 @@ export function ReaderBackLink() {
     window.dispatchEvent(new Event("reader-return"));
   }, [href]);
   return (
-    <Link className="back-link" href={href}>
+    <a className="back-link" href={href}>
       <ArrowLeft size={16} />
       {href === "/" ? "Назад на све законе" : "Назад на резултате"}
-    </Link>
+    </a>
   );
 }

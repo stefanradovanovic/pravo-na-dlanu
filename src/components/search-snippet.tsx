@@ -1,6 +1,5 @@
 "use client";
 import { useEffect, useState } from "react";
-import Link from "next/link";
 import {
   findSearchSnippet,
   type SearchPassage,
@@ -69,9 +68,9 @@ export function SearchSnippet({
         <mark>{snippet.match}</mark>
         {snippet.after}
       </p>
-      <Link prefetch={false} href={documentUrl(href, returnTo, snippet.anchor)}>
+      <a href={documentUrl(href, returnTo, snippet.anchor)}>
         Прочитај у контексту →
-      </Link>
+      </a>
     </div>
   );
 }
