@@ -1,6 +1,5 @@
 "use client";
 import { useEffect, useMemo, useState } from "react";
-import { useRouter } from "next/navigation";
 import {
   ReactFlow,
   Background,
@@ -127,7 +126,6 @@ export function RegistryMap({
   onPage: (n: number) => void;
   returnTo: string;
 }) {
-  const router = useRouter();
   const [fullscreen, setFullscreen] = useState(false);
   useEffect(() => {
     const onKey = (event: KeyboardEvent) => {
@@ -158,7 +156,7 @@ export function RegistryMap({
           ...data,
           activate: () => {
             if (data.kind === "law")
-              router.push(documentUrl(data.target, returnTo));
+              window.location.assign(documentUrl(data.target, returnTo));
             else onCategory(data.target);
           },
         },
@@ -238,7 +236,7 @@ export function RegistryMap({
       });
     }
     return { nodes, edges };
-  }, [categories, category, records, total, onCategory, router, returnTo]);
+  }, [categories, category, records, total, onCategory, returnTo]);
   return (
     <div className={`map-shell${fullscreen ? " is-fullscreen" : ""}`}>
       <div className="map-labels">

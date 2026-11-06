@@ -269,14 +269,14 @@ export function RegistryExplorer({ registry }: { registry: Registry }) {
             <Scale size={25} />
             <h3>Све почиње Уставом.</h3>
             <p>Прочитајте цео Устав Републике Србије.</p>
-            <Link
+            <a
               href={documentUrl(
                 constitution ? lawPath(constitution) : "/zakoni/ustav",
                 returnTo,
               )}
             >
               Отвори документ <ArrowUpRight size={14} />
-            </Link>
+            </a>
           </div>
         </aside>
         <section className="explorer" aria-label="Истраживач закона">
@@ -360,12 +360,9 @@ export function RegistryExplorer({ registry }: { registry: Registry }) {
                       <BookOpen size={21} />
                       <div>
                         <h3>
-                          <Link
-                            prefetch={false}
-                            href={documentUrl(lawPath(r), returnTo)}
-                          >
+                          <a href={documentUrl(lawPath(r), returnTo)}>
                             {r.title}
-                          </Link>
+                          </a>
                         </h3>
                         <p>{r.categories.map(categoryLabel).join(" · ")}</p>
                         <small>

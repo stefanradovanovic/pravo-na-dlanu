@@ -26,6 +26,18 @@ for (const record of registry.records) {
     paths.has(`propisi/${record.slug}.html`),
     `Missing readable law page: ${record.slug}`,
   );
+  const html = await fs.readFile(
+    path.join(root, `propisi/${record.slug}.html`),
+    "utf8",
+  );
+  assert.ok(
+    !html.includes("self.__next_f"),
+    `Law still contains React navigation data: ${record.id}`,
+  );
+  assert.ok(
+    html.includes('type="module" src="/reader-assets/'),
+    `Missing reader controls: ${record.id}`,
+  );
   assert.ok(
     paths.has(`propisi/${record.id}.html`),
     `Missing static law page: ${record.id}`,
@@ -40,6 +52,10 @@ for (const record of registry.records) {
     assert.ok(paths.has(part.url.slice(1)), `Missing local scan: ${part.url}`);
   }
 }
+assert.ok(
+  !files.some(({ file }) => /^(propisi|zakoni)\/.*\.txt$/.test(file)),
+  "Standalone documents must not retain Next.js navigation payloads",
+);
 assert.ok(
   !files.some((file) => file.file.includes(".func/")),
   "Runtime functions are not part of this static deployment",

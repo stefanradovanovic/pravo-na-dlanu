@@ -5,13 +5,13 @@ import rehypeSanitize, { defaultSchema } from "rehype-sanitize";
 import { ArrowUpRight, BookOpen, Info } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { buttonVariants } from "@/components/ui/button";
-import { DocumentActions } from "./document-actions";
+import type { ReactNode } from "react";
+import { ReaderControl, type ReaderControlProps } from "@/reader/controls";
+import type { Facsimile } from "@/lib/registry-types";
 import { FacsimileReader } from "./facsimile-reader";
 import { categoryLabel, type RegistryRecord } from "@/lib/registry-types";
 import { articleHeadings } from "@/lib/document-navigation";
-import { ArticleNavigation } from "./article-navigation";
-import { ReaderBackLink } from "./reader-back-link";
-import { LawExamples } from "./law-examples";
+import { getLawExamples } from "@/lib/learning-examples";
 import { normalizeDocumentTitle } from "@/lib/document-presentation";
 import { remarkArticleSubtitles } from "@/lib/article-subtitles";
 const legalTextSchema = {
@@ -27,18 +27,23 @@ const legalTextSchema = {
 export function FullLawDocument({
   record,
   markdown,
+  renderControl = (props) => <ReaderControl {...props} />,
+  renderScan = (document) => <FacsimileReader document={document} />,
 }: {
   record: RegistryRecord;
   markdown: string;
+  renderControl?: (props: ReaderControlProps) => ReactNode;
+  renderScan?: (document: Facsimile) => ReactNode;
 }) {
   const sourceOnly = record.textStatus === "source-only";
   const scan = record.textStatus === "facsimile" ? record.facsimile : undefined;
   const displayMarkdown = normalizeDocumentTitle(markdown, record.title);
   const headings = articleHeadings(displayMarkdown);
+  const examples = getLawExamples(record.id, headings);
   const anchors = new Map(headings.map((heading) => [heading.line, heading]));
   return (
     <main id="main" className="reader full-document">
-      <ReaderBackLink />
+      {renderControl({ kind: "back" })}
       <div className="reader-heading">
         <div className="eyebrow">
           {record.documentType.toLocaleUpperCase("sr")}
@@ -88,7 +93,7 @@ export function FullLawDocument({
           Провери извор <ArrowUpRight size={14} />
         </a>
       </div>
-      <LawExamples recordId={record.id} headings={headings} />
+      {examples && renderControl({ kind: "examples", ...examples })}
       <div className="document-toolbar">
         <div>
           <BookOpen size={16} />
@@ -100,10 +105,10 @@ export function FullLawDocument({
                 : "Непрекинут текст документа"}
           </span>
         </div>
-        <DocumentActions printable={!scan} />
+        {renderControl({ kind: "actions", printable: !scan })}
       </div>
       {scan ? (
-        <FacsimileReader document={scan} />
+        renderScan(scan)
       ) : sourceOnly ? (
         <section className="pdf-source">
           <BookOpen size={32} />
@@ -130,7 +135,8 @@ export function FullLawDocument({
         </section>
       ) : (
         <div className={headings.length ? "law-reading-layout" : undefined}>
-          <ArticleNavigation headings={headings} />
+          {headings.length > 0 &&
+            renderControl({ kind: "navigation", headings })}
           <article id="tekst-zakona" className="legal-text complete-legal-text">
             <ReactMarkdown
               remarkPlugins={[remarkGfm, remarkArticleSubtitles]}

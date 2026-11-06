@@ -1,12 +1,15 @@
 import { defineConfig, devices } from "@playwright/test";
 
+const port = Number(process.env.PLAYWRIGHT_PORT || 3027);
+const baseURL = `http://127.0.0.1:${port}`;
+
 export default defineConfig({
   testDir: "./tests/e2e",
   timeout: 60_000,
   expect: { timeout: 15_000 },
   workers: 1,
   use: {
-    baseURL: "http://127.0.0.1:3027",
+    baseURL,
     channel: process.env.PLAYWRIGHT_CHANNEL || undefined,
     trace: "retain-on-failure",
   },
@@ -23,8 +26,8 @@ export default defineConfig({
     },
   ],
   webServer: {
-    command: "npx serve out --listen 3027",
-    url: "http://127.0.0.1:3027",
+    command: `npx serve out --listen ${port}`,
+    url: baseURL,
     reuseExistingServer: !process.env.CI,
   },
 });

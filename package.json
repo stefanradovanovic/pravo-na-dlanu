@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "predev": "npm run pdf:prepare && npm run search:index",
-    "build": "npm run pdf:prepare && npm run search:index && next build",
+    "build": "npm run pdf:prepare && npm run search:index && tsx scripts/build-static.ts",
     "start": "serve out",
     "lint": "eslint",
     "typecheck": "next typegen && tsc --noEmit",
@@ -17,7 +17,8 @@
     "laws:audit": "tsx scripts/audit-laws.ts",
     "laws:scans": "tsx scripts/import-facsimiles.ts",
     "hosting:check": "tsx scripts/check-hosting.ts",
-    "pdf:prepare": "tsx scripts/prepare-pdf-reader.ts"
+    "pdf:prepare": "tsx scripts/prepare-pdf-reader.ts",
+    "build:measure": "tsx scripts/measure-build.ts"
   },
   "engines": {
     "node": "24.x"
@@ -50,6 +51,7 @@
     "@types/react-dom": "^19",
     "@types/turndown": "^5.0.6",
     "cheerio": "^1.2.0",
+    "esbuild": "^0.28.2",
     "eslint": "^9",
     "eslint-config-next": "16.4.5",
     "fflate": "^0.8.3",

@@ -17,7 +17,9 @@ export function SiteHeader() {
       </Link>
       <nav aria-label="Главна навигација">
         <Link href="/">Истражи право</Link>
-        <Link href="/zakoni/ustav">Устав Србије</Link>
+        {/* Standalone law documents require a full browser navigation. */}
+        {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
+        <a href="/zakoni/ustav">Устав Србије</a>
         <Link href="/o-projektu">О пројекту</Link>
       </nav>
       <a

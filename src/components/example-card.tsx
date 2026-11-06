@@ -1,6 +1,5 @@
 "use client";
 import { useState } from "react";
-import Link from "next/link";
 import { ArrowUpRight, Check, Lightbulb, RotateCcw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -14,8 +13,8 @@ export function ExampleCard({
   sourceHref,
 }: {
   example: Example;
-  article: Article;
-  law: Law;
+  article: Pick<Article, "number">;
+  law: Pick<Law, "shortTitle">;
   index?: number;
   sourceHref?: string;
 }) {
@@ -64,10 +63,10 @@ export function ExampleCard({
         </div>
       )}
       {sourceHref ? (
-        <Link className="example-source" href={sourceHref}>
+        <a className="example-source" href={sourceHref}>
           {law.shortTitle} · правило из члана {article.number}
           <ArrowUpRight size={15} />
-        </Link>
+        </a>
       ) : (
         <p className="example-source">
           {law.shortTitle} · правило из члана {article.number}
