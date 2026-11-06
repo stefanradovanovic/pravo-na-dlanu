@@ -85,6 +85,92 @@ test("article navigation and permalink work by keyboard", async ({ page }) => {
   ).toBe(true);
 });
 
+test("reader controls follow scrolling, jump by keyboard and keep headings visible", async ({
+  page,
+}) => {
+  await page.goto("/propisi/0092c8ed-9252-4dcf-951e-c6488818f2b3");
+  const nav = page.getByRole("navigation", { name: "Садржај закона" });
+  const contents = nav.getByRole("button", { name: /Садржај закона/ });
+  await contents.click();
+  const input = nav.getByRole("textbox", { name: "Иди на члан" });
+  await input.fill("9999");
+  await expect(nav.getByRole("status")).toHaveText("Нема члана са тим бројем.");
+  await input.fill("clan 12");
+  await input.press("Enter");
+  await expect(page).toHaveURL(/#clan-12$/);
+  await expect(contents).toHaveAttribute("aria-expanded", "false");
+  await expect(nav.locator(".current-article")).toHaveText("Члан 12.");
+  await expect(page.locator("#clan-12")).toBeFocused();
+  await expect
+    .poll(async () => {
+      const heading = await page.locator("#clan-12").boundingBox();
+      const panel = await nav.boundingBox();
+      return heading!.y >= panel!.y + panel!.height;
+    })
+    .toBe(true);
+  await nav.getByRole("link", { name: "Следећи члан", exact: true }).click();
+  await expect(page).toHaveURL(/#clan-13$/);
+  await expect(nav.locator(".current-article")).toHaveText("Члан 13.");
+  await page.goBack();
+  await expect(page).toHaveURL(/#clan-12$/);
+  await expect(nav.locator(".current-article")).toHaveText("Члан 12.");
+  await page.reload();
+  await expect(nav.locator(".current-article")).toHaveText("Члан 12.");
+  // Native scrolling must update the current article without rewriting the URL.
+  await page
+    .locator("#clan-20")
+    .evaluate((element) => element.scrollIntoView());
+  await expect(nav.locator(".current-article")).toHaveText("Члан 20.");
+  await expect(page).toHaveURL(/#clan-12$/);
+  await expect(nav).toBeInViewport();
+  await contents.click();
+  await input.fill("1");
+  await input.press("Enter");
+  await expect(
+    nav.getByRole("button", { name: "Претходни члан", exact: true }),
+  ).toBeDisabled();
+  await contents.click();
+  await input.fill("41");
+  await input.press("Enter");
+  await expect(
+    nav.getByRole("button", { name: "Следећи члан", exact: true }),
+  ).toBeDisabled();
+  await nav.getByRole("link", { name: "Претходни члан", exact: true }).click();
+  await expect(nav.locator(".current-article")).toHaveText("Члан 40.");
+  await page.goBack();
+  await expect(nav.locator(".current-article")).toHaveText("Члан 41.");
+});
+
+test("reader text size is bounded, resettable and does not change the source", async ({
+  page,
+}) => {
+  await page.goto("/propisi/0092c8ed-9252-4dcf-951e-c6488818f2b3#clan-12");
+  const article = page.locator("#tekst-zakona");
+  const source = await article.textContent();
+  const larger = page.getByRole("button", { name: "Увећај текст" });
+  await expect(article).toHaveCSS("font-size", "17px");
+  for (let step = 0; step < 3; step++) await larger.click();
+  await expect(article).toHaveCSS("font-size", "23px");
+  await expect(larger).toBeDisabled();
+  const smaller = page.getByRole("button", { name: "Смањи текст" });
+  for (let step = 0; step < 4; step++) await smaller.click();
+  await expect(article).toHaveCSS("font-size", "15px");
+  await expect(smaller).toBeDisabled();
+  await page
+    .getByRole("button", { name: "Врати подразумевану величину текста" })
+    .click();
+  await expect(article).toHaveCSS("font-size", "17px");
+  expect(await article.textContent()).toBe(source);
+  expect(
+    await page.evaluate(
+      () => document.documentElement.scrollWidth <= window.innerWidth,
+    ),
+  ).toBe(true);
+  await page.emulateMedia({ media: "print" });
+  await expect(page.locator(".article-navigation")).toBeHidden();
+  await expect(article).toHaveCSS("font-size", "16px");
+});
+
 test("query, category, view and pagination survive reload and history navigation", async ({
   page,
 }) => {

@@ -1619,8 +1619,8 @@ a {
   font-size: 10px;
 }
 .complete-legal-text {
-  font-size: 17px;
-  line-height: 1.9;
+  font-size: var(--reader-font-size, 17px);
+  line-height: 1.65;
   overflow-wrap: anywhere;
   margin-top: 40px;
 }
@@ -1817,11 +1817,40 @@ a {
   margin-top: 18px;
 }
 .article-navigation {
+  position: sticky;
+  top: 12px;
+  z-index: 20;
   margin-block: 24px;
   padding: 16px;
   border: 1px solid var(--border);
   border-radius: var(--radius);
   background: var(--card);
+}
+.reading-controls,
+.reading-control-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.reading-controls {
+  flex-wrap: wrap;
+}
+.current-article {
+  flex: 1;
+  min-width: 120px;
+  font-weight: 600;
+}
+.article-jump-help {
+  margin-top: 8px;
+  color: var(--muted-foreground);
+  font-size: 12px;
+}
+.article-navigation [data-slot="accordion-content"] {
+  animation: none;
+}
+.article-navigation a[aria-current="location"] {
+  font-weight: 700;
+  color: var(--primary);
 }
 .article-navigation label {
   display: block;
@@ -1831,17 +1860,17 @@ a {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
   gap: 12px;
-  max-height: 280px;
+  max-height: min(280px, 30dvh);
   overflow-y: auto;
   margin-top: 16px;
 }
-.article-navigation a,
+.article-navigation li a,
 .search-snippet a {
   text-decoration: underline;
   text-underline-offset: 3px;
 }
 .complete-legal-text h2[id] {
-  scroll-margin-top: 100px;
+  scroll-margin-top: var(--reader-navigation-offset, 180px);
 }
 .complete-legal-text h2:target {
   background: var(--accent);
