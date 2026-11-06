@@ -262,7 +262,7 @@ export function RegistryExplorer({ registry }: { registry: Registry }) {
             <p>Прочитајте цео Устав Републике Србије.</p>
             <Link
               href={documentUrl(
-                constitution ? lawPath(constitution.id) : "/zakoni/ustav",
+                constitution ? lawPath(constitution) : "/zakoni/ustav",
                 returnTo,
               )}
             >
@@ -353,7 +353,7 @@ export function RegistryExplorer({ registry }: { registry: Registry }) {
                         <h3>
                           <Link
                             prefetch={false}
-                            href={documentUrl(lawPath(r.id), returnTo)}
+                            href={documentUrl(lawPath(r), returnTo)}
                           >
                             {r.title}
                           </Link>
@@ -375,6 +375,7 @@ export function RegistryExplorer({ registry }: { registry: Registry }) {
                         {mode === "full" && searching && (
                           <SearchSnippet
                             id={r.id}
+                            href={lawPath(r)}
                             query={normalized}
                             returnTo={returnTo}
                           />

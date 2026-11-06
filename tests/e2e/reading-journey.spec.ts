@@ -63,7 +63,7 @@ test("full-text search opens a Cyrillic passage and returns to the same search",
 });
 
 test("article navigation and permalink work by keyboard", async ({ page }) => {
-  await page.goto("/propisi/0092c8ed-9252-4dcf-951e-c6488818f2b3");
+  await page.goto("/propisi/zakon-o-sanitarnom-nadzoru");
   const summary = page.getByRole("button", { name: /Садржај закона/ });
   if (await summary.isVisible()) {
     await summary.focus();
@@ -90,7 +90,7 @@ test("article navigation and permalink work by keyboard", async ({ page }) => {
 test("reader controls follow scrolling, jump by keyboard and keep headings visible", async ({
   page,
 }) => {
-  await page.goto("/propisi/0092c8ed-9252-4dcf-951e-c6488818f2b3");
+  await page.goto("/propisi/zakon-o-sanitarnom-nadzoru");
   const nav = page.getByRole("navigation", { name: "Садржај закона" });
   const contents = nav.getByRole("button", { name: /Садржај закона/ });
   if (await contents.isVisible()) await contents.click();
@@ -149,7 +149,7 @@ test("reader controls follow scrolling, jump by keyboard and keep headings visib
 test("reader text size is bounded, resettable and does not change the source", async ({
   page,
 }) => {
-  await page.goto("/propisi/0092c8ed-9252-4dcf-951e-c6488818f2b3#clan-12");
+  await page.goto("/propisi/zakon-o-sanitarnom-nadzoru#clan-12");
   const article = page.locator("#tekst-zakona");
   const source = await article.textContent();
   await expect(article).toHaveCSS("line-height", "27px");
@@ -229,7 +229,7 @@ test("snippet fetch failure keeps the whole law accessible", async ({
 test("contents follow the current article while scrolling", async ({
   page,
 }) => {
-  await page.goto("/propisi/694cbad4-4727-4f93-b894-0b100b62c808#clan-104");
+  await page.goto("/propisi/zakon-o-radu#clan-104");
   const desktop = page.viewportSize()!.width >= 1024;
   if (!desktop) {
     await page.getByRole("button", { name: /Садржај закона/ }).click();

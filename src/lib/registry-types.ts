@@ -1,3 +1,4 @@
+import { normalizeSearch } from "./search";
 export type Facsimile = {
   sourceUrl: string;
   sourceSha256: string;
@@ -9,6 +10,7 @@ export type Facsimile = {
 };
 export type RegistryRecord = {
   id: string;
+  slug?: string;
   registryId: string;
   title: string;
   citation: string;
@@ -64,6 +66,32 @@ export function categoryLabel(value: string) {
   const label = value.replace(/^[IVXLCDM]+\s+/u, "").toLocaleLowerCase("sr");
   return label.charAt(0).toLocaleUpperCase("sr") + label.slice(1);
 }
-export function lawPath(id: string) {
-  return `/propisi/${id}`;
+export function lawSlug(title: string) {
+  const normalized = normalizeSearch(title).replaceAll(" ", "-");
+  // Keep exported filenames portable, even for unusually long official titles.
+  return normalized.length <= 100
+    ? normalized
+    : normalized.slice(0, 100).replace(/-[^-]*$/, "");
+}
+export function withLawSlugs<T extends { id: string; title: string }>(
+  records: T[],
+) {
+  const counts = new Map<string, number>();
+  for (const record of records) {
+    const slug = lawSlug(record.title);
+    counts.set(slug, (counts.get(slug) ?? 0) + 1);
+  }
+  return records.map((record) => {
+    const base = lawSlug(record.title);
+    return {
+      ...record,
+      slug:
+        base && counts.get(base) === 1
+          ? base
+          : (base || "propis") + "-" + record.id,
+    };
+  });
+}
+export function lawPath(record: Pick<RegistryRecord, "id" | "title" | "slug">) {
+  return "/propisi/" + (record.slug ?? lawSlug(record.title));
 }

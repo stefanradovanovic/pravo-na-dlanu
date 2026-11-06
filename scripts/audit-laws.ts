@@ -127,7 +127,10 @@ export function auditLaws() {
       .readFileSync(path.join("content/corpus", r.id + ".md"), "utf8")
       .replace(/\r\n/g, "\n");
     const frontmatter = JSON.parse(raw.slice(4, raw.indexOf("\n---\n", 4)));
-    assert.deepEqual(frontmatter, r, `Metadata mismatch: ${r.id}`);
+    // URL slugs are derived presentation metadata, not part of the source document.
+    const sourceRecord = { ...r };
+    delete sourceRecord.slug;
+    assert.deepEqual(frontmatter, sourceRecord, `Metadata mismatch: ${r.id}`);
     if (r.sourceFormat === "pdf") {
       assert.ok(r.sourceUrl.endsWith("/viewPdf/" + r.registryId));
     } else {
