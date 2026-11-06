@@ -11,11 +11,13 @@ export function ExampleCard({
   article,
   law,
   index = 0,
+  sourceHref,
 }: {
   example: Example;
   article: Article;
   law: Law;
   index?: number;
+  sourceHref?: string;
 }) {
   const [answer, setAnswer] = useState<boolean | null>(null);
   return (
@@ -61,10 +63,16 @@ export function ExampleCard({
           </Button>
         </div>
       )}
-      <Link className="example-source" href={`/zakoni/${law.id}`}>
-        {law.shortTitle} · правило из члана {article.number}
-        <ArrowUpRight size={15} />
-      </Link>
+      {sourceHref ? (
+        <Link className="example-source" href={sourceHref}>
+          {law.shortTitle} · правило из члана {article.number}
+          <ArrowUpRight size={15} />
+        </Link>
+      ) : (
+        <p className="example-source">
+          {law.shortTitle} · правило из члана {article.number}
+        </p>
+      )}
     </article>
   );
 }

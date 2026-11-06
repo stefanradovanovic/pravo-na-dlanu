@@ -20,9 +20,33 @@ export function ArticleNavigation({
   const [query, setQuery] = useState("");
   const [open, setOpen] = useState<string[]>([]);
   const [active, setActive] = useState(-1);
-  const [fontSize, setFontSize] = useState(17);
+  const [fontSize, setFontSize] = useState(18);
+  const [desktop, setDesktop] = useState(false);
+  const list = useRef<HTMLUListElement>(null);
   const navigation = useRef<HTMLElement>(null);
   const selectedPosition = useRef<{ index: number; y: number } | null>(null);
+
+  useEffect(() => {
+    const media = window.matchMedia("(min-width: 1024px)");
+    const update = () => setDesktop(media.matches);
+    update();
+    media.addEventListener("change", update);
+    return () => media.removeEventListener("change", update);
+  }, []);
+
+  useEffect(() => {
+    const container = list.current;
+    const link = container?.querySelector<HTMLElement>(
+      '[aria-current="location"]',
+    );
+    if (!desktop || !container || !link) return;
+    const bounds = container.getBoundingClientRect();
+    const item = link.getBoundingClientRect();
+    if (item.top < bounds.top || item.bottom > bounds.bottom) {
+      container.scrollTop +=
+        item.top - bounds.top - container.clientHeight / 2 + item.height / 2;
+    }
+  }, [active, desktop, query]);
 
   useEffect(() => {
     const nav = navigation.current;
@@ -34,7 +58,7 @@ export function ArticleNavigation({
     let frame = 0;
     const measure = () => {
       frame = 0;
-      const offset = nav.offsetHeight + 24;
+      const offset = desktop ? 100 : nav.offsetHeight + 24;
       reader.style.setProperty("--reader-navigation-offset", `${offset}px`);
       // Near the end, a short article cannot always reach the top of the viewport.
       // Keep the explicitly selected article until the reader scrolls away.
@@ -89,13 +113,15 @@ export function ArticleNavigation({
       window.removeEventListener("hashchange", followHash);
       reader.style.removeProperty("--reader-navigation-offset");
     };
-  }, [headings]);
+  }, [headings, desktop]);
 
   useEffect(() => {
     const reader = navigation.current?.closest<HTMLElement>(".full-document");
     reader?.style.setProperty("--reader-font-size", `${fontSize}px`);
+    reader?.style.setProperty("--reader-line-height", `${fontSize * 1.5}px`);
     return () => {
       reader?.style.removeProperty("--reader-font-size");
+      reader?.style.removeProperty("--reader-line-height");
     };
   }, [fontSize]);
 
@@ -116,7 +142,7 @@ export function ArticleNavigation({
         .closest<HTMLElement>(".full-document")
         ?.style.setProperty(
           "--reader-navigation-offset",
-          `${nav.offsetHeight + 24}px`,
+          `${desktop ? 100 : nav.offsetHeight + 24}px`,
         );
       target.scrollIntoView({ block: "start" });
       target.focus({ preventScroll: true });
@@ -203,7 +229,7 @@ export function ArticleNavigation({
             variant="outline"
             size="icon"
             aria-label="Смањи текст"
-            disabled={fontSize <= 15}
+            disabled={fontSize <= 16}
             onClick={() => setFontSize((size) => size - 2)}
           >
             <Minus />
@@ -213,7 +239,7 @@ export function ArticleNavigation({
             size="sm"
             aria-label="Врати подразумевану величину текста"
             title="Врати подразумевану величину текста"
-            onClick={() => setFontSize(17)}
+            onClick={() => setFontSize(18)}
           >
             {fontSize} px
           </Button>
@@ -221,16 +247,17 @@ export function ArticleNavigation({
             variant="outline"
             size="icon"
             aria-label="Увећај текст"
-            disabled={fontSize >= 23}
+            disabled={fontSize >= 24}
             onClick={() => setFontSize((size) => size + 2)}
           >
             <Plus />
           </Button>
         </div>
       </div>
-      <Accordion value={open} onValueChange={setOpen}>
+      <h2 className="article-navigation-desktop">Садржај закона</h2>
+      <Accordion value={desktop ? ["contents"] : open} onValueChange={setOpen}>
         <AccordionItem value="contents">
-          <AccordionTrigger>
+          <AccordionTrigger className="article-navigation-mobile">
             Садржај закона · {headings.length} чланова
           </AccordionTrigger>
           <AccordionContent>
@@ -255,7 +282,7 @@ export function ArticleNavigation({
                 Унесите број и притисните Enter, или изаберите члан испод.
               </p>
             </form>
-            <ul>
+            <ul ref={list}>
               {visible.map((heading) => (
                 <li key={heading.id}>
                   <a
