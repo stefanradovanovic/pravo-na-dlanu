@@ -14,7 +14,7 @@ import {
   SlidersHorizontal,
 } from "lucide-react";
 import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { normalizeSearch, searchLawTitles } from "@/lib/search";
@@ -162,6 +162,15 @@ export function RegistryExplorer({ registry }: { registry: Registry }) {
           <br className="desktop-break" /> Истражите правне области и прочитајте
           сваки закон као цео документ.
         </p>
+        <div className="home-learning-link">
+          <Link
+            href="/ucenje"
+            className={buttonVariants({ variant: "outline", size: "lg" })}
+          >
+            <BookOpen /> Учи и провери знање <ArrowUpRight />
+          </Link>
+          <span>Кратки квизови из свакодневног живота</span>
+        </div>
         <div className="search-wrap">
           <Search size={21} />
           <Input

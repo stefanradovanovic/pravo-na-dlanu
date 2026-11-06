@@ -2,6 +2,7 @@
 import { Info } from "lucide-react";
 import type { Article, Example, Law } from "@/lib/types";
 import { ExampleCard } from "./example-card";
+import { buttonVariants } from "./ui/button";
 import {
   Accordion,
   AccordionContent,
@@ -10,6 +11,7 @@ import {
 } from "@/components/ui/accordion";
 
 export type LawExamplesProps = {
+  learningHref?: string;
   law: Pick<Law, "shortTitle">;
   examples: {
     article: Pick<Article, "id" | "number">;
@@ -17,7 +19,7 @@ export type LawExamplesProps = {
     sourceHref?: string;
   }[];
 };
-export function LawExamples({ law, examples }: LawExamplesProps) {
+export function LawExamples({ law, examples, learningHref }: LawExamplesProps) {
   return (
     <section
       id="primeri-iz-zivota"
@@ -34,6 +36,17 @@ export function LawExamples({ law, examples }: LawExamplesProps) {
           обратите се квалификованом правном стручњаку.
         </p>
       </div>
+      {learningHref && (
+        <div className="reader-learning-link">
+          <span>Примените правило на кратку животну ситуацију.</span>
+          <a
+            href={learningHref}
+            className={buttonVariants({ variant: "outline" })}
+          >
+            Учи и провери знање →
+          </a>
+        </div>
+      )}
       <Accordion>
         <AccordionItem value="examples">
           <AccordionTrigger>

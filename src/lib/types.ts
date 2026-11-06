@@ -1,3 +1,4 @@
+import type { PracticeContent } from "./learning-schema";
 export type TopicId = "rad" | "privatnost" | "informacije" | "ravnopravnost";
 export type Topic = {
   id: TopicId;
@@ -34,5 +35,6 @@ export type Article = {
   explanation: string;
   related: string[];
   examples: Example[];
+  practice?: PracticeContent;
 };
 export type Library = { laws: Law[]; articles: Article[]; topics: Topic[] };
