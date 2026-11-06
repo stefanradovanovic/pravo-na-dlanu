@@ -6,6 +6,27 @@ test.beforeEach(async ({ page }) => {
   });
 });
 
+test("exact title search excludes unrelated laws and survives reload", async ({
+  page,
+}) => {
+  await page.goto("/?q=zakon+o+radu&view=list");
+  const rows = page.locator(".law-list-row");
+  await expect(rows).toHaveCount(1);
+  await expect(rows.getByRole("heading")).toHaveText("Закон о раду");
+  await page
+    .getByRole("textbox", { name: "Претрага закона" })
+    .fill("Закон о раду");
+  await expect(rows).toHaveCount(1);
+  await expect(rows.getByRole("heading")).toHaveText("Закон о раду");
+  await page.reload();
+  await expect(rows).toHaveCount(1);
+  await page.getByRole("textbox", { name: "Претрага закона" }).fill("potrosac");
+  await expect(rows.first().getByRole("heading")).toContainText(/потрошач/i);
+  for (const title of await rows.getByRole("heading").allTextContents()) {
+    expect(title.toLowerCase()).toContain("потрошач");
+  }
+});
+
 test("full-text search opens a Cyrillic passage and returns to the same search", async ({
   page,
 }) => {
