@@ -14,7 +14,7 @@
   "register": 458,
   "sourceUrl": "https://www.pravno-informacioni-sistem.rs/viewAct/6db6e03f-e4c9-4e3e-bf6d-4aac3def0c8f",
   "contentUrl": "https://reg.pravno-informacioni-sistem.rs/api/viewAct/6db6e03f-e4c9-4e3e-bf6d-4aac3def0c8f?lawActId=422986",
-  "fetchedAt": "2026-11-09T12:57:37.482Z",
+  "fetchedAt": "2026-11-10T12:44:04.136Z",
   "sha256": "5256d365d09eb94630225f1c2bab9143925a2fda4553008254fa5a12dec4395f",
   "characters": 2981,
   "hasTables": false,
