@@ -2,6 +2,7 @@
 
 import { ArticleNavigation } from "@/components/article-navigation";
 import { DocumentActions } from "@/components/document-actions";
+import { ReaderSettings } from "@/components/reader-settings";
 import { ReaderBackLink } from "@/components/reader-back-link";
 import { LawExamples, type LawExamplesProps } from "@/components/law-examples";
 import type { ArticleHeading } from "@/lib/document-navigation";
@@ -9,6 +10,7 @@ import type { ArticleHeading } from "@/lib/document-navigation";
 export type ReaderControlProps =
   | { kind: "navigation"; headings: ArticleHeading[] }
   | { kind: "actions"; printable: boolean }
+  | { kind: "settings" }
   | { kind: "back" }
   | ({ kind: "examples" } & LawExamplesProps);
 
@@ -19,6 +21,8 @@ export function ReaderControl(props: ReaderControlProps) {
       return <ArticleNavigation headings={props.headings} />;
     case "actions":
       return <DocumentActions printable={props.printable} />;
+    case "settings":
+      return <ReaderSettings />;
     case "back":
       return <ReaderBackLink />;
     case "examples":

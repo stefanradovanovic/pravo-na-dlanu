@@ -8,7 +8,7 @@ test("article captions sit beside their article number at the reader font size",
   await expect(heading).toContainText("Члан 2. — Носиоци суверености");
   await expect(heading.locator(".article-subtitle")).toHaveCSS(
     "font-size",
-    "16px",
+    "18px",
   );
   await expect(heading.locator(".article-subtitle")).toHaveCSS(
     "font-weight",

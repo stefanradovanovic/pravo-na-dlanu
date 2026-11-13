@@ -14,12 +14,23 @@ export function DocumentActions({ printable = true }: { printable?: boolean }) {
   }
   return (
     <div className="document-actions">
-      <Button variant="outline" size="sm" onClick={copy}>
-        {message === "Линк је копиран" ? <Check /> : <Copy />} Копирај линк
+      <Button
+        variant="outline"
+        size="sm"
+        onClick={copy}
+        aria-label="Копирај линк"
+      >
+        {message === "Линк је копиран" ? <Check /> : <Copy />}{" "}
+        <span className="document-action-label">Копирај линк</span>
       </Button>
       {printable && (
-        <Button variant="outline" size="sm" onClick={() => window.print()}>
-          <Printer /> Штампај
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => window.print()}
+          aria-label="Штампај"
+        >
+          <Printer /> <span className="document-action-label">Штампај</span>
         </Button>
       )}
       <span role="status">{message}</span>

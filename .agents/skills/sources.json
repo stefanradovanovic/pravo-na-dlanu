@@ -1,0 +1,137 @@
+{
+  "installedOn": "2026-11-13",
+  "scope": "project",
+  "skills": [
+    {
+      "name": "emil-design-eng",
+      "repository": "https://github.com/emilkowalski/skills",
+      "commit": "0f2e23b32bb1265e84cff8d3e75785fec953fb1b",
+      "path": "skills/emil-design-eng",
+      "license": "MIT"
+    },
+    {
+      "name": "mobile-native",
+      "repository": "https://github.com/emilkowalski/skills",
+      "commit": "0f2e23b32bb1265e84cff8d3e75785fec953fb1b",
+      "path": "skills/mobile-native",
+      "license": "MIT"
+    },
+    {
+      "name": "break-ui",
+      "repository": "https://github.com/emilkowalski/skills",
+      "commit": "0f2e23b32bb1265e84cff8d3e75785fec953fb1b",
+      "path": "skills/break-ui",
+      "license": "MIT"
+    },
+    {
+      "name": "ui-sdk",
+      "repository": "https://github.com/vercel-labs/ui",
+      "commit": "724a7d6c2d0ca1251a8eb6172462ae220c484714",
+      "path": "packages/core/skills/ui-sdk",
+      "license": "Apache-2.0"
+    },
+    {
+      "name": "animate",
+      "repository": "https://github.com/emilkowalski/skills",
+      "commit": "0f2e23b32bb1265e84cff8d3e75785fec953fb1b",
+      "path": "skills/animate",
+      "license": "MIT"
+    },
+    {
+      "name": "animation-performance",
+      "repository": "https://github.com/emilkowalski/skills",
+      "commit": "0f2e23b32bb1265e84cff8d3e75785fec953fb1b",
+      "path": "skills/animation-performance",
+      "license": "MIT"
+    },
+    {
+      "name": "animation-vocabulary",
+      "repository": "https://github.com/emilkowalski/skills",
+      "commit": "0f2e23b32bb1265e84cff8d3e75785fec953fb1b",
+      "path": "skills/animation-vocabulary",
+      "license": "MIT"
+    },
+    {
+      "name": "apple-design",
+      "repository": "https://github.com/emilkowalski/skills",
+      "commit": "0f2e23b32bb1265e84cff8d3e75785fec953fb1b",
+      "path": "skills/apple-design",
+      "license": "MIT"
+    },
+    {
+      "name": "ask-sonner",
+      "repository": "https://github.com/emilkowalski/skills",
+      "commit": "0f2e23b32bb1265e84cff8d3e75785fec953fb1b",
+      "path": "skills/ask-sonner",
+      "license": "MIT"
+    },
+    {
+      "name": "choreograph",
+      "repository": "https://github.com/emilkowalski/skills",
+      "commit": "0f2e23b32bb1265e84cff8d3e75785fec953fb1b",
+      "path": "skills/choreograph",
+      "license": "MIT"
+    },
+    {
+      "name": "find-animation-opportunities",
+      "repository": "https://github.com/emilkowalski/skills",
+      "commit": "0f2e23b32bb1265e84cff8d3e75785fec953fb1b",
+      "path": "skills/find-animation-opportunities",
+      "license": "MIT"
+    },
+    {
+      "name": "gestures",
+      "repository": "https://github.com/emilkowalski/skills",
+      "commit": "0f2e23b32bb1265e84cff8d3e75785fec953fb1b",
+      "path": "skills/gestures",
+      "license": "MIT"
+    },
+    {
+      "name": "improve-animations",
+      "repository": "https://github.com/emilkowalski/skills",
+      "commit": "0f2e23b32bb1265e84cff8d3e75785fec953fb1b",
+      "path": "skills/improve-animations",
+      "license": "MIT"
+    },
+    {
+      "name": "learn-taste",
+      "repository": "https://github.com/emilkowalski/skills",
+      "commit": "0f2e23b32bb1265e84cff8d3e75785fec953fb1b",
+      "path": "skills/learn-taste",
+      "license": "MIT"
+    },
+    {
+      "name": "pick-ui-library",
+      "repository": "https://github.com/emilkowalski/skills",
+      "commit": "0f2e23b32bb1265e84cff8d3e75785fec953fb1b",
+      "path": "skills/pick-ui-library",
+      "license": "MIT"
+    },
+    {
+      "name": "prototype",
+      "repository": "https://github.com/emilkowalski/skills",
+      "commit": "0f2e23b32bb1265e84cff8d3e75785fec953fb1b",
+      "path": "skills/prototype",
+      "license": "MIT"
+    },
+    {
+      "name": "remove-animations",
+      "repository": "https://github.com/emilkowalski/skills",
+      "commit": "0f2e23b32bb1265e84cff8d3e75785fec953fb1b",
+      "path": "skills/remove-animations",
+      "license": "MIT"
+    },
+    {
+      "name": "review-animations",
+      "repository": "https://github.com/emilkowalski/skills",
+      "commit": "0f2e23b32bb1265e84cff8d3e75785fec953fb1b",
+      "path": "skills/review-animations",
+      "license": "MIT"
+    }
+  ],
+  "reviewedOn": "2026-11-14",
+  "readOnlyNativeSkills": [
+    "animate-expo",
+    "write-swift"
+  ]
+}

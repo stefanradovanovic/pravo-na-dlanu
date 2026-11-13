@@ -70,7 +70,7 @@ A daily GitHub Action refreshes public official sources, audits them and commits
 
 ## Stack
 
-Next.js App Router, React, TypeScript, Tailwind, shadcn/ui (Base UI), React Flow, sanitized Markdown, PDF.js and Pagefind. Existing input, button, tab and badge primitives are reused throughout. Searches normalize Serbian Cyrillic, Latin and diacritic-free input.
+Next.js App Router, React, TypeScript, Tailwind, shadcn/ui component APIs backed by UI SDK, React Flow, sanitized Markdown, PDF.js and Pagefind. Existing input, button, tab and badge primitives are reused throughout. Searches normalize Serbian Cyrillic, Latin and diacritic-free input.
 
 ### Design system
 

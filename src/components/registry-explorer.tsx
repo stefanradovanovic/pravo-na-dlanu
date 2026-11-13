@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import dynamic from "next/dynamic";
 import Link from "next/link";
 import {
@@ -16,7 +16,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { normalizeSearch, searchLawTitles } from "@/lib/search";
 import { categoryLabel, lawPath, type Registry } from "@/lib/registry-types";
 import { useExplorerLocation } from "./explorer-location";
@@ -52,6 +52,7 @@ function loadSearch() {
 }
 
 export function RegistryExplorer({ registry }: { registry: Registry }) {
+  const searchInput = useRef<HTMLInputElement>(null);
   const location = useExplorerLocation();
   const { query, view, page, mode, update } = location;
   const category =
@@ -149,96 +150,101 @@ export function RegistryExplorer({ registry }: { registry: Registry }) {
   };
   return (
     <main id="main">
-      <div className="page-intro">
-        <div className="eyebrow">
-          <span /> ПРАВО ПРИПАДА СВИМА
-        </div>
-        <h1>
-          Упознајте своја права.
-          <br />
-          <span>Разумите како су повезана.</span>
-        </h1>
-        <p>
-          Устав и закони Србије на једном месту.
-          <br className="desktop-break" /> Истражите правне области и прочитајте
-          сваки закон као цео документ.
-        </p>
-        <div className="home-learning-link">
-          <Link href="/ucenje" className={buttonVariants({ size: "lg" })}>
-            <BookOpen /> Учи и провери знање <ArrowUpRight />
-          </Link>
-          <Link
-            href="/vodic"
-            className={buttonVariants({ variant: "outline", size: "lg" })}
-          >
-            Како читати закон <ArrowUpRight />
-          </Link>
-        </div>
-        <div id="pretraga" className="search-wrap" tabIndex={-1}>
-          <Search size={16} aria-hidden="true" />
-          <Input
-            className="pl-9 pr-20"
-            aria-label="Претрага закона"
-            placeholder="Претражите законе — нпр. рад, саобраћај, заштита потрошача…"
-            value={query}
-            onChange={(e) => {
-              setQuery(e.target.value);
-              setPage(0);
-            }}
-          />
-          {query && (
-            <Button
-              variant="ghost"
-              size="icon-xs"
-              aria-label="Обриши претрагу"
-              onClick={() => {
-                setQuery("");
-                setPage(0);
-              }}
+      <div className="catalog-intro">
+        <div className="catalog-intro-copy">
+          <div className="eyebrow">БИБЛИОТЕКА ПРОПИСА</div>
+          <h1>Упознајте своја права.</h1>
+          <p>
+            Устав и закони Србије. Пронађите пропис, прочитајте цео текст и
+            проверите извор.
+          </p>
+          <div className="home-learning-link">
+            <Link
+              href="/ucenje"
+              className={buttonVariants({ variant: "ghost", size: "sm" })}
             >
-              <X />
-            </Button>
-          )}
-          {!query && <span className="search-hint">Ћир / лат</span>}
-        </div>
-        <div className="suggestions">
-          <Tabs
-            value={mode}
-            onValueChange={(v) => {
-              setMode(String(v));
-              setPage(0);
-            }}
-          >
-            <TabsList aria-label="Обим претраге">
-              <TabsTrigger value="titles">Назив закона</TabsTrigger>
-              <TabsTrigger value="full">Цео текст</TabsTrigger>
-            </TabsList>
-          </Tabs>
-          {[
-            { label: "Рад", title: "Закон о раду" },
-            {
-              label: "Саобраћај",
-              title: "Закон о безбедности саобраћаја на путевима",
-            },
-            { label: "Потрошач", title: "Закон о заштити потрошача" },
-          ].map(({ label, title }) => (
-            <Button
-              variant="ghost"
-              size="sm"
-              key={label}
-              title={title}
-              onClick={() => {
-                setQuery(title);
-                setMode("titles");
-                setCategory("all");
-                setPage(0);
-              }}
+              <BookOpen /> Учи и провери знање <ArrowUpRight />
+            </Link>
+            <Link
+              href="/vodic"
+              className={buttonVariants({ variant: "ghost", size: "sm" })}
             >
-              {label}
-              <ArrowUpRight size={12} />
-            </Button>
-          ))}
+              Како читати закон <ArrowUpRight />
+            </Link>
+          </div>
         </div>
+        <Tabs
+          className="catalog-search"
+          value={mode}
+          onValueChange={(value) => {
+            if (value) {
+              setMode(value);
+              setPage(0);
+            }
+          }}
+        >
+          <TabsList aria-label="Обим претраге" variant="line">
+            <TabsTrigger value="titles">Назив закона</TabsTrigger>
+            <TabsTrigger value="full">Цео текст</TabsTrigger>
+          </TabsList>
+          <TabsContent value={mode}>
+            <div id="pretraga" className="search-wrap" tabIndex={-1}>
+              <Search size={16} aria-hidden="true" />
+              <Input
+                ref={searchInput}
+                className="pl-9 pr-20"
+                aria-label="Претрага закона"
+                placeholder="Претражите законе — нпр. рад, саобраћај, заштита потрошача…"
+                value={query}
+                onValueChange={(value) => {
+                  setQuery(value);
+                  setPage(0);
+                }}
+              />
+              {query && (
+                <Button
+                  variant="ghost"
+                  size="icon-xs"
+                  aria-label="Обриши претрагу"
+                  onClick={() => {
+                    setQuery("");
+                    setPage(0);
+                    searchInput.current?.focus();
+                  }}
+                >
+                  <X />
+                </Button>
+              )}
+              {!query && <span className="search-hint">Ћир / лат</span>}
+            </div>
+            <div className="suggestions" aria-label="Предлози претраге">
+              {[
+                { label: "Рад", title: "Закон о раду" },
+                {
+                  label: "Саобраћај",
+                  title: "Закон о безбедности саобраћаја на путевима",
+                },
+                { label: "Потрошач", title: "Закон о заштити потрошача" },
+              ].map(({ label, title }) => (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  key={label}
+                  title={title}
+                  onClick={() => {
+                    setQuery(title);
+                    setMode("titles");
+                    setCategory("all");
+                    setPage(0);
+                  }}
+                >
+                  {label}
+                  <ArrowUpRight size={12} />
+                </Button>
+              ))}
+            </div>
+          </TabsContent>
+        </Tabs>
       </div>
       {!searching && category === "all" && (
         <section
@@ -322,29 +328,32 @@ export function RegistryExplorer({ registry }: { registry: Registry }) {
           </div>
         </aside>
         <section className="explorer" aria-label="Истраживач закона">
-          <div className="explorer-header">
-            <div>
-              <div className="eyebrow muted">БИБЛИОТЕКА ПРОПИСА</div>
-              <h2>
-                {searching
-                  ? "Резултати претраге"
-                  : category === "all"
-                    ? "Велика слика вашег права"
-                    : categoryLabel(category)}
-              </h2>
-              <p>
-                {searching
-                  ? `${matches.length} докумената · ${mode === "full" ? "претрага фразе у тексту" : "претрага назива закона"}`
-                  : "Изаберите област и истражите законе који јој припадају."}
-              </p>
-            </div>
-            <Tabs
-              value={view}
-              onValueChange={(v) => {
-                setView(String(v));
+          <Tabs
+            className="catalog-views"
+            value={showingMap ? "map" : "list"}
+            onValueChange={(value) => {
+              if (value) {
+                setView(value);
                 setPage(0);
-              }}
-            >
+              }
+            }}
+          >
+            <div className="explorer-header">
+              <div>
+                <div className="eyebrow muted">БИБЛИОТЕКА ПРОПИСА</div>
+                <h2>
+                  {searching
+                    ? "Резултати претраге"
+                    : category === "all"
+                      ? "Устав и закони Србије"
+                      : categoryLabel(category)}
+                </h2>
+                <p>
+                  {searching
+                    ? `${matches.length} докумената · ${mode === "full" ? "претрага фразе у тексту" : "претрага назива закона"}`
+                    : "Изаберите област и истражите законе који јој припадају."}
+                </p>
+              </div>
               <TabsList aria-label="Начин приказа">
                 <TabsTrigger value="map" disabled={searching}>
                   <Network /> Мапа
@@ -353,129 +362,132 @@ export function RegistryExplorer({ registry }: { registry: Registry }) {
                   <List /> Листа
                 </TabsTrigger>
               </TabsList>
-            </Tabs>
-          </div>
-          <div className="collection-bar">
-            <span>
-              <SlidersHorizontal size={14} />
-              {matches.length} докумената
-            </span>
-            <span>
-              Преузето{" "}
-              {new Date(report.finishedAt).toLocaleDateString("sr-RS", {
-                timeZone: "Europe/Belgrade",
-              })}
-              <Badge variant="outline">ПИС РС</Badge>
-            </span>
-          </div>
-          {waiting ? (
-            <div className="map-loading" role="status">
-              Претраживање текста закона…
             </div>
-          ) : fullResults.error && mode === "full" && searching ? (
-            <div className="empty-state" role="alert">
-              <p>{fullResults.error}</p>
-              <Button variant="outline" onClick={() => setMode("titles")}>
-                Претражи називе
-              </Button>
-            </div>
-          ) : showingMap ? (
-            <RegistryMap
-              categories={categories}
-              records={visible}
-              category={category}
-              onCategory={chooseCategory}
-              total={matches.length}
-              page={currentPage}
-              onPage={setPage}
-              returnTo={returnTo}
-            />
-          ) : (
-            <>
-              <div className="law-list" aria-live="polite">
-                {visible.length ? (
-                  visible.map((r, i) => (
-                    <div className="law-list-row" key={r.id}>
-                      <span className="law-index">
-                        {currentPage * size + i + 1}
-                      </span>
-                      <BookOpen size={21} />
-                      <div>
-                        <h3>
-                          <a href={documentUrl(lawPath(r), returnTo)}>
-                            {r.title}
-                          </a>
-                        </h3>
-                        <p>{r.categories.map(categoryLabel).join(" · ")}</p>
-                        <small>
-                          {r.citation
-                            .slice(r.title.length)
-                            .replace(/^:\s*/, "")}{" "}
-                          ·{" "}
-                          {r.textStatus === "complete"
-                            ? "Цео текст ПИС-а"
-                            : r.textStatus === "facsimile"
-                              ? "Цео закон у факсимилу"
-                              : r.sourceIssue
-                                ? "Потребна провера извора"
-                                : "Изворни PDF"}
-                        </small>
-                        {mode === "full" && searching && (
-                          <SearchSnippet
-                            id={r.id}
-                            href={lawPath(r)}
-                            query={normalized}
-                            returnTo={returnTo}
-                          />
-                        )}
-                      </div>
-                      <ArrowUpRight size={19} />
-                    </div>
-                  ))
-                ) : (
-                  <div className="empty-state">
-                    <Search size={30} />
-                    <h3>Нема резултата у овој збирци.</h3>
-                    <p>
-                      Пробајте другу реч, претрагу целог текста или све законе.
-                    </p>
-                    <Button
-                      variant="outline"
-                      onClick={() => {
-                        setQuery("");
-                        chooseCategory("all");
-                      }}
-                    >
-                      Прикажи све законе
-                    </Button>
-                  </div>
-                )}
+            <TabsContent value={showingMap ? "map" : "list"}>
+              <div className="collection-bar">
+                <span role="status" aria-live="polite" aria-atomic="true">
+                  <SlidersHorizontal size={14} />
+                  {matches.length} докумената
+                </span>
+                <span>
+                  Преузето{" "}
+                  {new Date(report.finishedAt).toLocaleDateString("sr-RS", {
+                    timeZone: "Europe/Belgrade",
+                  })}
+                  <Badge variant="outline">ПИС РС</Badge>
+                </span>
               </div>
-              {pageCount > 1 && (
-                <div className="catalog-pagination">
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    disabled={!currentPage}
-                    onClick={() => setPage(currentPage - 1)}
-                  >
-                    Претходна
-                  </Button>
-                  <span>
-                    {currentPage + 1} / {pageCount}
-                  </span>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    disabled={currentPage + 1 >= pageCount}
-                    onClick={() => setPage(currentPage + 1)}
-                  >
-                    Следећа
+              {waiting ? (
+                <div className="map-loading" role="status">
+                  Претраживање текста закона…
+                </div>
+              ) : fullResults.error && mode === "full" && searching ? (
+                <div className="empty-state" role="alert">
+                  <p>{fullResults.error}</p>
+                  <Button variant="outline" onClick={() => setMode("titles")}>
+                    Претражи називе
                   </Button>
                 </div>
+              ) : showingMap ? (
+                <RegistryMap
+                  categories={categories}
+                  records={visible}
+                  category={category}
+                  onCategory={chooseCategory}
+                  total={matches.length}
+                  page={currentPage}
+                  onPage={setPage}
+                  returnTo={returnTo}
+                />
+              ) : (
+                <>
+                  <div className="law-list">
+                    {visible.length ? (
+                      visible.map((r, i) => (
+                        <div className="law-list-row" key={r.id}>
+                          <span className="law-index">
+                            {currentPage * size + i + 1}
+                          </span>
+                          <BookOpen size={21} />
+                          <div>
+                            <h3>
+                              <a href={documentUrl(lawPath(r), returnTo)}>
+                                {r.title}
+                              </a>
+                            </h3>
+                            <p>{r.categories.map(categoryLabel).join(" · ")}</p>
+                            <small>
+                              {r.citation
+                                .slice(r.title.length)
+                                .replace(/^:\s*/, "")}{" "}
+                              ·{" "}
+                              {r.textStatus === "complete"
+                                ? "Цео текст ПИС-а"
+                                : r.textStatus === "facsimile"
+                                  ? "Цео закон у факсимилу"
+                                  : r.sourceIssue
+                                    ? "Потребна провера извора"
+                                    : "Изворни PDF"}
+                            </small>
+                            {mode === "full" && searching && (
+                              <SearchSnippet
+                                id={r.id}
+                                href={lawPath(r)}
+                                query={normalized}
+                                returnTo={returnTo}
+                              />
+                            )}
+                          </div>
+                          <ArrowUpRight size={19} />
+                        </div>
+                      ))
+                    ) : (
+                      <div className="empty-state">
+                        <Search size={30} />
+                        <h3>Нема резултата у овој збирци.</h3>
+                        <p>
+                          Пробајте другу реч, претрагу целог текста или све
+                          законе.
+                        </p>
+                        <Button
+                          variant="outline"
+                          onClick={() => {
+                            setQuery("");
+                            chooseCategory("all");
+                          }}
+                        >
+                          Прикажи све законе
+                        </Button>
+                      </div>
+                    )}
+                  </div>
+                  {pageCount > 1 && (
+                    <div className="catalog-pagination">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        disabled={!currentPage}
+                        onClick={() => setPage(currentPage - 1)}
+                      >
+                        Претходна
+                      </Button>
+                      <span>
+                        {currentPage + 1} / {pageCount}
+                      </span>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        disabled={currentPage + 1 >= pageCount}
+                        onClick={() => setPage(currentPage + 1)}
+                      >
+                        Следећа
+                      </Button>
+                    </div>
+                  )}
+                </>
               )}
-            </>
-          )}
+            </TabsContent>
+          </Tabs>
           <div className="source-banner">
             <Info size={18} />
             <div>

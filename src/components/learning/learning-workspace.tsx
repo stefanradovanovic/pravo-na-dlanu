@@ -457,7 +457,7 @@ export function LearningWorkspace({ catalog }: { catalog: LearningCatalog }) {
                         aria-label="Претрага тема за учење"
                         placeholder="Посао, куповина, подаци…"
                         value={query}
-                        onChange={(e) => setQuery(e.target.value)}
+                        onValueChange={setQuery}
                       />
                     </div>
                   </div>
@@ -706,6 +706,7 @@ export function LearningWorkspace({ catalog }: { catalog: LearningCatalog }) {
                       </DialogClose>
                       <Button
                         variant="destructive"
+                        data-agent-confirm="Брише сачуване одговоре и напредак на овом уређају."
                         onClick={() => {
                           reset();
                           setResetOpen(false);

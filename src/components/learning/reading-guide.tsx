@@ -31,7 +31,7 @@ export function ReadingGlossary() {
               id="glossary-search"
               ref={searchInput}
               value={query}
-              onChange={(event) => setQuery(event.target.value)}
+              onValueChange={setQuery}
               placeholder="Члан, верзија, примена…"
               aria-describedby="glossary-search-help"
             />

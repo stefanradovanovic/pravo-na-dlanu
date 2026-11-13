@@ -1,14 +1,8 @@
 "use client";
 import { useEffect, useRef, useState, type MouseEvent } from "react";
-import { ArrowLeft, ArrowRight, Minus, Plus } from "lucide-react";
+import { ArrowLeft, ArrowRight, ChevronDown } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button, buttonVariants } from "@/components/ui/button";
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion";
 import type { ArticleHeading } from "@/lib/document-navigation";
 import { normalizeSearch } from "@/lib/search";
 
@@ -18,17 +12,19 @@ export function ArticleNavigation({
   headings: ArticleHeading[];
 }) {
   const [query, setQuery] = useState("");
-  const [open, setOpen] = useState<string[]>([]);
+  const [open, setOpen] = useState(true);
   const [active, setActive] = useState(-1);
-  const [fontSize, setFontSize] = useState(16);
-  const [desktop, setDesktop] = useState(false);
+  const [desktop, setDesktop] = useState(true);
   const list = useRef<HTMLUListElement>(null);
   const navigation = useRef<HTMLElement>(null);
   const selectedPosition = useRef<{ index: number; y: number } | null>(null);
 
   useEffect(() => {
     const media = window.matchMedia("(min-width: 1024px)");
-    const update = () => setDesktop(media.matches);
+    const update = () => {
+      setDesktop(media.matches);
+      setOpen(media.matches);
+    };
     update();
     media.addEventListener("change", update);
     return () => media.removeEventListener("change", update);
@@ -58,7 +54,10 @@ export function ArticleNavigation({
     let frame = 0;
     const measure = () => {
       frame = 0;
-      const offset = desktop ? 100 : nav.offsetHeight + 24;
+      const offset = desktop
+        ? 24
+        : (nav.closest<HTMLElement>(".reader-sidebar")?.offsetHeight ??
+            nav.offsetHeight) + 12;
       reader.style.setProperty("--reader-navigation-offset", `${offset}px`);
       // Near the end, a short article cannot always reach the top of the viewport.
       // Keep the explicitly selected article until the reader scrolls away.
@@ -115,16 +114,6 @@ export function ArticleNavigation({
     };
   }, [headings, desktop]);
 
-  useEffect(() => {
-    const reader = navigation.current?.closest<HTMLElement>(".full-document");
-    reader?.style.setProperty("--reader-font-size", `${fontSize}px`);
-    reader?.style.setProperty("--reader-line-height", `${fontSize * 1.5}px`);
-    return () => {
-      reader?.style.removeProperty("--reader-font-size");
-      reader?.style.removeProperty("--reader-line-height");
-    };
-  }, [fontSize]);
-
   if (!headings.length) return null;
   const number = normalizeSearch(query)
     .replace(/^clan\s*/, "")
@@ -133,7 +122,7 @@ export function ArticleNavigation({
     (heading) => !number || heading.id.split("-")[1] === number,
   );
   function jump(id: string) {
-    setOpen([]);
+    if (!desktop) setOpen(false);
     requestAnimationFrame(() => {
       const nav = navigation.current;
       const target = document.getElementById(id);
@@ -142,7 +131,7 @@ export function ArticleNavigation({
         .closest<HTMLElement>(".full-document")
         ?.style.setProperty(
           "--reader-navigation-offset",
-          `${desktop ? 100 : nav.offsetHeight + 24}px`,
+          `${desktop ? 24 : (nav.closest<HTMLElement>(".reader-sidebar")?.offsetHeight ?? nav.offsetHeight) + 12}px`,
         );
       target.scrollIntoView({ block: "start" });
       target.focus({ preventScroll: true });
@@ -220,89 +209,73 @@ export function ArticleNavigation({
             </Button>
           )}
         </div>
-        <div
-          className="reading-control-group"
-          role="group"
-          aria-label="Величина текста"
-        >
-          <Button
-            variant="outline"
-            size="icon"
-            aria-label="Смањи текст"
-            disabled={fontSize <= 16}
-            onClick={() => setFontSize((size) => size - 2)}
-          >
-            <Minus />
-          </Button>
-          <Button
-            variant="ghost"
-            size="sm"
-            aria-label="Врати подразумевану величину текста"
-            title="Врати подразумевану величину текста"
-            onClick={() => setFontSize(16)}
-          >
-            {fontSize} px
-          </Button>
-          <Button
-            variant="outline"
-            size="icon"
-            aria-label="Увећај текст"
-            disabled={fontSize >= 24}
-            onClick={() => setFontSize((size) => size + 2)}
-          >
-            <Plus />
-          </Button>
-        </div>
       </div>
       <h2 className="article-navigation-desktop">Садржај закона</h2>
-      <Accordion value={desktop ? ["contents"] : open} onValueChange={setOpen}>
-        <AccordionItem value="contents">
-          <AccordionTrigger className="article-navigation-mobile">
-            Садржај закона · {headings.length} чланова
-          </AccordionTrigger>
-          <AccordionContent>
-            <form
-              onSubmit={(event) => {
-                event.preventDefault();
-                if (number && visible.length === 1) {
-                  window.location.hash = visible[0].id;
-                  jump(visible[0].id);
-                }
-              }}
-            >
-              <label htmlFor="article-number">Иди на члан</label>
-              <Input
-                id="article-number"
-                placeholder="Број члана, нпр. 12 или 12а"
-                value={query}
-                onChange={(event) => setQuery(event.target.value)}
-                aria-describedby="article-jump-help"
-              />
-              <p id="article-jump-help" className="article-jump-help">
-                Унесите број и притисните Enter, или изаберите члан испод.
-              </p>
-            </form>
-            <ul ref={list}>
-              {visible.map((heading) => (
-                <li key={heading.id}>
-                  <a
-                    href={`#${heading.id}`}
-                    aria-current={
-                      headings[active]?.id === heading.id
-                        ? "location"
-                        : undefined
-                    }
-                    onClick={(event) => follow(event, heading.id)}
-                  >
-                    {heading.label}
-                  </a>
-                </li>
-              ))}
-            </ul>
-            {!visible.length && <p role="status">Нема члана са тим бројем.</p>}
-          </AccordionContent>
-        </AccordionItem>
-      </Accordion>
+      <details
+        className="article-contents"
+        open={open}
+        onToggle={(event) => setOpen(event.currentTarget.open)}
+      >
+        <summary
+          className="article-navigation-mobile"
+          role="button"
+          aria-expanded={open}
+        >
+          Садржај закона · {headings.length}{" "}
+          <ChevronDown size={16} aria-hidden="true" />
+        </summary>
+        <div className="article-contents-body">
+          <form
+            onSubmit={(event) => {
+              event.preventDefault();
+              if (number && visible.length === 1) {
+                window.location.hash = visible[0].id;
+                jump(visible[0].id);
+              }
+            }}
+          >
+            <label htmlFor="article-number">Иди на члан</label>
+            <Input
+              id="article-number"
+              placeholder="Број члана, нпр. 12 или 12а"
+              value={query}
+              onValueChange={setQuery}
+              aria-describedby="article-jump-help"
+            />
+            <p id="article-jump-help" className="article-jump-help">
+              Унесите број и притисните Enter, или изаберите члан испод.
+            </p>
+          </form>
+          <ul ref={list}>
+            {visible.map((heading) => (
+              <li key={heading.id}>
+                <a
+                  href={`#${heading.id}`}
+                  aria-label={heading.label}
+                  aria-describedby={
+                    heading.subtitle ? `toc-${heading.id}-caption` : undefined
+                  }
+                  aria-current={
+                    headings[active]?.id === heading.id ? "location" : undefined
+                  }
+                  onClick={(event) => follow(event, heading.id)}
+                >
+                  <span>{heading.label}</span>
+                  {heading.subtitle && (
+                    <span
+                      id={`toc-${heading.id}-caption`}
+                      className="toc-subtitle"
+                    >
+                      {heading.subtitle}
+                    </span>
+                  )}
+                </a>
+              </li>
+            ))}
+          </ul>
+          {!visible.length && <p role="status">Нема члана са тим бројем.</p>}
+        </div>
+      </details>
     </nav>
   );
 }

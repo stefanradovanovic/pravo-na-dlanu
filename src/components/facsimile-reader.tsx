@@ -188,7 +188,7 @@ export function FacsimileReader({ document }: { document: Facsimile }) {
             min={1}
             max={pages.length}
             value={target}
-            onChange={(event) => setTarget(event.target.value)}
+            onValueChange={setTarget}
           />
           <span>од {pages.length}</span>
           <Button variant="outline" size="sm" type="submit">

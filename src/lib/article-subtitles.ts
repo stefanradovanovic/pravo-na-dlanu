@@ -1,5 +1,14 @@
 import type { Root } from "mdast";
 
+export function isArticleSubtitle(text: string): boolean {
+  return (
+    text.length <= 120 &&
+    text.split(/\s+/).length <= 16 &&
+    /^[А-ЯЂЈЉЊЋЏ][а-яђјљњћџА-ЯЂЈЉЊЋЏ ,–—-]*[а-яђјљњћџ]$/u.test(text) &&
+    !/^(Део|Глава|Одељак|Пододељак|Одсек|Редакцијски)(?:\s|$)/u.test(text)
+  );
+}
+
 // PIS exports article captions as plain paragraphs before the article number.
 // Move only short, plain caption-like blocks; leave numbered sections, source
 // notes, formatted blocks and sentence punctuation in their original position.
@@ -23,16 +32,13 @@ export function remarkArticleSubtitles() {
       )
         continue;
       const text = caption.children[0].value;
-      if (
-        text.length > 120 ||
-        text.split(/\s+/).length > 16 ||
-        !/^[А-ЯЂЈЉЊЋЏ][а-яђјљњћџА-ЯЂЈЉЊЋЏ ,–—-]*[а-яђјљњћџ]$/u.test(text) ||
-        /^(Део|Глава|Одељак|Пододељак|Одсек|Редакцијски)(?:\s|$)/u.test(text)
-      )
-        continue;
+      if (!isArticleSubtitle(text)) continue;
       heading.children.push({
         type: "emphasis",
-        data: { hName: "span", hProperties: { className: ["article-subtitle"] } },
+        data: {
+          hName: "span",
+          hProperties: { className: ["article-subtitle"] },
+        },
         children: [{ type: "text", value: ` — ${text}` }],
       });
       tree.children.splice(index - 1, 1);

@@ -210,7 +210,7 @@
 .learning-practice-panel .learning-section-heading {
   margin-top: 0;
 }
-.learning-practice-panel [data-slot="tabs-content"] p {
+.learning-practice-panel .ui-tab-panel p {
   padding: var(--space-3) 0;
   color: var(--muted-foreground);
 }
@@ -313,6 +313,10 @@
 .learning-choices [data-slot="button"] {
   align-items: baseline;
   line-height: 1.6;
+}
+.learning-choices .ui-button:disabled {
+  opacity: 1;
+  cursor: default;
 }
 .learning-feedback {
   margin-top: 28px;
@@ -538,14 +542,14 @@
   .learning-scenario {
     font-size: var(--text-reading);
   }
-  .learning-workspace [data-slot="tabs-list"] {
+  .learning-workspace .ui-tabs-list {
     max-width: 100%;
     flex-wrap: wrap;
     height: auto;
     min-height: 36px;
     gap: 5px;
   }
-  .learning-workspace [data-slot="tabs-trigger"] {
+  .learning-workspace .ui-tab {
     min-height: 32px;
   }
   .learning-stats {
@@ -1880,9 +1884,6 @@ a {
   .brand small {
     letter-spacing: 0;
   }
-  .site-header > a:last-child svg:last-child {
-    display: none;
-  }
   .page-intro {
     padding-inline: 18px;
   }
@@ -2195,97 +2196,6 @@ a {
   font-size: var(--text-caption);
   color: var(--muted-foreground);
 }
-.full-document {
-  max-width: var(--layout-wide);
-}
-.full-document .reader-heading h1 {
-  font-size: 2.1875rem;
-  overflow-wrap: anywhere;
-}
-.document-toolbar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 18px;
-  margin-top: 26px;
-  padding: 18px 0;
-  border-bottom: 1px solid var(--border);
-  color: var(--muted-foreground);
-  font-size: var(--text-caption);
-}
-.document-toolbar > div:first-child,
-.document-actions {
-  display: flex;
-  align-items: center;
-  gap: 9px;
-}
-.document-actions {
-  flex-wrap: wrap;
-}
-.document-actions > span {
-  font-size: var(--text-caption);
-}
-.complete-legal-text {
-  font-family: var(--type-editorial);
-  font-size: var(--reader-font-size, 16px);
-  line-height: var(--reader-line-height, 24px);
-  min-width: 0;
-  overflow-wrap: anywhere;
-  margin-top: 40px;
-}
-.complete-legal-text h1,
-.complete-legal-text h2,
-.complete-legal-text h3,
-.complete-legal-text h4 {
-  font-family: inherit;
-  font-weight: 600;
-  line-height: 1.5;
-  margin: var(--space-8) 0 20px;
-}
-.complete-legal-text h1 {
-  font-size: 1.6875rem;
-}
-.complete-legal-text h2 {
-  font-size: var(--text-title);
-}
-.complete-legal-text h3 {
-  font-size: 1.1875rem;
-}
-.complete-legal-text .article-subtitle {
-  font-size: var(--reader-font-size, 16px);
-  font-weight: 400;
-}
-.complete-legal-text a {
-  text-decoration: underline;
-  text-underline-offset: 3px;
-  color: var(--brand);
-}
-.complete-legal-text ul {
-  list-style: disc;
-  padding-left: 25px;
-}
-.complete-legal-text ol {
-  list-style: decimal;
-}
-.complete-legal-text table {
-  font-family: var(--type-ui);
-  font-size: var(--text-caption);
-  line-height: 1.6;
-  display: block;
-  overflow: auto;
-  max-width: 100%;
-  border-collapse: collapse;
-  margin: var(--space-6) 0;
-}
-.complete-legal-text td,
-.complete-legal-text th {
-  border: 1px solid var(--border);
-  padding: var(--space-2);
-  min-width: 65px;
-}
-.complete-legal-text img {
-  max-width: 100%;
-}
 .pdf-source {
   text-align: center;
   max-width: 750px;
@@ -2304,17 +2214,6 @@ a {
   font-size: var(--text-body);
 }
 .pdf-source > svg {
-  color: var(--muted-foreground);
-}
-.law-examples {
-  margin: var(--space-6) 0;
-  padding: 18px;
-  border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
-}
-.law-examples .educational-note {
-  margin: 0 0 var(--space-3);
-  font-size: var(--text-body);
   color: var(--muted-foreground);
 }
 .about-page ul {
@@ -2434,114 +2333,9 @@ a {
   border-radius: var(--radius);
   margin-top: 18px;
 }
-.article-navigation {
-  position: sticky;
-  top: 12px;
-  z-index: 20;
-  margin-block: var(--space-6);
-  padding: var(--space-4);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  background: var(--card);
-}
-.article-navigation label {
-  display: block;
-  margin-block: var(--space-4) var(--space-2);
-}
-.reading-controls,
-.reading-control-group {
-  display: flex;
-  align-items: center;
-  gap: var(--space-2);
-}
-.reading-controls {
-  flex-wrap: wrap;
-  margin-bottom: var(--space-3);
-}
-.current-article {
-  flex: 1;
-  min-width: 120px;
-  font-weight: 600;
-}
-.article-jump-help {
-  margin-top: var(--space-2);
-  color: var(--muted-foreground);
-  font-size: var(--text-caption);
-}
-.article-navigation [data-slot="accordion-content"] {
-  animation: none;
-}
-.article-navigation ul {
-  max-height: 280px;
-  overflow-y: auto;
-  margin-top: var(--space-4);
-}
-.article-navigation li a {
-  display: block;
-  padding: 3px 10px;
-  border-left: 2px solid transparent;
-  color: var(--muted-foreground);
-  font-size: var(--text-body);
-  line-height: 1.4;
-}
-.article-navigation li a:hover {
-  background: var(--accent);
-  color: var(--accent-foreground);
-}
-.article-navigation li a[aria-current="location"] {
-  border-left-color: var(--primary);
-  background: var(--accent);
-  color: var(--accent-foreground);
-  font-weight: 600;
-}
-.article-navigation-desktop {
-  display: none;
-}
-@media (min-width: 1024px) {
-  .law-reading-layout {
-    display: grid;
-    grid-template-columns: 240px minmax(0, 1fr);
-    gap: 36px;
-    align-items: start;
-  }
-  .article-navigation {
-    position: sticky;
-    top: 24px;
-    max-height: calc(100dvh - 48px);
-  }
-  .article-navigation-desktop {
-    display: block;
-  }
-  .article-navigation-desktop h2 {
-    font-weight: 600;
-  }
-  .article-navigation-desktop > p,
-  .article-navigation label {
-    font-size: var(--text-caption);
-    color: var(--muted-foreground);
-  }
-  .article-navigation ul {
-    max-height: calc(100dvh - 390px);
-    overscroll-behavior: contain;
-  }
-  .article-navigation-mobile {
-    display: none;
-  }
-}
 .search-snippet a {
   text-decoration: underline;
   text-underline-offset: 3px;
-}
-.complete-legal-text h2[id] {
-  scroll-margin-top: var(--reader-navigation-offset, 100px);
-}
-.complete-legal-text h2:target {
-  background: var(--accent);
-}
-.complete-legal-text .article-permalink {
-  margin-right: 10px;
-  font-size: 0.8em;
-  color: var(--muted-foreground);
 }
 .law-list-row > div {
   min-width: 0;
