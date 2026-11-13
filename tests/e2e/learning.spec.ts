@@ -225,6 +225,10 @@ test("bad saved data and unavailable storage leave quizzes usable", async ({
 
 test("law readers lead into the matching learning path", async ({ page }) => {
   await page.goto("/propisi/zakon-o-radu");
+  const examples = page.getByRole("button", { name: /Примери из живота/ });
+  await expect(examples).toHaveAttribute("aria-expanded", "false");
+  await examples.click();
+  await expect(examples).toHaveAttribute("aria-expanded", "true");
   await page
     .locator(".reader-learning-link")
     .getByRole("link", { name: "Учи и провери знање", exact: false })

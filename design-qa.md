@@ -98,7 +98,9 @@ Fresh production reader, catalog, learning, gallery and scan flows showed no con
 | `git diff --check`                                                               | Exit 0                                                                                                                     |
 | `git diff --exit-code -- content`                                                | Exit 0; no corpus or educational-content changes                                                                           |
 
-The separate Playwright CLI suite was updated for the new font defaults but not run. Browser verification used the required computer-use interface. Reduced-motion, coarse-pointer sizing and print styles were reviewed in CSS; physical touch devices, Safari/Firefox, OS-level reduced-motion switching, actual printing and a screen reader were not tested. Static HTML was inspected directly; a JavaScript-disabled browser session was not used. No performance trace was recorded.
+The separate Playwright CLI suite was not run during local design QA; browser verification used the required computer-use interface. The first GitHub CI run then passed 67 of 70 browser cases, including JavaScript-disabled pages and print-media checks. Three failures came from two outdated test assumptions: the learning link is now inside the collapsed examples section (desktop and mobile), and the current-article label is hidden in the compact mobile layout. The follow-up tests open and verify the examples disclosure and check visible article navigation controls. The learning destination and mobile navigation were also rechecked through computer use; the follow-up PR's CI records the full suite result.
+
+Reduced-motion and coarse-pointer sizing were reviewed in CSS. Physical touch devices, Safari/Firefox, OS-level reduced-motion switching, actual printing and a screen reader were not tested. No performance trace was recorded.
 
 UI SDK is `0.1.0-beta.1`, pinned by the lockfile and isolated behind the existing component facade. Future upgrades need the same SSR, focus, keyboard and static-export checks.
 

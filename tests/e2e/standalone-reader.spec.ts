@@ -56,7 +56,11 @@ test("catalog opens a standalone reader with working examples, copy and print", 
     .getByRole("link", { name: "Закон о раду", exact: true })
     .click();
   await expect(page).toHaveURL(/\/propisi\/zakon-o-radu$/);
-  await expect(page.locator(".current-article")).toBeVisible();
+  const navigation = page.getByRole("navigation", { name: "Садржај закона" });
+  await expect(navigation).toBeVisible();
+  await expect(
+    navigation.getByRole("link", { name: "Следећи члан", exact: true }),
+  ).toBeVisible();
   expect(
     requests.some((url) =>
       /\/(?:propisi|zakoni)\/.*(?:\.txt(?:\?|$)|_rsc=)/.test(url),
