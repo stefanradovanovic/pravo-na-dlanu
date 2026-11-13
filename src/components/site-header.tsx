@@ -1,40 +1,81 @@
 "use client";
 import Link from "next/link";
-import { BookOpen, Scale, ArrowUpRight } from "lucide-react";
-import { buttonVariants } from "@/components/ui/button";
+import { usePathname } from "next/navigation";
+import { Scale, Search } from "lucide-react";
 
 export function SiteHeader() {
+  const pathname = usePathname();
+  const links = [
+    {
+      href: "/",
+      text: "Прописи",
+      label: "Истражи право",
+      active:
+        pathname === "/" ||
+        pathname.startsWith("/propisi") ||
+        pathname.startsWith("/zakoni"),
+    },
+    {
+      href: "/ucenje",
+      text: "Учење",
+      label: "Учи кроз примере",
+      active: pathname.startsWith("/ucenje"),
+    },
+    {
+      href: "/vodic",
+      text: "Водич",
+      label: "Како читати закон",
+      active: pathname.startsWith("/vodic"),
+    },
+  ];
   return (
     <header className="site-header">
       <Link href="/" className="brand" aria-label="Право на длану — почетна">
         <span className="brand-mark">
-          <Scale size={23} />
+          <Scale size={22} aria-hidden="true" />
         </span>
         <span>
           право<span className="brand-light"> на длану</span>
-          <small>ВОДИЧ КРОЗ ПРАВО СРБИЈЕ</small>
         </span>
       </Link>
       <nav aria-label="Главна навигација">
-        <Link href="/">Истражи право</Link>
-        <Link href="/ucenje">Учи кроз примере</Link>
-        <Link href="/vodic">Како читати закон</Link>
-        {/* Standalone law documents require a full browser navigation. */}
-        {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
-        <a href="/zakoni/ustav">Устав Србије</a>
-        <Link href="/o-projektu">О пројекту</Link>
+        {links.map((link) => (
+          <Link
+            key={link.href}
+            href={link.href}
+            aria-label={link.label}
+            aria-current={link.active ? "page" : undefined}
+          >
+            {link.text}
+          </Link>
+        ))}
       </nav>
-      <a
-        className={buttonVariants({ variant: "outline" })}
-        aria-label="Званични прописи — ПИС (нови прозор)"
-        href="https://www.pravno-informacioni-sistem.rs/"
-        target="_blank"
-        rel="noreferrer"
+      <form
+        className="header-search"
+        action="/"
+        method="get"
+        role="search"
+        aria-label="Претрага из заглавља"
       >
-        <BookOpen />{" "}
-        <span className="header-source-label">Званични прописи</span>
-        <ArrowUpRight size={14} />
-      </a>
+        <Search size={17} aria-hidden="true" />
+        <input
+          name="q"
+          aria-label="Претрага из заглавља"
+          placeholder="Пронађи пропис…"
+          type="search"
+        />
+        <input type="hidden" name="view" value="list" />
+        <button type="submit" aria-label="Претражи прописе">
+          <Search size={18} aria-hidden="true" />
+        </button>
+      </form>
+      <Link
+        className="header-search-mobile"
+        href="/#pretraga"
+        aria-label="Претражи прописе"
+      >
+        <Search size={21} aria-hidden="true" />
+      </Link>
     </header>
   );
 }

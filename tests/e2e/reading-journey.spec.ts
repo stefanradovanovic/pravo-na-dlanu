@@ -152,10 +152,10 @@ test("reader text size is bounded, resettable and does not change the source", a
   await page.goto("/propisi/zakon-o-sanitarnom-nadzoru#clan-12");
   const article = page.locator("#tekst-zakona");
   const source = await article.textContent();
-  await expect(article).toHaveCSS("line-height", "24px");
+  await expect(article).toHaveCSS("line-height", "30.6px");
   const larger = page.getByRole("button", { name: "Увећај текст" });
-  await expect(article).toHaveCSS("font-size", "16px");
-  for (let step = 0; step < 4; step++) await larger.click();
+  await expect(article).toHaveCSS("font-size", "18px");
+  for (let step = 0; step < 3; step++) await larger.click();
   await expect(article).toHaveCSS("font-size", "24px");
   await expect(larger).toBeDisabled();
   const smaller = page.getByRole("button", { name: "Смањи текст" });
@@ -167,7 +167,7 @@ test("reader text size is bounded, resettable and does not change the source", a
   await page
     .getByRole("button", { name: "Врати подразумевану величину текста" })
     .click();
-  await expect(article).toHaveCSS("font-size", "16px");
+  await expect(article).toHaveCSS("font-size", "18px");
   expect(await article.textContent()).toBe(source);
   expect(
     await page.evaluate(

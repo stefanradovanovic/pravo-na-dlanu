@@ -107,27 +107,33 @@ function ButtonExamples() {
         <Button
           size="xs"
           variant="outline"
-          onClick={() => setMessage("Веома мало дугме: 24 пиксела висине.")}
+          onClick={() =>
+            setMessage(
+              "Компактно дугме: 36 px; најмање 44 px на додирном екрану.",
+            )
+          }
         >
           Најмање
         </Button>
         <Button
           size="sm"
           variant="outline"
-          onClick={() => setMessage("Мало дугме: 28 пиксела висине.")}
+          onClick={() =>
+            setMessage("Мало дугме: 36 px; најмање 44 px на додирном екрану.")
+          }
         >
           Мало
         </Button>
         <Button
           variant="outline"
-          onClick={() => setMessage("Основно дугме: 32 пиксела висине.")}
+          onClick={() => setMessage("Основно дугме: 44 пиксела висине.")}
         >
           Основно
         </Button>
         <Button
           size="lg"
           variant="outline"
-          onClick={() => setMessage("Велико дугме: 36 пиксела висине.")}
+          onClick={() => setMessage("Велико дугме: 48 пиксела висине.")}
         >
           Велико
         </Button>
@@ -191,7 +197,7 @@ function FormExamples() {
             type="search"
             placeholder="Нпр. рад"
             value={query}
-            onChange={(event) => setQuery(event.target.value)}
+            onValueChange={setQuery}
             aria-describedby="sample-search-hint"
           />
           <p id="sample-search-hint">
@@ -261,7 +267,7 @@ function FormExamples() {
           <Input
             id="sample-validation"
             value={sampleValue}
-            onChange={(event) => setSampleValue(event.target.value)}
+            onValueChange={setSampleValue}
             aria-invalid={invalid}
             aria-describedby="sample-validation-hint"
           />
@@ -345,8 +351,8 @@ function NavigationExamples() {
           <AccordionTrigger>Како се крећемо тастатуром?</AccordionTrigger>
           <AccordionContent>
             Tab прелази на следећу контролу. У групи картица стрелице померају
-            фокус, а Enter или размак активира картицу. Escape затвара дијалог и
-            панел; фокус се враћа на дугме које их је отворило.
+            фокус и бирају картицу. Escape затвара дијалог и панел; фокус се
+            враћа на дугме које их је отворило.
           </AccordionContent>
         </AccordionItem>
         <AccordionItem value="content">

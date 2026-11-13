@@ -1,8 +1,7 @@
 import type { Metadata } from "next";
 import type { CSSProperties } from "react";
-import { ArrowUpRight, BookOpen, Lightbulb, Scale } from "lucide-react";
+import { BookOpen, Lightbulb, Scale } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-import { buttonVariants } from "@/components/ui/button";
 import { ComponentExamples } from "./components";
 import "./system.css";
 
@@ -19,7 +18,7 @@ const sections = [
   ["razmaci", "03", "Размаци и облик"],
   ["komponente", "04", "Компоненте"],
   ["sadrzaj", "05", "Језик садржаја"],
-  ["figma", "06", "Рад у Фигми"],
+  ["ponasanje", "06", "Понашање и провера"],
 ] as const;
 
 const colors = [
@@ -27,7 +26,8 @@ const colors = [
   ["card", "Површина", "Картице и панели"],
   ["foreground", "Мастило", "Главни текст"],
   ["primary", "Главна радња", "Дугмад и избор"],
-  ["brand", "Теракота", "Идентитет и нагласак"],
+  ["chrome", "Тамно заглавље", "Оријентација и навигација"],
+  ["sidebar", "Садржај закона", "Мирна бочна површина"],
   ["muted", "Тиха површина", "Секундарни садржај"],
   ["muted-foreground", "Пратећи текст", "Описи и метаподаци"],
   ["border", "Ивица", "Раздвајање целина"],
@@ -62,7 +62,7 @@ export default function DesignSystemPage() {
         </div>
         <div className="ds-hero-title">
           <h1>Јасноћа у сваком детаљу.</h1>
-          <Badge variant="outline">Верзија 1.0</Badge>
+          <Badge variant="outline">Верзија 2.0</Badge>
         </div>
         <p>
           Заједнички визуелни језик за право које је лакше пронаћи, читати и
@@ -70,7 +70,7 @@ export default function DesignSystemPage() {
         </p>
         <div className="ds-hero-meta">
           <span>Ћирилица на првом месту</span>
-          <span>shadcn/ui · Base UI</span>
+          <span>shadcn/ui · UI SDK</span>
           <span>Приступачност као основа</span>
         </div>
       </header>
@@ -95,7 +95,7 @@ export default function DesignSystemPage() {
         <div className="ds-content">
           <section id="boje" className="ds-section">
             <SectionHeading number="01" title="Боје и површине">
-              Топла подлога, тамно мастило и један препознатљив акценат.
+              Бела површина за читање, тамно заглавље и тиркизне радње.
             </SectionHeading>
             <div className="ds-palette">
               {colors.map(([token, name, use]) => (
@@ -136,14 +136,14 @@ export default function DesignSystemPage() {
             <div className="ds-type-specimen">
               <div className="ds-type-info">
                 <span>НАСЛОВ</span>
-                <code>Georgia · 44 / 53</code>
+                <code>Literata · 40 / 50</code>
               </div>
               <p className="ds-display-text">Право које разумете.</p>
             </div>
             <div className="ds-type-specimen">
               <div className="ds-type-info">
                 <span>ИНТЕРФЕЈС</span>
-                <code>Arial · 14 / 22</code>
+                <code>IBM Plex Sans · 15 / 24</code>
               </div>
               <div className="ds-ui-text">
                 <strong>Пронађите пропис који вам је потребан.</strong>
@@ -156,7 +156,7 @@ export default function DesignSystemPage() {
             <div className="ds-type-specimen">
               <div className="ds-type-info">
                 <span>ЧИТАЊЕ</span>
-                <code>Georgia · 16 / 24</code>
+                <code>Literata · 18 / 30,6</code>
               </div>
               <p className="ds-reading-text">
                 Ово је типографски узорак, а не цитат прописа. Дужи текст има
@@ -167,7 +167,7 @@ export default function DesignSystemPage() {
             <div className="ds-type-specimen">
               <div className="ds-type-info">
                 <span>МЕТАПОДАЦИ</span>
-                <code>Arial · 12 / 19</code>
+                <code>IBM Plex Sans · 13 / 21</code>
               </div>
               <p className="ds-caption-text">
                 Извор, верзија, датум приступа и обухват приказују се као
@@ -194,10 +194,10 @@ export default function DesignSystemPage() {
             </div>
             <div className="ds-radius-scale">
               {[
-                ["sm", "Мали", "5,28"],
-                ["md", "Средњи", "7,04"],
-                ["lg", "Основни", "8,8"],
-                ["xl", "Велики", "12,32"],
+                ["sm", "Мали", "3,6"],
+                ["md", "Средњи", "4,8"],
+                ["lg", "Основни", "6"],
+                ["xl", "Велики", "8,4"],
               ].map(([size, label, pixels]) => (
                 <div key={size}>
                   <span style={{ borderRadius: `var(--radius-${size})` }} />
@@ -209,9 +209,10 @@ export default function DesignSystemPage() {
               ))}
             </div>
             <p className="ds-note">
-              Картице и дијалози користе већи радијус, контроле постојеће
-              варијанте. Ширина текста прилагођава се екрану; табеле у прописима
-              задржавају хоризонтално померање.
+              Контроле и панели користе основни радијус од 6 px. На додирним
+              екранима контроле имају површину од најмање 44 × 44 px. Ширина
+              текста прилагођава се екрану; табеле у прописима задржавају
+              хоризонтално померање.
             </p>
           </section>
 
@@ -266,55 +267,59 @@ export default function DesignSystemPage() {
             </div>
           </section>
 
-          <section id="figma" className="ds-section">
-            <SectionHeading number="06" title="Од Фигме до интерфејса">
-              Заједничка имена токена повезују дизајн и код.
+          <section id="ponasanje" className="ds-section">
+            <SectionHeading number="06" title="Понашање које не омета читање">
+              Један скуп компоненти за каталог, учење и читач.
             </SectionHeading>
-            <p className="ds-paragraph">
-              Полазна библиотека је{" "}
-              <a
-                href="https://www.figma.com/community/file/1203061493325953101/shadcn-ui-design-system"
-                target="_blank"
-                rel="noreferrer"
-              >
-                shadcn/ui — Design System, Пјетро Скирано
-              </a>
-              . Њен опис наводи Radix UI и Next.js 13. Овај пројекат користи
-              Base UI и стил base-nova, па димензије, стања и понашање
-              усклађујемо са овим приказом.
-            </p>
             <ol className="ds-steps">
               <li>
-                <strong>Поставите основе.</strong>
+                <strong>Одзив је непосредан.</strong>
                 <span>
-                  Боје именујте према улози: background, foreground, primary,
-                  brand. Користите фонтове и размаке из овог водича.
+                  Претрага, избор картице и прелазак на члан немају уводне
+                  анимације. Промена боје траје 100 ms; повремени дијалог или
+                  панел 200 ms.
                 </span>
               </li>
               <li>
-                <strong>Ускладите варијанте.</strong>
+                <strong>Тастатура и додир су равноправни.</strong>
                 <span>
-                  Дугмад, поља и ознаке треба да имају иста имена варијанти као
-                  локалне компоненте. Прикажите фокус, грешку и онемогућено
-                  стање.
+                  Видљив фокус, повратак фокуса после дијалога, Escape за
+                  затварање и контроле од најмање 44 px на додирном екрану.
                 </span>
               </li>
               <li>
-                <strong>Проверите у контексту.</strong>
+                <strong>Корисник контролише читање.</strong>
                 <span>
-                  Дугачак ћирилични наслов, уски екран и навигација тастатуром
-                  део су сваког прегледа.
+                  Подразумеван текст од 18 px може се подесити од 16 до 24 px.
+                  Увећање странице и избор текста остају доступни. Умањено
+                  кретање искључује прелазе.
+                </span>
+              </li>
+              <li>
+                <strong>Провера користи стварне крајности.</strong>
+                <span>
+                  Дугачки називи и верзије прописа, више од хиљаду чланова,
+                  празна претрага и уски екрани. Цео закон и садржај доступни су
+                  и без JavaScript-а.
                 </span>
               </li>
             </ol>
-            <a
-              className={buttonVariants({ variant: "outline" })}
-              href="https://www.figma.com/community/file/1203061493325953101/shadcn-ui-design-system"
-              target="_blank"
-              rel="noreferrer"
-            >
-              Отвори референцу у Фигми <ArrowUpRight aria-hidden="true" />
-            </a>
+            <p className="ds-paragraph">
+              Понашање сложених контрола обезбеђује{" "}
+              <a href="https://ui-sdk.dev/" target="_blank" rel="noreferrer">
+                UI SDK
+              </a>
+              . Локалне shadcn/ui компоненте задржавају познате варијанте и
+              заједничке токене. Правила обликовања и провере ослањају се на{" "}
+              <a
+                href="https://aiforui.dev/skills"
+                target="_blank"
+                rel="noreferrer"
+              >
+                AI for UI
+              </a>
+              .
+            </p>
           </section>
         </div>
       </div>

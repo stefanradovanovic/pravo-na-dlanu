@@ -1,7 +1,12 @@
+@layer ui-sdk;
 @import "tailwindcss";
+@import "@fontsource-variable/ibm-plex-sans/wght.css";
+@import "@fontsource-variable/literata/wght.css";
+@import "@fontsource-variable/literata/wght-italic.css";
 @import "tw-animate-css";
 @import "./vendor/shadcn-tailwind.css";
 @import "./design-tokens.css";
+@import "./components.css";
 
 @custom-variant dark (&:is(.dark *));
 

@@ -32,41 +32,43 @@ export function LawExamples({
       className="law-examples"
       aria-label="Примери из живота"
     >
-      <div className="educational-note">
-        <Info size={16} />
-        <p>
-          <strong>Напомена о примерима:</strong> Измишљени, поједностављени
-          примери служе учењу и нису правни савет нити део текста закона.
-          Објашњења су машински припремљени уреднички нацрти, без стручне правне
-          рецензије. Не утврђују одговорност стварне особе; за конкретан случај
-          обратите се квалификованом правном стручњаку.
-        </p>
-      </div>
-      {learningHref && (
-        <div className="reader-learning-link">
-          <span>Примените правило на кратку животну ситуацију.</span>
-          <a
-            href={learningHref}
-            className={buttonVariants({ variant: "outline" })}
-          >
-            Учи и провери знање →
-          </a>
-        </div>
-      )}
-      {heldExamples > 0 && (
-        <p className="learning-notice">
-          Примери на поновној провери: {heldExamples}. Извор или веза ка члану
-          више не одговарају сачуваном објашњењу. Ти примери су привремено
-          изостављени; цео текст прописа остаје доступан.
-        </p>
-      )}
-      {examples.length > 0 && (
-        <Accordion>
-          <AccordionItem value="examples">
-            <AccordionTrigger>
-              Примери из живота · {examples.length}
-            </AccordionTrigger>
-            <AccordionContent>
+      <Accordion>
+        <AccordionItem value="examples">
+          <AccordionTrigger>
+            Примери из живота · {examples.length}{" "}
+            <span className="examples-label">Уреднички садржај</span>
+          </AccordionTrigger>
+          <AccordionContent>
+            <div className="educational-note">
+              <Info size={16} />
+              <p>
+                <strong>Напомена о примерима:</strong> Измишљени,
+                поједностављени примери служе учењу и нису правни савет нити део
+                текста закона. Објашњења су машински припремљени уреднички
+                нацрти, без стручне правне рецензије. Не утврђују одговорност
+                стварне особе; за конкретан случај обратите се квалификованом
+                правном стручњаку.
+              </p>
+            </div>
+            {learningHref && (
+              <div className="reader-learning-link">
+                <span>Примените правило на кратку животну ситуацију.</span>
+                <a
+                  href={learningHref}
+                  className={buttonVariants({ variant: "outline" })}
+                >
+                  Учи и провери знање →
+                </a>
+              </div>
+            )}
+            {heldExamples > 0 && (
+              <p className="learning-notice">
+                Примери на поновној провери: {heldExamples}. Извор или веза ка
+                члану више не одговарају сачуваном објашњењу. Ти примери су
+                привремено изостављени; цео текст прописа остаје доступан.
+              </p>
+            )}
+            {examples.length > 0 && (
               <div className="examples-grid">
                 {examples.map(({ article, example, sourceHref }, index) => (
                   <ExampleCard
@@ -79,10 +81,10 @@ export function LawExamples({
                   />
                 ))}
               </div>
-            </AccordionContent>
-          </AccordionItem>
-        </Accordion>
-      )}
+            )}
+          </AccordionContent>
+        </AccordionItem>
+      </Accordion>
     </section>
   );
 }
