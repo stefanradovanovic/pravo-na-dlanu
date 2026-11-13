@@ -77,7 +77,7 @@ test("home offers direct routes to new citizen topics and the reading guide", as
   }
   await page.goto("/");
   await page
-    .locator(".home-learning-link")
+    .locator(".citizen-help-links")
     .getByRole("link", { name: "Како читати закон" })
     .click();
   await expect(page).toHaveURL(/\/vodic$/);

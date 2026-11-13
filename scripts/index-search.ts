@@ -23,7 +23,7 @@ try {
       ),
       language: "sr",
       meta: { id: record.id, title: record.title },
-      filters: { law: [record.id] },
+      filters: { law: [record.id], category: record.categories },
     });
     if (errors.length) throw new Error(`${record.id}: ${errors.join("\n")}`);
     count++;

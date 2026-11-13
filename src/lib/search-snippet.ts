@@ -41,9 +41,29 @@ function normalizedOffsets(text: string, limit: number) {
 export function findSearchSnippet(
   passages: SearchPassage[],
   query: string,
+  phrase = true,
 ): SearchSnippet | null {
   const needle = normalizeSearch(query);
   if (!needle) return null;
+  if (!phrase) {
+    const exact = findSearchSnippet(passages, needle, true);
+    if (exact) return exact;
+    const words = [...new Set(needle.split(" "))];
+    const candidates = passages
+      .map((passage) => {
+        const terms = normalizeSearch(passage.text).split(" ");
+        const matched = words.filter((word) =>
+          terms.some((term) => term.startsWith(word)),
+        );
+        return { passage, matched };
+      })
+      .filter(({ matched }) => matched.length)
+      .sort((a, b) => b.matched.length - a.matched.length);
+    const best = candidates[0];
+    return best
+      ? findSearchSnippet([best.passage], best.matched[0], true)
+      : null;
+  }
   for (const passage of passages) {
     const normalized = normalizeSearch(passage.text);
     const position = normalized.startsWith(needle)

@@ -366,6 +366,12 @@ export function LearningWorkspace({ catalog }: { catalog: LearningCatalog }) {
                   <h2>{topic.title}</h2>
                   <p>{topic.description}</p>
                   <div className="learning-actions">
+                    <Button
+                      disabled={!ready || !modeAvailable}
+                      onClick={() => start(mode, topic.id)}
+                    >
+                      Почни кратку вежбу <ArrowRight />
+                    </Button>
                     <a
                       href="#vezba"
                       className={buttonVariants({ variant: "outline" })}

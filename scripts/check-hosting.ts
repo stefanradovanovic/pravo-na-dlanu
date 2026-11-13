@@ -2,6 +2,7 @@ import fs from "node:fs/promises";
 import path from "node:path";
 import assert from "node:assert/strict";
 import { getRegistry } from "../src/lib/registry";
+import { staticSegmentAlias } from "./static-segments";
 
 const root = path.resolve("out");
 const files: { file: string; bytes: number }[] = [];
@@ -18,6 +19,11 @@ async function walk(folder: string) {
 }
 await walk(root);
 const paths = new Set(files.map((file) => file.file));
+for (const { file } of files) {
+  const alias = staticSegmentAlias(file);
+  if (alias)
+    assert.ok(paths.has(alias), `Missing client navigation segment: ${alias}`);
+}
 const registry = getRegistry();
 assert.ok(paths.has("index.html"), "Missing static homepage");
 assert.ok(paths.has("404.html"), "Missing static 404 page");

@@ -1,5 +1,6 @@
 import { spawnSync } from "node:child_process";
 import path from "node:path";
+import { normalizeStaticSegments } from "./static-segments";
 
 // Keep development's Next.js reader while production uses ordinary HTML pages.
 const env: NodeJS.ProcessEnv = {
@@ -15,3 +16,6 @@ for (const args of [
   if (result.error) throw result.error;
   if (result.status !== 0) process.exit(result.status ?? 1);
 }
+console.log(
+  `Normalized ${await normalizeStaticSegments("out")} static navigation segments.`,
+);

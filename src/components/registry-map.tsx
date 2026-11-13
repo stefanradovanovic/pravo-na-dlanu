@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, useSyncExternalStore } from "react";
 import {
   ReactFlow,
   Background,
@@ -25,9 +25,18 @@ import {
   Maximize,
   Minimize,
 } from "lucide-react";
-import type { RegistryRecord } from "@/lib/registry-types";
+import type { CatalogRecord } from "@/lib/catalog";
 import { categoryLabel, lawPath } from "@/lib/registry-types";
 import { documentUrl } from "@/lib/explorer-url";
+import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import "@xyflow/react/dist/style.css";
 type Data = {
   label: string;
@@ -95,7 +104,7 @@ function MembershipEdge({
 }
 const edgeTypes = { membership: MembershipEdge };
 function FitCanvas() {
-  const { fitView } = useReactFlow();
+  const { fitView, getNodes } = useReactFlow();
   const ready = useNodesInitialized();
   const width = useStore((state) => state.width);
   const height = useStore((state) => state.height);
@@ -103,11 +112,20 @@ function FitCanvas() {
     if (!ready) return;
     let frame = requestAnimationFrame(() => {
       frame = requestAnimationFrame(() => {
-        void fitView({ padding: 0.12 });
+        void fitView(
+          width < 600
+            ? {
+                nodes: getNodes().slice(0, 3),
+                padding: 0.12,
+                minZoom: 0.7,
+                maxZoom: 1,
+              }
+            : { padding: 0.12 },
+        );
       });
     });
     return () => cancelAnimationFrame(frame);
-  }, [width, height, ready, fitView]);
+  }, [width, height, ready, fitView, getNodes]);
   return null;
 }
 export function RegistryMap({
@@ -121,7 +139,7 @@ export function RegistryMap({
   returnTo,
 }: {
   categories: { name: string; count: number }[];
-  records: RegistryRecord[];
+  records: CatalogRecord[];
   category: string;
   onCategory: (s: string) => void;
   total: number;
@@ -130,23 +148,6 @@ export function RegistryMap({
   returnTo: string;
 }) {
   const [fullscreen, setFullscreen] = useState(false);
-  useEffect(() => {
-    const onKey = (event: KeyboardEvent) => {
-      if (event.key === "Escape") setFullscreen(false);
-    };
-    document.addEventListener("keydown", onKey);
-    return () => {
-      document.removeEventListener("keydown", onKey);
-    };
-  }, []);
-  useEffect(() => {
-    if (!fullscreen) return;
-    const previous = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
-    return () => {
-      document.body.style.overflow = previous;
-    };
-  }, [fullscreen]);
   const { nodes, edges } = useMemo(() => {
     const nodes: MapNode[] = [];
     const edges: Edge[] = [];
@@ -240,6 +241,99 @@ export function RegistryMap({
     }
     return { nodes, edges };
   }, [categories, category, records, total, onCategory, returnTo]);
+  const props = {
+    nodes,
+    edges,
+    categories,
+    category,
+    total,
+    page,
+    onPage,
+    onCategory,
+  };
+  return (
+    <Dialog open={fullscreen} onOpenChange={setFullscreen}>
+      <RegistryMapView {...props} />
+      <DialogContent
+        className="map-dialog"
+        style={{ translate: "0 0" }}
+        showCloseButton={false}
+        initialFocus={() =>
+          document.querySelector<HTMLElement>(
+            ".map-dialog [data-slot=dialog-close]",
+          )
+        }
+      >
+        <DialogTitle className="sr-only">
+          Мапа правних области и закона
+        </DialogTitle>
+        <DialogDescription className="sr-only">
+          Изаберите област, затим закон. Притисните Escape за повратак на
+          збирку.
+        </DialogDescription>
+        <RegistryMapView {...props} fullscreen />
+      </DialogContent>
+    </Dialog>
+  );
+}
+
+function subscribeToMapWidth(callback: () => void) {
+  const media = window.matchMedia("(max-width: 600px)");
+  media.addEventListener("change", callback);
+  return () => media.removeEventListener("change", callback);
+}
+function RegistryMapView({
+  nodes,
+  edges,
+  categories,
+  category,
+  total,
+  page,
+  onPage,
+  onCategory,
+  fullscreen = false,
+}: {
+  nodes: MapNode[];
+  edges: Edge[];
+  categories: { name: string; count: number }[];
+  category: string;
+  total: number;
+  page: number;
+  onPage: (page: number) => void;
+  onCategory: (category: string) => void;
+  fullscreen?: boolean;
+}) {
+  const compact = useSyncExternalStore(
+    subscribeToMapWidth,
+    () => window.matchMedia("(max-width: 600px)").matches,
+    () => false,
+  );
+  const displayedNodes = useMemo(
+    () =>
+      compact
+        ? nodes.map((node, index) => ({
+            ...node,
+            position: { x: 0, y: index * 168 },
+            data: {
+              ...node.data,
+              sourcePosition: index === 0 ? Position.Bottom : undefined,
+            },
+          }))
+        : nodes,
+    [compact, nodes],
+  );
+  const initialFit = useMemo(
+    () =>
+      compact
+        ? {
+            nodes: displayedNodes.slice(0, 3),
+            padding: 0.12,
+            minZoom: 0.7,
+            maxZoom: 1,
+          }
+        : { padding: 0.12 },
+    [compact, displayedNodes],
+  );
   return (
     <div className={`map-shell${fullscreen ? " is-fullscreen" : ""}`}>
       <div className="map-labels">
@@ -249,18 +343,20 @@ export function RegistryMap({
       </div>
       <div className="map-canvas registry-canvas">
         <ReactFlow
-          key={`${category}-${page}-${fullscreen}`}
-          nodes={nodes}
+          nodes={displayedNodes}
           edges={edges}
           nodeTypes={nodeTypes}
           edgeTypes={edgeTypes}
+          edgesFocusable={false}
+          defaultEdgeOptions={{ domAttributes: { "aria-hidden": true } }}
+          fitView
+          fitViewOptions={initialFit}
           ariaLabelConfig={{
             "controls.fitView.ariaLabel": "Прикажи целу мапу",
             "controls.zoomIn.ariaLabel": "Увећај мапу",
             "controls.zoomOut.ariaLabel": "Умањи мапу",
+            "controls.ariaLabel": "Контроле мапе",
           }}
-          fitView
-          fitViewOptions={{ padding: 0.12 }}
           minZoom={0.25}
           maxZoom={1.5}
           nodesDraggable={false}
@@ -269,15 +365,15 @@ export function RegistryMap({
           <FitCanvas />
           <Background color="var(--border)" gap={20} size={1} />
           <Panel position="top-right">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => setFullscreen((value) => !value)}
-              aria-pressed={fullscreen}
-            >
-              {fullscreen ? <Minimize size={16} /> : <Maximize size={16} />}
-              {fullscreen ? "Смањи приказ" : "Цео екран"}
-            </Button>
+            {fullscreen ? (
+              <DialogClose render={<Button variant="outline" size="sm" />}>
+                <Minimize /> Смањи приказ
+              </DialogClose>
+            ) : (
+              <DialogTrigger render={<Button variant="outline" size="sm" />}>
+                <Maximize /> Цео екран
+              </DialogTrigger>
+            )}
           </Panel>
           {category !== "all" && (
             <Panel position="top-left">
@@ -310,7 +406,6 @@ export function RegistryMap({
     </div>
   );
 }
-import { Button } from "@/components/ui/button";
 function MapPager({
   page,
   total,

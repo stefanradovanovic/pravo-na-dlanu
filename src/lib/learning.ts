@@ -1,4 +1,5 @@
 import type { QuestionContent } from "./learning-schema";
+import { normalizeSearch } from "./search";
 
 export const learningTopics = [
   {
@@ -20,7 +21,7 @@ export const learningTopics = [
     description: "Од разговора за посао до зараде и годишњег одмора.",
     lawId: "zakon-o-radu",
     keywords:
-      "посао запослење плата зарада одмор уговор разговор послодавац радник",
+      "посао запослење плата плате зарада одмор годишњи уговор разговор послодавац радник",
     outcomes: [
       "Препознајте правила о запошљавању и уговору.",
       "Пронађите одредбе о заради и одмору.",
@@ -67,6 +68,22 @@ export const learningTopics = [
     ],
   },
 ] as const;
+
+/** Editorial discovery uses familiar words, separately from legal-text search. */
+export function searchLearningTopics(query: string) {
+  const words = normalizeSearch(query).split(" ").filter(Boolean);
+  if (!words.length) return [];
+  return learningTopics.filter((topic) => {
+    const terms = normalizeSearch(
+      `${topic.title} ${topic.description} ${topic.keywords} ${topic.outcomes.join(" ")}`,
+    ).split(" ");
+    return words.every((word) =>
+      terms.some((term) =>
+        word.length < 3 ? term === word : term.startsWith(word),
+      ),
+    );
+  });
+}
 export type LearningTopicId = (typeof learningTopics)[number]["id"];
 export type LearningMode = "practice" | "what-if" | "research" | "review";
 export const modeLabels: Record<LearningMode, string> = {

@@ -192,7 +192,12 @@ test("query, category, view and pagination survive reload and history navigation
   await expect(page.locator(".catalog-pagination")).toContainText("2 /");
   await page.goForward();
   await expect(page.locator(".catalog-pagination")).toContainText("3 /");
-  await page.locator(".category-link").first().click();
+  if (page.viewportSize()!.width <= 800) {
+    await page.getByRole("combobox", { name: "Правна област" }).click();
+    await page.getByRole("option").nth(1).click();
+  } else {
+    await page.locator(".category-link").first().click();
+  }
   expect(new URL(page.url()).searchParams.has("category")).toBe(true);
   expect(new URL(page.url()).searchParams.has("page")).toBe(false);
   await page.reload();

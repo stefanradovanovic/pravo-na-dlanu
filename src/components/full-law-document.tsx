@@ -71,29 +71,57 @@ export function FullLawDocument({
           </span>
         </div>
       </div>
-      <div className="source-banner">
-        <Info size={18} />
-        <div>
-          <strong>Правно-информациони систем Републике Србије</strong>
-          <p>{scan?.version ?? record.citation}</p>
-          <small>
-            {scan?.coverage ??
-              record.sourceNote ??
-              (sourceOnly
-                ? "Оригинално службено гласило може садржати више аката. Овај запис представља само наведени закон."
-                : "Пренет је цео доступни HTML текст ПИС-а, укључујући напомене извора. Прилози и слике остају на извору.")}{" "}
-            Датум преузимања не представља правну потврду важења.
-          </small>
-        </div>
-        <a
-          href={scan?.sourceUrl ?? record.sourceUrl}
-          target="_blank"
-          rel="noreferrer"
-        >
-          Провери извор <ArrowUpRight size={14} />
-        </a>
+      <div className="reader-entry-actions">
+        {!sourceOnly && !scan && (
+          <a
+            href="#tekst-zakona"
+            className={buttonVariants({ variant: "default" })}
+          >
+            <BookOpen /> Читај закон
+          </a>
+        )}
+        {examples && (
+          <a
+            href="#primeri-iz-zivota"
+            className={buttonVariants({ variant: "outline" })}
+          >
+            Примери и објашњења
+          </a>
+        )}
       </div>
-      {examples && renderControl({ kind: "examples", ...examples })}
+      <details className="reader-source-details" open={sourceOnly || !!scan}>
+        <summary>Извор, верзија и обухват</summary>
+        <div className="source-banner">
+          <Info size={18} />
+          <div>
+            <strong>Правно-информациони систем Републике Србије</strong>
+            <p>
+              <a href="/vodic#pojam-verzija">Верзија извора</a>:{" "}
+              {scan?.version ?? record.citation}
+            </p>
+            <small>
+              {scan?.coverage ??
+                record.sourceNote ??
+                (sourceOnly
+                  ? "Оригинално службено гласило може садржати више аката. Овај запис представља само наведени закон."
+                  : "Пренет је цео доступни HTML текст ПИС-а, укључујући напомене извора. Прилози и слике остају на извору.")}{" "}
+              Датум преузимања не представља правну потврду важења.
+            </small>
+            <p className="reader-source-help">
+              <a href="/vodic#pojam-datum">Шта значи датум преузимања?</a>
+              {" · "}
+              <a href="/vodic#pojam-obuhvat">Шта обухват укључује?</a>
+            </p>
+          </div>
+          <a
+            href={scan?.sourceUrl ?? record.sourceUrl}
+            target="_blank"
+            rel="noreferrer"
+          >
+            Провери извор <ArrowUpRight size={14} />
+          </a>
+        </div>
+      </details>
       <div className="document-toolbar">
         <div>
           <BookOpen size={16} />
@@ -137,7 +165,11 @@ export function FullLawDocument({
         <div className={headings.length ? "law-reading-layout" : undefined}>
           {headings.length > 0 &&
             renderControl({ kind: "navigation", headings })}
-          <article id="tekst-zakona" className="legal-text complete-legal-text">
+          <article
+            id="tekst-zakona"
+            tabIndex={-1}
+            className="legal-text complete-legal-text"
+          >
             <ReactMarkdown
               remarkPlugins={[remarkGfm, remarkArticleSubtitles]}
               rehypePlugins={[rehypeRaw, [rehypeSanitize, legalTextSchema]]}
@@ -180,6 +212,7 @@ export function FullLawDocument({
           </article>
         </div>
       )}
+      {examples && renderControl({ kind: "examples", ...examples })}
       <div className="educational-note">
         <Info size={16} />
         <p>

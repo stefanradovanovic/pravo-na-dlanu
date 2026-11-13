@@ -25,9 +25,13 @@ npm start
 
 ## Reading and search navigation
 
-HTML laws have an article contents panel and shareable fragments such as `#clan-12a`. Repeated article numbers in amendment texts receive occurrence suffixes (`#clan-1-2`); the source text stays in one document. Scan readers retain their existing page navigation.
+HTML laws have an article contents panel with source captions, section jumps, and search by article number or words in the law. The “Читај закон” link skips directly to the continuous source text; source/version/coverage details remain available in a native disclosure, and fictional examples follow the law. Shareable fragments such as `#clan-12a` are unchanged. Repeated article numbers in amendment texts receive occurrence suffixes (`#clan-1-2`). Scan readers retain their existing page navigation.
 
-Search URLs preserve `q`, `category`, `mode`, `view`, and the one-based `page`. Result links carry a validated local `returnTo` URL. Full-text results lazily load original-script excerpts for visible laws and link to the matching article. These excerpts are derived search assets, not separate law documents. The index and excerpts are rebuilt together by `npm run search:index`.
+The catalogue defaults to a list; `view=map` opens the optional map. Mobile category selection uses the shared Select primitive, and fullscreen maps use Dialog for keyboard focus and Escape handling. Only the fields used by the catalogue are serialized to the browser.
+
+Search URLs preserve `q`, `category`, `mode`, `view`, and the one-based `page`. Title search is the default; `mode=full` searches words and preserves Pagefind relevance order, while `mode=phrase` searches an exact phrase. Empty title searches offer full-text recovery without clearing the query. Everyday queries also suggest clearly separated editorial topics and their source laws. Result links carry a validated local `returnTo` URL. Full-text results lazily load metadata and original-script excerpts for visible laws and link to the matching article. These excerpts are derived search assets, not separate law documents. The index, category filters and excerpts are rebuilt together by `npm run search:index`.
+
+The static build normalizes nested Windows segment export paths into the dotted filenames requested by Next's client navigation. `hosting:check` validates those aliases; the adapter is idempotent and rejects collisions without modifying dependencies.
 
 After building, run the desktop/mobile browser checks with `npx playwright install chromium` followed by `npm run test:e2e`. To use an installed Edge browser instead, set `PLAYWRIGHT_CHANNEL=msedge`. The tests serve the static export on port 3027.
 
@@ -47,11 +51,11 @@ All scenarios are fictional and the explanations remain machine-prepared editori
 
 ## Content and sources
 
-- One law = one Markdown document in `content/corpus/` and one canonical `/propisi/{id}` page.
+- One law = one Markdown document in `content/corpus/` and one canonical `/propisi/{slug}` page.
 - Official register categories connect to laws on the canvas. Articles stay headings within a continuous document.
 - `content/registry.json` records exact coverage, source IDs, citations, checksums and retrieval dates.
 - The catalog covers records classified as Закон or Устав in PIS's current national and education registers (458, 459): domestic laws and the Constitution. Treaty register 206 and the historical Gazette archive are excluded. Older laws still in the current register are retained; publication year alone does not determine legal status.
-- The snapshot contains 846 documents, all readable in the app: 845 whole HTML bodies and one complete local scan. One incorrect PIS HTML response is quarantined; the correct law is displayed from its PIS Gazette scan with explicit page provenance. Each scan keeps one Markdown document and reader, backed by local PDF assets. Body search covers HTML texts; scans are searchable by title and citation. Linked HTML attachments are not locally archived.
+- The snapshot contains 846 documents, all readable in the app: 845 whole HTML bodies and one complete local scan. One incorrect PIS HTML response is quarantined; the correct law is displayed from its PIS Gazette scan with explicit page provenance. Each scan keeps one Markdown document and reader, backed by local PDF assets. Body search covers HTML texts; scans are searchable by title. Linked HTML attachments are not locally archived.
 - Learning examples are explicitly fictional, machine-prepared editorial drafts, not professionally reviewed legal advice. Their source references lead to complete laws.
 
 Legal sources are **PIS only**. No alternate publishers or Parliament fallbacks are used.

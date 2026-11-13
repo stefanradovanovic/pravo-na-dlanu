@@ -38,8 +38,7 @@ test("catalog opens a standalone reader with working examples, copy and print", 
     )
       errors.push(message.text());
   });
-  // The generic static server does not implement Next's unrelated catalog
-  // prefetch rewrites. Check every reader request independently of those.
+  // Reader documents and assets must all work on a generic static server.
   page.on("response", (response) => {
     if (
       response.status() >= 400 &&
@@ -55,7 +54,7 @@ test("catalog opens a standalone reader with working examples, copy and print", 
     .locator(".law-list-row")
     .getByRole("link", { name: "Закон о раду", exact: true })
     .click();
-  await expect(page).toHaveURL(/\/propisi\/zakon-o-radu$/);
+  await expect(page).toHaveURL(/\/propisi\/zakon-o-radu\?returnTo=/);
   await expect(page.locator(".current-article")).toBeVisible();
   expect(
     requests.some((url) =>

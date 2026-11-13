@@ -9,8 +9,18 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import type { ArticleHeading } from "@/lib/document-navigation";
+import {
+  filterArticleHeadings,
+  type ArticleHeading,
+} from "@/lib/document-navigation";
 import { normalizeSearch } from "@/lib/search";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 export function ArticleNavigation({
   headings,
@@ -25,6 +35,7 @@ export function ArticleNavigation({
   const list = useRef<HTMLUListElement>(null);
   const navigation = useRef<HTMLElement>(null);
   const selectedPosition = useRef<{ index: number; y: number } | null>(null);
+  const [bodyIndex, setBodyIndex] = useState<Map<string, string> | null>(null);
 
   useEffect(() => {
     const media = window.matchMedia("(min-width: 1024px)");
@@ -129,9 +140,35 @@ export function ArticleNavigation({
   const number = normalizeSearch(query)
     .replace(/^clan\s*/, "")
     .replaceAll(" ", "");
-  const visible = headings.filter(
-    (heading) => !number || heading.id.split("-")[1] === number,
+  const visible = filterArticleHeadings(
+    headings,
+    query,
+    bodyIndex ?? undefined,
   );
+  const sections = headings.filter(
+    (heading, index) =>
+      heading.section && heading.section !== headings[index - 1]?.section,
+  );
+  function search(value: string) {
+    // Read the existing legal text once, on demand; never serialize a second copy.
+    if (!bodyIndex && value.trim()) {
+      const index = new Map<string, string>();
+      let id: string | undefined;
+      let parts: string[] = [];
+      for (const element of document.querySelector("#tekst-zakona")?.children ??
+        []) {
+        if (element.matches("h2[id]")) {
+          if (id) index.set(id, normalizeSearch(parts.join(" ")));
+          id = element.id;
+          parts = [];
+        }
+        if (id) parts.push(element.textContent ?? "");
+      }
+      if (id) index.set(id, normalizeSearch(parts.join(" ")));
+      setBodyIndex(index);
+    }
+    setQuery(value);
+  }
   function jump(id: string) {
     setOpen([]);
     requestAnimationFrame(() => {
@@ -169,6 +206,7 @@ export function ArticleNavigation({
     <nav
       ref={navigation}
       className="article-navigation"
+      id="sadrzaj-zakona"
       aria-label="Садржај закона"
     >
       <div className="reading-controls">
@@ -264,7 +302,7 @@ export function ArticleNavigation({
             <form
               onSubmit={(event) => {
                 event.preventDefault();
-                if (number && visible.length === 1) {
+                if (number && visible.length > 0) {
                   window.location.hash = visible[0].id;
                   jump(visible[0].id);
                 }
@@ -273,20 +311,60 @@ export function ArticleNavigation({
               <label htmlFor="article-number">Иди на члан</label>
               <Input
                 id="article-number"
-                placeholder="Број члана, нпр. 12 или 12а"
+                placeholder="Број члана или речи у закону"
                 value={query}
-                onChange={(event) => setQuery(event.target.value)}
+                onChange={(event) => search(event.target.value)}
                 aria-describedby="article-jump-help"
               />
               <p id="article-jump-help" className="article-jump-help">
-                Унесите број и притисните Enter, или изаберите члан испод.
+                Број (12, 12а) или речи, нпр. „одмор“. Enter отвара први
+                резултат.
               </p>
             </form>
+            {sections.length > 1 && (
+              <div className="article-section-select">
+                <label id="article-section-label">Одељак закона</label>
+                <Select
+                  value={null}
+                  onValueChange={(id) => {
+                    if (id) {
+                      window.location.hash = id;
+                      jump(id);
+                    }
+                  }}
+                >
+                  <SelectTrigger
+                    aria-labelledby="article-section-label"
+                    className="w-full"
+                  >
+                    <SelectValue placeholder="Изаберите одељак" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {sections.map((heading) => (
+                      <SelectItem key={heading.id} value={heading.id}>
+                        <span className="whitespace-normal">
+                          {heading.section}
+                        </span>
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            )}
+            {query && visible.length > 0 && (
+              <p role="status" className="article-jump-help">
+                Пронађено чланова: {visible.length}
+              </p>
+            )}
             <ul ref={list}>
               {visible.map((heading) => (
                 <li key={heading.id}>
                   <a
                     href={`#${heading.id}`}
+                    aria-label={heading.label}
+                    aria-describedby={
+                      heading.subtitle ? `nav-caption-${heading.id}` : undefined
+                    }
                     aria-current={
                       headings[active]?.id === heading.id
                         ? "location"
@@ -295,11 +373,25 @@ export function ArticleNavigation({
                     onClick={(event) => follow(event, heading.id)}
                   >
                     {heading.label}
+                    {heading.subtitle && (
+                      <span
+                        id={`nav-caption-${heading.id}`}
+                        className="article-nav-caption"
+                      >
+                        {heading.subtitle}
+                      </span>
+                    )}
                   </a>
                 </li>
               ))}
             </ul>
-            {!visible.length && <p role="status">Нема члана са тим бројем.</p>}
+            {!visible.length && (
+              <p role="status">
+                {/^\d+[a-z]*$/.test(number)
+                  ? "Нема члана са тим бројем."
+                  : "Нема чланова са тим речима. Пробајте краћу реч или број члана."}
+              </p>
+            )}
           </AccordionContent>
         </AccordionItem>
       </Accordion>

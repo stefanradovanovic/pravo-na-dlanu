@@ -16,6 +16,43 @@
   flex-wrap: wrap;
   gap: 10px;
 }
+.citizen-help-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3) var(--space-6);
+  margin-top: var(--space-4);
+}
+.catalog-mobile-filter {
+  display: none;
+}
+.catalog-mobile-filter label {
+  display: block;
+  margin-bottom: var(--space-2);
+}
+.search-topics {
+  margin-block: var(--space-4) var(--space-6);
+}
+.search-topics h2 {
+  font-weight: 600;
+}
+.search-topics > p {
+  color: var(--muted-foreground);
+  font-size: var(--text-caption);
+  margin-block: var(--space-2) var(--space-3);
+}
+.search-topic-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-4);
+}
+.search-topic-links > div {
+  display: grid;
+  gap: var(--space-2);
+  justify-items: start;
+}
+.search-topic-links .text-link {
+  font-size: var(--text-caption);
+}
 .learning-orientation {
   display: flex;
   align-items: center;
@@ -2130,6 +2167,23 @@ a {
   min-height: 0;
   height: auto;
 }
+.map-dialog[data-slot="dialog-content"] {
+  inset: 0;
+  width: 100vw;
+  max-width: none;
+  height: 100dvh;
+  translate: none;
+  transform: none;
+  border-radius: 0;
+  padding: 0;
+  gap: 0;
+}
+.map-dialog .map-shell.is-fullscreen {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  z-index: auto;
+}
 .scan-toolbar form {
   display: flex;
   align-items: center;
@@ -2494,6 +2548,43 @@ a {
   color: var(--accent-foreground);
   font-weight: 600;
 }
+.article-nav-caption {
+  display: block;
+  margin-top: var(--space-1);
+  font-size: var(--text-caption);
+  font-weight: 400;
+}
+.article-section-select {
+  margin-bottom: var(--space-3);
+}
+.reader-entry-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  margin-block: var(--space-4);
+}
+.reader-source-details {
+  margin-block: var(--space-4);
+}
+.reader-source-details > summary {
+  cursor: pointer;
+  font-size: var(--text-body);
+  font-weight: 600;
+}
+.reader-source-details .source-banner {
+  margin-block: var(--space-3);
+}
+.reader-source-details .source-banner div a {
+  display: inline;
+  text-decoration: underline;
+  white-space: normal;
+}
+.reader-source-help {
+  font-size: var(--text-caption);
+}
+.complete-legal-text {
+  scroll-margin-top: var(--reader-navigation-offset, 100px);
+}
 .article-navigation-desktop {
   display: none;
 }
@@ -2521,7 +2612,7 @@ a {
     color: var(--muted-foreground);
   }
   .article-navigation ul {
-    max-height: calc(100dvh - 390px);
+    max-height: max(120px, calc(100dvh - 490px));
     overscroll-behavior: contain;
   }
   .article-navigation-mobile {
@@ -2566,6 +2657,75 @@ a {
   color: var(--highlight-foreground);
   font-weight: 600;
 }
+/* Compact entry points keep search, topics and the law within easy reach. */
+.page-intro.catalog-intro,
+.page-intro.learning-intro {
+  padding-block: var(--space-6);
+}
+.page-intro.catalog-intro h1,
+.page-intro.learning-intro h1 {
+  font-size: clamp(28px, 3.5vw, 42px);
+  margin-top: var(--space-3);
+  letter-spacing: -0.8px;
+}
+.page-intro.catalog-intro > p,
+.page-intro.learning-intro > p {
+  margin-top: var(--space-3);
+  font-size: var(--text-body);
+  line-height: var(--leading-body);
+}
+.catalog-intro .search-wrap {
+  margin-top: var(--space-4);
+}
+.page-intro > .catalog-search-help {
+  font-size: var(--text-caption);
+  margin-top: var(--space-2);
+}
+.catalog-intro .suggestions {
+  flex-wrap: wrap;
+}
+.catalog-page .empty-state {
+  min-height: 0;
+  padding-block: var(--space-8);
+}
+@media (max-width: 800px) {
+  .catalog-page .registry-sidebar {
+    display: none;
+  }
+  .catalog-mobile-filter {
+    display: block;
+    margin-block: var(--space-4);
+  }
+  .catalog-mobile-filter [data-slot="select-value"] {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .citizen-start {
+    margin-bottom: var(--space-4);
+    padding-bottom: var(--space-4);
+  }
+  .catalog-intro .suggestions > [data-slot="tabs"] {
+    flex-basis: 100%;
+  }
+  .catalog-intro .suggestions [data-slot="tabs-list"] {
+    margin-inline: auto;
+  }
+  .catalog-page.is-searching .catalog-intro > .eyebrow,
+  .catalog-page.is-searching .catalog-intro > p:not(.catalog-search-help) {
+    display: none;
+  }
+  .catalog-page.is-searching .catalog-intro {
+    padding-block: var(--space-3);
+  }
+  .catalog-page.is-searching .catalog-intro h1 {
+    font-size: var(--text-title);
+    margin-top: 0;
+  }
+  .article-navigation ul {
+    max-height: 28dvh;
+  }
+}
 @media print {
   .law-reading-layout {
     display: block;
@@ -2573,5 +2733,13 @@ a {
   .article-navigation,
   .article-permalink {
     display: none !important;
+  }
+  .reader-entry-actions,
+  .reader-source-details > summary {
+    display: none !important;
+  }
+  .reader-source-details::details-content {
+    display: block;
+    content-visibility: visible;
   }
 }

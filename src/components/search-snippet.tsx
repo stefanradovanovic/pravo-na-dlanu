@@ -12,18 +12,20 @@ export function SearchSnippet({
   href,
   query,
   returnTo,
+  phrase = false,
 }: {
   id: string;
   href: string;
   query: string;
   returnTo: string;
+  phrase?: boolean;
 }) {
   const [result, setResult] = useState<{
     key: string;
     snippet: Snippet | null;
     error?: boolean;
   }>();
-  const key = `${id}:${query}`;
+  const key = `${id}:${query}:${phrase}`;
   useEffect(() => {
     const controller = new AbortController();
     async function load() {
@@ -34,7 +36,7 @@ export function SearchSnippet({
         );
         if (!response.ok) throw new Error("Snippet unavailable");
         const passages: SearchPassage[] = await response.json();
-        const snippet = findSearchSnippet(passages, query);
+        const snippet = findSearchSnippet(passages, query, phrase);
         if (!controller.signal.aborted) setResult({ key, snippet });
       } catch {
         if (!controller.signal.aborted)
@@ -43,7 +45,7 @@ export function SearchSnippet({
     }
     void load();
     return () => controller.abort();
-  }, [id, query, key]);
+  }, [id, query, key, phrase]);
   if (result?.key !== key)
     return (
       <p className="search-snippet" role="status">

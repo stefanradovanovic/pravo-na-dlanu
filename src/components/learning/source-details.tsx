@@ -20,6 +20,11 @@ export function SourceDetails({ source }: { source: LearningSource }) {
         <summary>Извор, верзија и обухват</summary>
         <p>{source.version}</p>
         <p>
+          <a href="/vodic#pojam-verzija" className="text-link">
+            Како читати верзију извора?
+          </a>
+        </p>
+        <p>
           Извор преузет: {source.accessedAt}. Поређење са извором за питања:{" "}
           {source.checkedAt}.
         </p>

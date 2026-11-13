@@ -18,11 +18,20 @@ import { Button, buttonVariants } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { normalizeSearch, searchLawTitles } from "@/lib/search";
-import { categoryLabel, lawPath, type Registry } from "@/lib/registry-types";
+import { categoryLabel, lawPath } from "@/lib/registry-types";
+import type { Catalog, CatalogRecord } from "@/lib/catalog";
+import { searchFullText, type SearchEngine } from "@/lib/full-text-search";
 import { useExplorerLocation } from "./explorer-location";
 import { documentUrl, explorerUrl } from "@/lib/explorer-url";
 import { SearchSnippet } from "./search-snippet";
-import { learningTopics } from "@/lib/learning";
+import { learningTopics, searchLearningTopics } from "@/lib/learning";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 const RegistryMap = dynamic(
   () => import("./registry-map").then((m) => m.RegistryMap),
   {
@@ -30,28 +39,18 @@ const RegistryMap = dynamic(
     loading: () => <div className="map-loading">Учитавање мапе закона…</div>,
   },
 );
-type SearchHit = { id: string };
-type SearchModule = {
-  filters: () => Promise<unknown>;
-  search: (
-    query: string,
-  ) => Promise<{ filters: { law: Record<string, number> } }>;
-};
-let searchModule: Promise<SearchModule> | undefined;
+let searchModule: Promise<SearchEngine> | undefined;
 function loadSearch() {
   const modulePath = "/pagefind/pagefind.js";
-  return (searchModule ??= import(/* webpackIgnore: true */ modulePath)
-    .then(async (engine) => {
-      await engine.filters();
-      return engine;
-    })
-    .catch((error) => {
+  return (searchModule ??= import(/* webpackIgnore: true */ modulePath).catch(
+    (error) => {
       searchModule = undefined;
       throw error;
-    }) as Promise<SearchModule>);
+    },
+  ) as Promise<SearchEngine>);
 }
 
-export function RegistryExplorer({ registry }: { registry: Registry }) {
+export function RegistryExplorer({ registry }: { registry: Catalog }) {
   const location = useExplorerLocation();
   const { query, view, page, mode, update } = location;
   const category =
@@ -65,10 +64,12 @@ export function RegistryExplorer({ registry }: { registry: Registry }) {
   const setPage = (value: number) => update("page", value);
   const setMode = (value: string) => update("mode", value);
   const [fullResults, setFullResults] = useState<{
-    query: string;
-    hits: SearchHit[];
+    key: string;
+    records: CatalogRecord[];
+    count: number;
+    page: number;
     error?: string;
-  }>({ query: "", hits: [] });
+  }>({ key: "", records: [], count: 0, page: 0 });
   const { records, report } = registry;
   const corpus = records;
   const constitution = corpus.find((r) => r.title === "Устав Републике Србије");
@@ -81,25 +82,31 @@ export function RegistryExplorer({ registry }: { registry: Registry }) {
     [corpus],
   );
   const normalized = normalizeSearch(query);
+  const fullSearch = mode !== "titles" && !!normalized;
+  const searchKey = JSON.stringify([mode, normalized, category, page]);
+  const suggestedTopics = normalized ? searchLearningTopics(query) : [];
   useEffect(() => {
-    if (mode !== "full" || !normalized) return;
+    if (!fullSearch) return;
     let cancelled = false;
     const timer = setTimeout(async () => {
       try {
         const engine = await loadSearch();
-        const result = await engine.search(
-          normalized.includes(" ") ? `"${normalized}"` : normalized,
+        const result = await searchFullText(
+          engine,
+          records,
+          normalized,
+          category,
+          page,
+          mode === "phrase",
         );
-        // Per-law facets identify matches without downloading every result's full content.
-        const hits = Object.entries(result.filters.law ?? {})
-          .filter(([, count]) => count > 0)
-          .map(([id]) => ({ id }));
-        if (!cancelled) setFullResults({ query: normalized, hits });
+        if (!cancelled) setFullResults({ key: searchKey, ...result });
       } catch {
         if (!cancelled)
           setFullResults({
-            query: normalized,
-            hits: [],
+            key: searchKey,
+            records: [],
+            count: 0,
+            page: 0,
             error:
               "Претрага текста тренутно није доступна. Претрага назива и читање докумената раде.",
           });
@@ -109,30 +116,28 @@ export function RegistryExplorer({ registry }: { registry: Registry }) {
       cancelled = true;
       clearTimeout(timer);
     };
-  }, [mode, normalized]);
+  }, [fullSearch, mode, normalized, category, page, records, searchKey]);
   const matches = useMemo(() => {
     let list = corpus.filter(
       (r) => category === "all" || r.categories.includes(category),
     );
-    if (normalized) {
-      if (mode === "full") {
-        const ids = new Set(
-          fullResults.query === normalized
-            ? fullResults.hits.map((h) => h.id)
-            : [],
-        );
-        list = list.filter((r) => ids.has(r.id));
-      } else {
-        list = searchLawTitles(list, normalized);
-      }
-    }
+    if (normalized && !fullSearch) list = searchLawTitles(list, normalized);
     return list;
-  }, [corpus, category, normalized, mode, fullResults]);
+  }, [corpus, category, normalized, fullSearch]);
   const searching = !!normalized;
   const showingMap = view === "map" && !searching;
   const size = showingMap ? 8 : 20;
-  const pageCount = Math.max(1, Math.ceil(matches.length / size));
-  const currentPage = Math.min(page, pageCount - 1);
+  const readyResults = fullResults.key === searchKey;
+  const count = fullSearch
+    ? readyResults
+      ? fullResults.count
+      : 0
+    : matches.length;
+  const pageCount = Math.max(1, Math.ceil(count / size));
+  const currentPage =
+    fullSearch && readyResults
+      ? fullResults.page
+      : Math.min(page, pageCount - 1);
   const returnTo = explorerUrl({
     query,
     category,
@@ -140,46 +145,41 @@ export function RegistryExplorer({ registry }: { registry: Registry }) {
     mode,
     page: currentPage,
   });
-  const visible = matches.slice(currentPage * size, (currentPage + 1) * size);
-  const waiting =
-    mode === "full" && searching && fullResults.query !== normalized;
+  const visible = fullSearch
+    ? readyResults
+      ? fullResults.records
+      : []
+    : matches.slice(currentPage * size, (currentPage + 1) * size);
+  const waiting = fullSearch && !readyResults;
   const chooseCategory = (value: string) => {
     setCategory(value);
     setPage(0);
   };
   return (
-    <main id="main">
-      <div className="page-intro">
+    <main
+      id="main"
+      className={`catalog-page${searching ? " is-searching" : ""}`}
+    >
+      <div className="page-intro catalog-intro">
         <div className="eyebrow">
           <span /> ПРАВО ПРИПАДА СВИМА
         </div>
         <h1>
-          Упознајте своја права.
-          <br />
-          <span>Разумите како су повезана.</span>
+          {searching
+            ? "Пронађите закон или правило."
+            : "Упознајте своја права."}
         </h1>
         <p>
-          Устав и закони Србије на једном месту.
-          <br className="desktop-break" /> Истражите правне области и прочитајте
-          сваки закон као цео документ.
+          Устав и закони Србије — претражите збирку или почните од животне
+          ситуације.
         </p>
-        <div className="home-learning-link">
-          <Link href="/ucenje" className={buttonVariants({ size: "lg" })}>
-            <BookOpen /> Учи и провери знање <ArrowUpRight />
-          </Link>
-          <Link
-            href="/vodic"
-            className={buttonVariants({ variant: "outline", size: "lg" })}
-          >
-            Како читати закон <ArrowUpRight />
-          </Link>
-        </div>
         <div id="pretraga" className="search-wrap" tabIndex={-1}>
           <Search size={16} aria-hidden="true" />
           <Input
             className="pl-9 pr-20"
             aria-label="Претрага закона"
-            placeholder="Претражите законе — нпр. рад, саобраћај, заштита потрошача…"
+            placeholder="Закон, плата, годишњи одмор…"
+            aria-describedby="catalog-search-help"
             value={query}
             onChange={(e) => {
               setQuery(e.target.value);
@@ -201,6 +201,9 @@ export function RegistryExplorer({ registry }: { registry: Registry }) {
           )}
           {!query && <span className="search-hint">Ћир / лат</span>}
         </div>
+        <p id="catalog-search-help" className="catalog-search-help">
+          Ћирилица и латиница, са или без квачица.
+        </p>
         <div className="suggestions">
           <Tabs
             value={mode}
@@ -212,6 +215,7 @@ export function RegistryExplorer({ registry }: { registry: Registry }) {
             <TabsList aria-label="Обим претраге">
               <TabsTrigger value="titles">Назив закона</TabsTrigger>
               <TabsTrigger value="full">Цео текст</TabsTrigger>
+              <TabsTrigger value="phrase">Тачна фраза</TabsTrigger>
             </TabsList>
           </Tabs>
           {[
@@ -248,8 +252,7 @@ export function RegistryExplorer({ registry }: { registry: Registry }) {
           <div className="learning-section-heading">
             <div>
               <span className="eyebrow">ОД СИТУАЦИЈЕ ДО ПРАВИЛА</span>
-              <h2 id="citizen-start-title">Не морате да знате назив закона.</h2>
-              <p>Изаберите тему, упознајте правило и проверите га у извору.</p>
+              <h2 id="citizen-start-title">Шта вас занима?</h2>
             </div>
           </div>
           <div className="citizen-topic-list">
@@ -262,6 +265,14 @@ export function RegistryExplorer({ registry }: { registry: Registry }) {
                 {topic.title} <ArrowUpRight />
               </Link>
             ))}
+          </div>
+          <div className="citizen-help-links">
+            <Link href="/ucenje" className="text-link">
+              Учи и провери знање <span aria-hidden="true">→</span>
+            </Link>
+            <Link href="/vodic" className="text-link">
+              Како читати закон <span aria-hidden="true">→</span>
+            </Link>
           </div>
         </section>
       )}
@@ -322,6 +333,67 @@ export function RegistryExplorer({ registry }: { registry: Registry }) {
           </div>
         </aside>
         <section className="explorer" aria-label="Истраживач закона">
+          <div className="catalog-mobile-filter">
+            <label id="category-label">Правна област</label>
+            <Select
+              value={category}
+              onValueChange={(value) => chooseCategory(String(value))}
+            >
+              <SelectTrigger
+                aria-labelledby="category-label"
+                className="w-full"
+              >
+                <SelectValue>
+                  {category === "all" ? "Све области" : categoryLabel(category)}
+                </SelectValue>
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">
+                  Све области · {corpus.length}
+                </SelectItem>
+                {categories.map((c) => (
+                  <SelectItem key={c.name} value={c.name}>
+                    <span className="whitespace-normal">
+                      {categoryLabel(c.name)} · {c.count}
+                    </span>
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+          {searching && suggestedTopics.length > 0 && (
+            <section className="search-topics" aria-label="Теме и објашњења">
+              <h2>Теме и објашњења</h2>
+              <p>
+                Уреднички водичи и измишљени примери, одвојени од текста закона.
+              </p>
+              <div className="search-topic-links">
+                {suggestedTopics.map((topic) => {
+                  const law = corpus.find(
+                    (record) => record.topicId === topic.id,
+                  );
+                  return (
+                    <div key={topic.id}>
+                      <Link
+                        href={`/ucenje?tema=${topic.id}`}
+                        className={buttonVariants({ variant: "outline" })}
+                      >
+                        {topic.title} <ArrowUpRight />
+                      </Link>
+                      {law && (
+                        <a
+                          className="text-link"
+                          href={documentUrl(lawPath(law), returnTo)}
+                        >
+                          Извор: {law.title} →
+                        </a>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            </section>
+          )}
           <div className="explorer-header">
             <div>
               <div className="eyebrow muted">БИБЛИОТЕКА ПРОПИСА</div>
@@ -329,17 +401,19 @@ export function RegistryExplorer({ registry }: { registry: Registry }) {
                 {searching
                   ? "Резултати претраге"
                   : category === "all"
-                    ? "Велика слика вашег права"
+                    ? "Библиотека закона"
                     : categoryLabel(category)}
               </h2>
               <p>
                 {searching
-                  ? `${matches.length} докумената · ${mode === "full" ? "претрага фразе у тексту" : "претрага назива закона"}`
+                  ? waiting
+                    ? "Претраживање текста закона…"
+                    : `${count} докумената · ${mode === "phrase" ? "тачна фраза у тексту" : mode === "full" ? "речи у тексту · по релевантности" : "назив закона"}`
                   : "Изаберите област и истражите законе који јој припадају."}
               </p>
             </div>
             <Tabs
-              value={view}
+              value={searching ? "list" : view}
               onValueChange={(v) => {
                 setView(String(v));
                 setPage(0);
@@ -358,7 +432,7 @@ export function RegistryExplorer({ registry }: { registry: Registry }) {
           <div className="collection-bar">
             <span>
               <SlidersHorizontal size={14} />
-              {matches.length} докумената
+              {waiting ? "Претрага…" : `${count} докумената`}
             </span>
             <span>
               Преузето{" "}
@@ -372,7 +446,7 @@ export function RegistryExplorer({ registry }: { registry: Registry }) {
             <div className="map-loading" role="status">
               Претраживање текста закона…
             </div>
-          ) : fullResults.error && mode === "full" && searching ? (
+          ) : readyResults && fullResults.error && fullSearch ? (
             <div className="empty-state" role="alert">
               <p>{fullResults.error}</p>
               <Button variant="outline" onClick={() => setMode("titles")}>
@@ -385,7 +459,7 @@ export function RegistryExplorer({ registry }: { registry: Registry }) {
               records={visible}
               category={category}
               onCategory={chooseCategory}
-              total={matches.length}
+              total={count}
               page={currentPage}
               onPage={setPage}
               returnTo={returnTo}
@@ -420,12 +494,13 @@ export function RegistryExplorer({ registry }: { registry: Registry }) {
                                 ? "Потребна провера извора"
                                 : "Изворни PDF"}
                         </small>
-                        {mode === "full" && searching && (
+                        {fullSearch && (
                           <SearchSnippet
                             id={r.id}
                             href={lawPath(r)}
                             query={normalized}
                             returnTo={returnTo}
+                            phrase={mode === "phrase"}
                           />
                         )}
                       </div>
@@ -437,17 +512,34 @@ export function RegistryExplorer({ registry }: { registry: Registry }) {
                     <Search size={30} />
                     <h3>Нема резултата у овој збирци.</h3>
                     <p>
-                      Пробајте другу реч, претрагу целог текста или све законе.
+                      {mode === "titles"
+                        ? "Називи не садрже ове речи. Потражите их у тексту закона."
+                        : "Пробајте краћу претрагу или другу правну област."}
                     </p>
-                    <Button
-                      variant="outline"
-                      onClick={() => {
-                        setQuery("");
-                        chooseCategory("all");
-                      }}
-                    >
-                      Прикажи све законе
-                    </Button>
+                    <div className="learning-actions">
+                      {mode !== "full" && (
+                        <Button onClick={() => setMode("full")}>
+                          Претражи цео текст
+                        </Button>
+                      )}
+                      {category !== "all" && (
+                        <Button
+                          variant="outline"
+                          onClick={() => chooseCategory("all")}
+                        >
+                          Претражи све области
+                        </Button>
+                      )}
+                      <Button
+                        variant="outline"
+                        onClick={() => {
+                          setQuery("");
+                          chooseCategory("all");
+                        }}
+                      >
+                        Прикажи све законе
+                      </Button>
+                    </div>
                   </div>
                 )}
               </div>
@@ -496,10 +588,10 @@ export function RegistryExplorer({ registry }: { registry: Registry }) {
                   нема локални пуни документ.
                 </p>
               )}
-              {report.failures.length > 0 && (
+              {report.failureCount > 0 && (
                 <p className="source-warning">
-                  {report.failures.length} текстова није преузето. Обухват још
-                  није потпун.
+                  {report.failureCount} текстова није преузето. Обухват још није
+                  потпун.
                 </p>
               )}
             </div>
