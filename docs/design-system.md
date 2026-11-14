@@ -48,7 +48,7 @@ UI SDK је закључан у package-lock датотеци на `0.1.0-beta.1
 | Контроле и навигација | IBM Plex Sans Variable        | 15–16 px / 1,4–1,6                                   |
 | Метаподаци            | IBM Plex Sans Variable        | 13–14 px / 1,6                                       |
 | Наслов странице       | Literata Variable             | 30–48 px / 1,25                                      |
-| Текст прописа         | Literata Variable             | 18 / 28 px; величина 16–24 px, пропорционални проред |
+| Текст прописа         | Literata Variable             | 18 / 29 px; величина 16–24 px, пропорционални проред |
 | Код и токени          | Consolas, системски monospace | 12–13 px                                             |
 
 Fontsource пакети служе фонтове локално, са unicode-range подскуповима за ћирилицу и латиницу и `font-display: swap`. Нема захтева ка Google Fonts при читању. Обе породице су OFL; лиценце су у инсталираним пакетима.
