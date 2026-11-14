@@ -1457,7 +1457,7 @@ a {
 }
 .reader-toc {
   position: sticky;
-  top: 25px;
+  top: calc(var(--header-height) + 25px);
   align-self: start;
 }
 .reader-toc > a {

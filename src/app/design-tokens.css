@@ -73,7 +73,7 @@
   --measure-reading: 65ch;
   --layout-wide: 85rem;
   --reader-sidebar-width: 21rem;
-  --header-height: 4.75rem;
+  --header-height: calc(3.5rem + env(safe-area-inset-top, 0px));
   --control-height: 2.75rem;
   --motion-duration-feedback: 100ms;
   --motion-duration-panel: 200ms;

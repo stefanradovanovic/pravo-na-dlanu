@@ -73,10 +73,54 @@ const { createAgent } = await import("@ui-sdk/react/agent");
 const { ReaderSettings } = await import("../src/components/reader-settings");
 const { ArticleNavigation } =
   await import("../src/components/article-navigation");
+const { BackToTop } = await import("../src/components/back-to-top");
 const agent = createAgent();
 after(() => {
   cleanup();
   dom.window.close();
+});
+
+test("the floating control becomes available after scrolling and restores focus when pressed by an agent", async (t) => {
+  let reportIntersection: IntersectionObserverCallback | undefined;
+  const scrollTo = t.mock.method(dom.window, "scrollTo", () => {});
+  const originalObserver = globalThis.IntersectionObserver;
+  globalThis.IntersectionObserver = class {
+    constructor(callback: IntersectionObserverCallback) {
+      reportIntersection = callback;
+    }
+    observe() {}
+    disconnect() {}
+  } as unknown as typeof IntersectionObserver;
+  const name = "Назад на врх странице";
+  const view = render(
+    h(
+      "div",
+      null,
+      h("div", { id: "page-top" }),
+      h("a", { id: "site-brand", href: "/" }, "Право на длану"),
+      h(BackToTop),
+    ),
+  );
+  try {
+    assert.equal(view.queryByRole("button", { name }), null);
+    await act(async () => {
+      assert.ok(reportIntersection);
+      reportIntersection(
+        [{ isIntersecting: false } as IntersectionObserverEntry],
+        {} as IntersectionObserver,
+      );
+    });
+    assert.ok(
+      agent.snapshot().some((entry) => !entry.offPage && entry.label === name),
+    );
+    const result = await agent.act({ steps: [{ ref: name, action: "press" }] });
+    assert.ok(result.ok, result.error?.message);
+    assert.deepEqual(scrollTo.mock.calls[0]?.arguments, [{ top: 0 }]);
+    assert.equal(document.activeElement?.id, "site-brand");
+  } finally {
+    view.unmount();
+    globalThis.IntersectionObserver = originalObserver;
+  }
 });
 
 test("reader settings are named, operable by agents, bounded, and leave the law intact", async () => {
