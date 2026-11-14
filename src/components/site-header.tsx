@@ -2,6 +2,8 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Scale, Search } from "lucide-react";
+import { buttonVariants } from "@/components/ui/button";
+import { HeaderSearch } from "./header-search";
 
 export function SiteHeader() {
   const pathname = usePathname();
@@ -30,9 +32,14 @@ export function SiteHeader() {
   ];
   return (
     <header className="site-header">
-      <Link href="/" className="brand" aria-label="Право на длану — почетна">
+      <Link
+        id="site-brand"
+        href="/"
+        className="brand"
+        aria-label="Право на длану — почетна"
+      >
         <span className="brand-mark">
-          <Scale size={22} aria-hidden="true" />
+          <Scale size={19} aria-hidden="true" />
         </span>
         <span>
           право<span className="brand-light"> на длану</span>
@@ -50,27 +57,15 @@ export function SiteHeader() {
           </Link>
         ))}
       </nav>
-      <form
-        className="header-search"
-        action="/"
-        method="get"
-        role="search"
-        aria-label="Претрага из заглавља"
-      >
-        <Search size={17} aria-hidden="true" />
-        <input
-          name="q"
-          aria-label="Претрага из заглавља"
-          placeholder="Пронађи пропис…"
-          type="search"
-        />
-        <input type="hidden" name="view" value="list" />
-        <button type="submit" aria-label="Претражи прописе">
-          <Search size={18} aria-hidden="true" />
-        </button>
-      </form>
+      <div id="site-header-search" className="contents">
+        <HeaderSearch />
+      </div>
       <Link
-        className="header-search-mobile"
+        className={buttonVariants({
+          variant: "ghost",
+          size: "icon",
+          className: "header-search-mobile",
+        })}
         href="/#pretraga"
         aria-label="Претражи прописе"
       >

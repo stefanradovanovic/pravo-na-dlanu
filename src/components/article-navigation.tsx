@@ -59,6 +59,10 @@ export function ArticleNavigation({
         : (nav.closest<HTMLElement>(".reader-sidebar")?.offsetHeight ??
             nav.offsetHeight) + 12;
       reader.style.setProperty("--reader-navigation-offset", `${offset}px`);
+      const headerOffset =
+        Number.parseFloat(
+          getComputedStyle(document.documentElement).scrollPaddingTop,
+        ) || 0;
       // Near the end, a short article cannot always reach the top of the viewport.
       // Keep the explicitly selected article until the reader scrolls away.
       const selected = selectedPosition.current;
@@ -74,7 +78,7 @@ export function ArticleNavigation({
         const middle = Math.floor((low + high) / 2);
         if (
           (elements[middle]?.getBoundingClientRect().top ?? Infinity) <=
-          offset + 2
+          headerOffset + offset + 2
         )
           low = middle + 1;
         else high = middle - 1;

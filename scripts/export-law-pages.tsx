@@ -17,6 +17,7 @@ import {
 import { getLibrary } from "../src/lib/content";
 import { lawPath } from "../src/lib/registry-types";
 import { MobileNavigationLinks } from "../src/components/mobile-navigation-links";
+import { HeaderSearch } from "../src/components/header-search";
 
 const root = path.resolve("out");
 const records = getRegistry().records;
@@ -40,6 +41,11 @@ assert.equal(
   "Missing mobile navigation shell",
 );
 $("nav.mobile-navigation").replaceWith("LAW_PAGE_NAVIGATION_PLACEHOLDER");
+const headerSearch = $("#site-header-search");
+assert.equal(headerSearch.length, 1, "Missing header search shell");
+headerSearch.html(
+  renderToString(<HeaderSearch />, { identifierPrefix: "site-header-search" }),
+);
 
 async function resetGeneratedDirectory(name: string) {
   assert.ok(["propisi", "zakoni", "reader-assets"].includes(name));

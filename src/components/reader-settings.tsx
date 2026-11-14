@@ -10,10 +10,8 @@ export function ReaderSettings() {
   useEffect(() => {
     const reader = controls.current?.closest<HTMLElement>(".full-document");
     reader?.style.setProperty("--reader-font-size", size + "px");
-    reader?.style.setProperty("--reader-line-height", size * 1.7 + "px");
     return () => {
       reader?.style.removeProperty("--reader-font-size");
-      reader?.style.removeProperty("--reader-line-height");
     };
   }, [size]);
   return (
