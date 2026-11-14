@@ -3,6 +3,18 @@ import assert from "node:assert/strict";
 import { searchLawTitles } from "../src/lib/search";
 import { getRegistry } from "../src/lib/registry";
 
+test("extending a title prefix keeps the labor law first", () => {
+  const records = getRegistry().records;
+  for (const query of [
+    "zakon o ra",
+    "zakon o rad",
+    "закон о ра",
+    "закон о рад",
+  ]) {
+    assert.equal(searchLawTitles(records, query)[0]?.title, "Закон о раду");
+  }
+});
+
 test("an exact law title excludes unrelated laws in the same classification", () => {
   for (const query of ["zakon o radu", "Закон о раду", "  ZAKON O RADU!  "]) {
     assert.deepEqual(

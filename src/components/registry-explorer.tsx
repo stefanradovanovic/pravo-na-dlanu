@@ -13,7 +13,8 @@ import {
   Info,
   SlidersHorizontal,
 } from "lucide-react";
-import { Input } from "@/components/ui/input";
+import { Autocomplete, AutocompleteInput } from "@/components/ui/autocomplete";
+import { LawSuggestions } from "./law-title-suggestions";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
@@ -55,6 +56,12 @@ export function RegistryExplorer({ registry }: { registry: Registry }) {
   const searchInput = useRef<HTMLInputElement>(null);
   const location = useExplorerLocation();
   const { query, view, page, mode, update } = location;
+  const [draft, setDraft] = useState(query);
+  const [previousQuery, setPreviousQuery] = useState(query);
+  if (query !== previousQuery) {
+    setPreviousQuery(query);
+    setDraft(query);
+  }
   const category =
     location.category === "all" ||
     registry.records.some((r) => r.categories.includes(location.category))
@@ -141,6 +148,26 @@ export function RegistryExplorer({ registry }: { registry: Registry }) {
     mode,
     page: currentPage,
   });
+  const suggestionQuery = normalizeSearch(draft);
+  const suggestions = useMemo(
+    () =>
+      suggestionQuery.length < 3
+        ? []
+        : searchLawTitles(
+            corpus.filter(
+              (law) => category === "all" || law.categories.includes(category),
+            ),
+            suggestionQuery,
+          ).slice(0, 6),
+    [corpus, category, suggestionQuery],
+  );
+  const suggestionReturn = explorerUrl({
+    query: draft,
+    category,
+    view,
+    mode,
+    page: 0,
+  });
   const visible = matches.slice(currentPage * size, (currentPage + 1) * size);
   const waiting =
     mode === "full" && searching && fullResults.query !== normalized;
@@ -184,39 +211,70 @@ export function RegistryExplorer({ registry }: { registry: Registry }) {
           }}
         >
           <TabsList aria-label="Обим претраге" variant="line">
-            <TabsTrigger value="titles">Назив закона</TabsTrigger>
+            <TabsTrigger value="titles">Прописи</TabsTrigger>
             <TabsTrigger value="full">Цео текст</TabsTrigger>
           </TabsList>
           <TabsContent value={mode}>
-            <div id="pretraga" className="search-wrap" tabIndex={-1}>
+            <form
+              id="pretraga"
+              className="search-wrap"
+              role="search"
+              aria-label="Претрага прописа"
+              tabIndex={-1}
+              onSubmit={(event) => {
+                event.preventDefault();
+                setQuery(draft);
+              }}
+            >
               <Search size={16} aria-hidden="true" />
-              <Input
-                ref={searchInput}
-                className="pl-9 pr-20"
-                aria-label="Претрага закона"
-                placeholder="Претражите законе — нпр. рад, саобраћај, заштита потрошача…"
-                value={query}
-                onValueChange={(value) => {
-                  setQuery(value);
-                  setPage(0);
+              <Autocomplete
+                value={draft}
+                filter={false}
+                onValueChange={(value, details) => {
+                  if (details.reason !== "item-press") setDraft(value);
                 }}
-              />
-              {query && (
+              >
+                <AutocompleteInput
+                  ref={searchInput}
+                  className="pl-9 pr-20"
+                  aria-label="Претрага закона"
+                  enterKeyHint="search"
+                  placeholder="Претражите законе — нпр. рад, саобраћај, заштита потрошача…"
+                />
+                <LawSuggestions
+                  matches={suggestions.map((law) => ({
+                    title: law.title,
+                    href: documentUrl(lawPath(law), suggestionReturn),
+                  }))}
+                  query={draft}
+                />
+              </Autocomplete>
+              {draft && (
                 <Button
                   variant="ghost"
                   size="icon-xs"
+                  className="catalog-search-clear"
                   aria-label="Обриши претрагу"
                   onClick={() => {
-                    setQuery("");
-                    setPage(0);
+                    setDraft("");
                     searchInput.current?.focus();
                   }}
                 >
                   <X />
                 </Button>
               )}
-              {!query && <span className="search-hint">Ћир / лат</span>}
-            </div>
+              {draft && (
+                <Button
+                  type="submit"
+                  variant="ghost"
+                  size="icon-xs"
+                  aria-label="Претражи законе"
+                >
+                  <Search aria-hidden="true" />
+                </Button>
+              )}
+              {!draft && <span className="search-hint">Ћир / лат</span>}
+            </form>
             <div className="suggestions" aria-label="Предлози претраге">
               {[
                 { label: "Рад", title: "Закон о раду" },

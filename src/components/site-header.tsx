@@ -2,8 +2,8 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Scale, Search } from "lucide-react";
-import { Button, buttonVariants } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { buttonVariants } from "@/components/ui/button";
+import { HeaderSearch } from "./header-search";
 
 export function SiteHeader() {
   const pathname = usePathname();
@@ -57,29 +57,9 @@ export function SiteHeader() {
           </Link>
         ))}
       </nav>
-      <form
-        className="header-search"
-        action="/"
-        method="get"
-        role="search"
-        aria-label="Претрага из заглавља"
-      >
-        <Input
-          name="q"
-          aria-label="Претрага из заглавља"
-          placeholder="Пронађи пропис…"
-          type="search"
-        />
-        <input type="hidden" name="view" value="list" />
-        <Button
-          type="submit"
-          size="icon"
-          variant="ghost"
-          aria-label="Претражи прописе"
-        >
-          <Search size={18} aria-hidden="true" />
-        </Button>
-      </form>
+      <div id="site-header-search" className="contents">
+        <HeaderSearch />
+      </div>
       <Link
         className={buttonVariants({
           variant: "ghost",

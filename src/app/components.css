@@ -340,7 +340,8 @@
     border-color: var(--input);
     min-width: 10rem;
   }
-  .ui-select-content {
+  .ui-select-content,
+  .ui-autocomplete-content {
     max-height: min(22rem, var(--available-height));
     min-width: var(--anchor-width);
     overflow-y: auto;
@@ -352,7 +353,14 @@
     border-radius: var(--radius);
     box-shadow: 0 6px 20px #18252d1a;
   }
-  .ui-select-item {
+  .ui-autocomplete-content {
+    width: var(--anchor-width);
+  }
+  .ui-autocomplete-item {
+    overflow-wrap: anywhere;
+  }
+  .ui-select-item,
+  .ui-autocomplete-item {
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -363,6 +371,7 @@
     cursor: pointer;
     outline: none;
   }
+  .ui-autocomplete-item[data-highlighted],
   .ui-select-item[data-highlighted],
   .ui-select-item:focus-visible {
     background: var(--accent);

@@ -14,13 +14,16 @@ test("exact title search excludes unrelated laws and survives reload", async ({
   await expect(rows).toHaveCount(1);
   await expect(rows.getByRole("heading")).toHaveText("Закон о раду");
   await page
-    .getByRole("textbox", { name: "Претрага закона" })
+    .getByRole("combobox", { name: "Претрага закона" })
     .fill("Закон о раду");
   await expect(rows).toHaveCount(1);
   await expect(rows.getByRole("heading")).toHaveText("Закон о раду");
   await page.reload();
   await expect(rows).toHaveCount(1);
-  await page.getByRole("textbox", { name: "Претрага закона" }).fill("potrosac");
+  await page
+    .getByRole("combobox", { name: "Претрага закона" })
+    .fill("potrosac");
+  await page.getByRole("combobox", { name: "Претрага закона" }).press("Enter");
   await expect(rows.first().getByRole("heading")).toContainText(/потрошач/i);
   for (const title of await rows.getByRole("heading").allTextContents()) {
     expect(title.toLowerCase()).toContain("потрошач");
@@ -54,7 +57,7 @@ test("full-text search opens a Cyrillic passage and returns to the same search",
   await expect(page.locator(fragment)).toBeInViewport();
   await page.getByRole("link", { name: "Назад на резултате" }).click();
   await expect(
-    page.getByRole("textbox", { name: "Претрага закона" }),
+    page.getByRole("combobox", { name: "Претрага закона" }),
   ).toHaveValue("sanitarni nadzor");
   await expect(
     page.getByRole("tab", { name: "Цео текст", exact: true }),
@@ -152,17 +155,17 @@ test("reader text size is bounded, resettable and does not change the source", a
   await page.goto("/propisi/zakon-o-sanitarnom-nadzoru#clan-12");
   const article = page.locator("#tekst-zakona");
   const source = await article.textContent();
-  await expect(article).toHaveCSS("line-height", "28px");
+  await expect(article).toHaveCSS("line-height", "29px");
   const larger = page.getByRole("button", { name: "Увећај текст" });
   await expect(article).toHaveCSS("font-size", "18px");
   for (let step = 0; step < 3; step++) await larger.click();
   await expect(article).toHaveCSS("font-size", "24px");
-  await expect(article).toHaveCSS("line-height", "37.3333px");
+  await expect(article).toHaveCSS("line-height", "38.6667px");
   await expect(larger).toBeDisabled();
   const smaller = page.getByRole("button", { name: "Смањи текст" });
   for (let step = 0; step < 4; step++) await smaller.click();
   await expect(article).toHaveCSS("font-size", "16px");
-  await expect(article).toHaveCSS("line-height", "24.8889px");
+  await expect(article).toHaveCSS("line-height", "25.7778px");
   await expect(smaller).toBeDisabled();
   await larger.click();
   await expect(article).toHaveCSS("font-size", "18px");
@@ -199,11 +202,12 @@ test("query, category, view and pagination survive reload and history navigation
   expect(new URL(page.url()).searchParams.has("page")).toBe(false);
   await page.reload();
   await expect(page.locator(".category-link.active")).toHaveCount(1);
-  await page.getByRole("textbox", { name: "Претрага закона" }).fill("ustav");
+  await page.getByRole("combobox", { name: "Претрага закона" }).fill("ustav");
+  await page.getByRole("combobox", { name: "Претрага закона" }).press("Enter");
   await expect(page).toHaveURL(/q=ustav/);
   await page.reload();
   await expect(
-    page.getByRole("textbox", { name: "Претрага закона" }),
+    page.getByRole("combobox", { name: "Претрага закона" }),
   ).toHaveValue("ustav");
   await expect(
     page.getByRole("tab", { name: "Листа", exact: true }),

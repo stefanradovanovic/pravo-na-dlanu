@@ -57,28 +57,49 @@ export function searchLawTitles<T extends { title: string }>(
   if (exact.length) return exact.map(({ record }) => record);
 
   const tokens = normalized.split(" ");
-  const matchesWord = (word: string, token: string) =>
-    token.length < 3 ? word === token : word.startsWith(token);
+  const multiWord = tokens.length > 1;
+  const shortPrefix = multiWord && tokens.at(-1)?.length === 2;
+  const titleStartRank = 5;
+  const matchesWord = (word: string, token: string, index: number) =>
+    token.length >= 3 || (shortPrefix && index === tokens.length - 1)
+      ? word.startsWith(token)
+      : word === token;
   return titles
     .map(({ record, title }) => {
       const words = title.split(" ");
       if (
-        !tokens.every((token) => words.some((word) => matchesWord(word, token)))
+        !tokens.every((token, index) =>
+          words.some((word) => matchesWord(word, token, index)),
+        )
       )
-        return { record, rank: 0 };
+        return { record, rank: 0, length: title.length };
+      const startsTitle = multiWord && title.startsWith(normalized);
       const phrase = ` ${title} `.includes(` ${normalized} `);
       const wholeWords = tokens.every((token) => words.includes(token));
       const prefixPhrase = words.some((_, start) =>
         tokens.every((token, offset) =>
-          matchesWord(words[start + offset] ?? "", token),
+          matchesWord(words[start + offset] ?? "", token, offset),
         ),
       );
       return {
         record,
-        rank: phrase ? 4 : wholeWords ? 3 : prefixPhrase ? 2 : 1,
+        length: title.length,
+        rank: startsTitle
+          ? titleStartRank
+          : phrase
+            ? 4
+            : wholeWords
+              ? 3
+              : prefixPhrase
+                ? 2
+                : 1,
       };
     })
     .filter(({ rank }) => rank > 0)
-    .sort((a, b) => b.rank - a.rank)
+    .sort(
+      (a, b) =>
+        b.rank - a.rank ||
+        (shortPrefix || a.rank === titleStartRank ? a.length - b.length : 0),
+    )
     .map(({ record }) => record);
 }
