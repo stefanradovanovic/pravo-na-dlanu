@@ -9,7 +9,7 @@ import "./site.css";
 import "./reading-desk.css";
 export const viewport: Viewport = {
   viewportFit: "cover",
-  themeColor: "#18252d",
+  themeColor: "#fffefa",
 };
 export const metadata: Metadata = {
   title: {

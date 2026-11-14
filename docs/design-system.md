@@ -29,17 +29,17 @@ UI SDK је закључан у package-lock датотеци на `0.1.0-beta.1
 
 | Улога                          | Токен                                      | Вредност          |
 | ------------------------------ | ------------------------------------------ | ----------------- |
-| Папир / текст                  | background / foreground                    | #fcfdfc / #243239 |
-| Заглавље / текст               | chrome / chrome-foreground                 | #18252d / #f4f7f7 |
-| Изабрана навигација у заглављу | chrome-selected                            | #167e73           |
-| Главна радња / текст           | primary / primary-foreground               | #106e66 / #ffffff |
-| Бочни садржај                  | sidebar                                    | #f0f3f4           |
-| Изабрана ставка                | sidebar-accent / sidebar-accent-foreground | #deece8 / #0b6159 |
-| Метаподаци                     | muted-foreground                           | #596970           |
-| Ивица поља                     | input                                      | #82959b           |
-| Раздвајање                     | border                                     | #dce3e4           |
-| Фокус                          | ring                                       | #106e66           |
-| Уреднички садржај              | editorial / editorial-foreground           | #edf4f2 / #315f58 |
+| Папир / текст                  | background / foreground                    | #faf9f6 / #282824 |
+| Заглавље / текст               | chrome / chrome-foreground                 | #fffefa / #282824 |
+| Изабрана навигација у заглављу | chrome-selected                            | #963e35           |
+| Главна радња / текст           | primary / primary-foreground               | #292d28 / #fffefa |
+| Бочни садржај                  | sidebar                                    | #fffefa           |
+| Изабрана ставка                | sidebar-accent / sidebar-accent-foreground | #eeede8 / #292d28 |
+| Метаподаци                     | muted-foreground                           | #686b60           |
+| Ивица поља                     | input                                      | #dbd9d1           |
+| Раздвајање                     | border                                     | #e3e1d9           |
+| Фокус                          | ring                                       | #963e35           |
+| Уреднички садржај              | editorial / editorial-foreground           | #eff0e7 / #536145 |
 
 Парови боја су семантички. Избор има видљиву ивицу или подвлачење уз ARIA стање; боја сама не преноси правни статус. Изолована .dark демонстрација има своје парове; сајт нема прекидач тамне теме.
 
