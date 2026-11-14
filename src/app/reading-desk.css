@@ -295,7 +295,7 @@ html {
   max-width: var(--measure-reading);
   margin: 2.5rem 0 0;
   min-width: 0;
-  font: 400 var(--reader-font-size, 18px)/var(--reader-line-height, 30.6px)
+  font: 400 var(--reader-font-size, var(--text-reading))/var(--leading-reading)
     var(--type-editorial);
   overflow-wrap: anywhere;
 }

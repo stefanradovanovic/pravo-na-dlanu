@@ -59,7 +59,7 @@
   --text-title: 1.75rem;
   --text-display: 2.5rem;
   --leading-body: 1.6;
-  --leading-reading: 1.7;
+  --leading-reading: calc(28 / 18);
   --leading-title: 1.25;
   --space-1: 0.25rem;
   --space-2: 0.5rem;
