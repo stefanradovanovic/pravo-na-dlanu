@@ -1,0 +1,254 @@
+.institution-page {
+  max-width: 74rem;
+  margin-inline: auto;
+  padding: var(--space-12) clamp(1rem, 3vw, 2rem);
+}
+.institution-intro {
+  max-width: var(--measure-reading);
+  margin-bottom: var(--space-8);
+}
+.institution-intro h1 {
+  margin-bottom: var(--space-4);
+  font: 400 clamp(2rem, 4vw, 3.25rem)/1.15 var(--type-editorial);
+  letter-spacing: -0.025em;
+}
+.institution-page .ui-tabs-list {
+  flex-wrap: wrap;
+}
+.institution-topic-anchor {
+  scroll-margin-top: calc(var(--header-height) + var(--space-4));
+}
+.institution-toolbar {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--space-6);
+  margin: var(--space-4) 0 var(--space-6);
+}
+.institution-toolbar h2 {
+  max-width: 29ch;
+  font: 400 clamp(1.35rem, 2.5vw, 1.75rem)/1.4 var(--type-editorial);
+}
+.institution-picker {
+  display: grid;
+  width: min(100%, 20rem);
+  gap: var(--space-1);
+  flex-shrink: 0;
+}
+.institution-picker label,
+.institution-note {
+  color: var(--muted-foreground);
+  font-size: var(--text-caption);
+}
+.institution-picker [data-slot="select-value"],
+.institution-picker [data-slot="value"],
+.institution-branch .ui-button > span {
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+.institution-figure {
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: clip;
+  background: var(--card);
+}
+.institution-figure figcaption {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  border-bottom: 1px solid var(--border);
+  color: var(--muted-foreground);
+  font-size: var(--text-body);
+}
+.institution-figure figcaption svg,
+.institution-sources svg {
+  flex-shrink: 0;
+}
+.institution-network {
+  --branch-gap: clamp(1rem, 3vw, 3rem);
+  display: grid;
+  grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.5fr);
+  align-items: center;
+  column-gap: var(--branch-gap);
+  padding: clamp(1rem, 3vw, 3rem);
+  background-color: var(--surface-map);
+  background-image: radial-gradient(var(--border) 1px, transparent 1px);
+  background-size: 16px 16px;
+}
+.institution-focus {
+  position: relative;
+  padding: var(--space-6);
+  background: var(--card);
+  border: 1px solid var(--editorial-border);
+  border-top: 3px solid var(--editorial-foreground);
+  border-radius: var(--radius);
+}
+.institution-focus::after {
+  position: absolute;
+  top: 50%;
+  left: 100%;
+  width: calc(var(--branch-gap) + 2px);
+  border-top: 2px solid var(--editorial-foreground);
+  content: "";
+}
+.institution-focus h3 {
+  font: 500 1.25rem/1.4 var(--type-editorial);
+  scroll-margin-block: calc(var(--header-height) + 1rem);
+}
+.institution-focus h3:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 4px;
+}
+.institution-focus p,
+.institution-edge-detail {
+  margin-block: var(--space-3);
+  line-height: var(--leading-body);
+  overflow-wrap: anywhere;
+}
+.institution-sources,
+.institution-branches {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.institution-sources {
+  display: grid;
+  gap: var(--space-2);
+  border-top: 1px solid var(--border);
+  padding-top: var(--space-3);
+}
+.institution-sources li {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-2);
+  font-size: var(--text-caption);
+  overflow-wrap: anywhere;
+}
+.institution-sources svg {
+  align-self: flex-start;
+  margin-top: 0.2em;
+  color: var(--muted-foreground);
+}
+.institution-branch {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr);
+  align-items: center;
+  min-height: 5.5rem;
+  padding-block: var(--space-2);
+}
+.institution-branch::before {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  border-left: 2px solid var(--editorial-foreground);
+  content: "";
+}
+.institution-branch:first-child::before {
+  top: 50%;
+}
+.institution-branch:last-child::before {
+  bottom: 50%;
+}
+.institution-connector {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding-inline: clamp(0.75rem, 2vw, 2rem);
+}
+.institution-connector::before {
+  position: absolute;
+  inset-inline: 0;
+  top: 50%;
+  border-top: 2px solid var(--editorial-foreground);
+  content: "";
+}
+.institution-connector > .ui-button {
+  position: relative;
+  max-width: 100%;
+}
+.institution-note {
+  max-width: var(--measure-reading);
+  margin-top: var(--space-4);
+}
+@media (max-width: 760px) {
+  .institution-page {
+    padding-top: var(--space-4);
+  }
+  .institution-intro {
+    margin-bottom: var(--space-3);
+  }
+  .institution-intro h1 {
+    font-size: clamp(1.6rem, 5.4vw, 2rem);
+    margin-bottom: 0;
+  }
+  .institution-toolbar {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-2);
+    margin-block: 0 var(--space-3);
+  }
+  .institution-toolbar h2 {
+    max-width: none;
+  }
+  .institution-network {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .institution-focus {
+    padding: var(--space-4);
+  }
+  .institution-focus::after {
+    display: none;
+  }
+  .institution-branches {
+    margin-left: var(--space-3);
+  }
+  .institution-branch:first-child::before {
+    top: 0;
+  }
+  .institution-branch {
+    padding-block: var(--space-3);
+  }
+}
+@media (max-width: 480px) {
+  .institution-figure figcaption {
+    padding: var(--space-2) var(--space-3);
+  }
+  .institution-branch {
+    grid-template-columns: minmax(0, 1fr);
+    padding: calc(2 * var(--space-3)) 0 var(--space-2) var(--space-6);
+  }
+  .institution-branch::after {
+    position: absolute;
+    top: var(--space-3);
+    left: 0;
+    width: calc(50% + var(--space-3));
+    height: var(--space-3);
+    border-top: 2px solid var(--editorial-foreground);
+    border-right: 2px solid var(--editorial-foreground);
+    content: "";
+  }
+  .institution-branch:last-child::before {
+    bottom: calc(100% - var(--space-3));
+  }
+  .institution-connector {
+    padding: 0 var(--space-2) var(--space-2);
+  }
+  .institution-connector::before {
+    inset: 0 auto 0 50%;
+    border-top: 0;
+    border-left: 2px solid var(--editorial-foreground);
+  }
+  .institution-connector > .ui-button svg {
+    transform: rotate(90deg);
+  }
+  .institution-network {
+    padding: var(--space-3);
+  }
+  .institution-branches {
+    margin-left: var(--space-1);
+  }
+}
