@@ -1,0 +1,36 @@
+.institution-procedure {
+  margin-block: var(--space-8);
+}
+
+.institution-procedure h2 {
+  font: 400 clamp(1.35rem, 2.5vw, 1.75rem)/1.4 var(--type-editorial);
+}
+
+.institution-procedure h3 {
+  font-weight: 600;
+}
+
+.institution-procedure p {
+  max-width: var(--measure-reading);
+  margin-block: var(--space-2);
+  line-height: var(--leading-body);
+}
+
+.institution-procedure ol {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 23rem), 1fr));
+  gap: var(--space-4) var(--space-8);
+  margin-block: var(--space-6);
+  padding: var(--space-4) 0 var(--space-4) var(--space-6);
+  border-block: 1px solid var(--border);
+  list-style: decimal;
+}
+
+.institution-procedure ol > li {
+  padding-inline-start: var(--space-1);
+}
+
+.institution-procedure .institution-sources {
+  padding-top: 0;
+  border-top: 0;
+}

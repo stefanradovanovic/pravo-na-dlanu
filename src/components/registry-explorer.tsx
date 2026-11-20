@@ -193,6 +193,12 @@ export function RegistryExplorer({ registry }: { registry: Registry }) {
               <BookOpen /> Учи и провери знање <ArrowUpRight />
             </Link>
             <Link
+              href="/institucije"
+              className={buttonVariants({ variant: "ghost", size: "sm" })}
+            >
+              Мапе институција <ArrowUpRight />
+            </Link>
+            <Link
               href="/vodic"
               className={buttonVariants({ variant: "ghost", size: "sm" })}
             >

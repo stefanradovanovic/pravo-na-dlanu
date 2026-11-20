@@ -18,6 +18,12 @@ export function SiteHeader() {
         pathname.startsWith("/zakoni"),
     },
     {
+      href: "/institucije",
+      text: "Институције",
+      label: "Мапе институција",
+      active: pathname.startsWith("/institucije"),
+    },
+    {
       href: "/ucenje",
       text: "Учење",
       label: "Учи кроз примере",
