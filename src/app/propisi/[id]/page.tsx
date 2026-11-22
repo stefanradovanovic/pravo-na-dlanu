@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import { getRegistry, getLawDocument } from "@/lib/registry";
 import { FullLawDocument } from "@/components/full-law-document";
 import { lawPath } from "@/lib/registry-types";
+import { socialMetadata } from "@/lib/social-metadata";
 import { LawUrlRedirect } from "@/components/law-url-redirect";
 export const dynamicParams = false;
 export function generateStaticParams() {
@@ -20,8 +21,10 @@ export async function generateMetadata({
   const record = getRegistry().records.find(
     (r) => r.id === id || r.slug === id,
   );
+  const canonical = record ? lawPath(record) : undefined;
   return {
-    alternates: record ? { canonical: lawPath(record) } : undefined,
+    ...socialMetadata(canonical),
+    alternates: canonical ? { canonical } : undefined,
     title: record?.title ?? "Документ није пронађен",
   };
 }

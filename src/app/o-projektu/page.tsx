@@ -1,7 +1,12 @@
 import Link from "next/link";
 import { ArrowLeft, ArrowUpRight } from "lucide-react";
 import { getRegistry } from "@/lib/registry";
-export const metadata = { title: "Обухват, извори и актуелност" };
+import { socialMetadata } from "@/lib/social-metadata";
+
+export const metadata = {
+  ...socialMetadata("/o-projektu"),
+  title: "Обухват, извори и актуелност",
+};
 export default function AboutPage() {
   const { report, records } = getRegistry();
   const full = records.filter((r) => r.textStatus === "complete").length;

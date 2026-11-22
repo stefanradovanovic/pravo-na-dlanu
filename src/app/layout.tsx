@@ -4,6 +4,7 @@ import { BackToTop } from "@/components/back-to-top";
 import { MobileNavigation } from "@/components/mobile-navigation";
 import { SiteAnalytics } from "@/components/site-analytics";
 import { UIAgentBridge } from "@/components/ui/agent-bridge";
+import { siteName, socialMetadata } from "@/lib/social-metadata";
 import Link from "next/link";
 import "./globals.css";
 import "./site.css";
@@ -13,9 +14,10 @@ export const viewport: Viewport = {
   themeColor: "#fffefa",
 };
 export const metadata: Metadata = {
+  ...socialMetadata(),
   title: {
-    default: "Право на длану — разумите своја права",
-    template: "%s | Право на длану",
+    default: `${siteName} — разумите своја права`,
+    template: `%s | ${siteName}`,
   },
   description:
     "Истражите Устав и каталог закона Србије кроз правне области, целовите текстове, званичне изворе и примере из живота.",

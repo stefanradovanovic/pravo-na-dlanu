@@ -5,9 +5,11 @@ import { buttonVariants } from "@/components/ui/button";
 import { ReadingGlossary } from "@/components/learning/reading-guide";
 import { findLearningLaw } from "@/lib/registry";
 import { lawPath } from "@/lib/registry-types";
+import { socialMetadata } from "@/lib/social-metadata";
 import "./guide.css";
 
 export const metadata: Metadata = {
+  ...socialMetadata("/vodic"),
   title: "Како да читате закон — водич за почетак",
   description:
     "Пет корака од претраге до разумевања правила: чланови, извори, верзије, изузеци и мали речник за читање закона.",

@@ -3,8 +3,10 @@ import { Suspense } from "react";
 import Link from "next/link";
 import { LearningWorkspace } from "@/components/learning/learning-workspace";
 import { getLearningCatalog } from "@/lib/learning-content";
+import { socialMetadata } from "@/lib/social-metadata";
 
 export const metadata: Metadata = {
+  ...socialMetadata("/ucenje"),
   title: "Учи и провери знање",
   description:
     "Упознајте своја права кроз кратке квизове, измишљене животне ситуације и читање званичних прописа.",
