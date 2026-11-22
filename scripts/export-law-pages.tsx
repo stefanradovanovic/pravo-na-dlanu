@@ -34,12 +34,12 @@ assert.equal($("main#main").length, 1, "Missing standalone reader shell");
 assert.ok($('link[rel="stylesheet"]').length, "Missing shared stylesheets");
 $("script, link[as=script], link[rel=modulepreload]").remove();
 $("title").text("LAW_PAGE_TITLE_PLACEHOLDER");
-$('link[rel="canonical"]').attr("href", "LAW_PAGE_CANONICAL_PLACEHOLDER");
+$('link[rel="canonical"]').attr("href", "LAW_PAGE_PATH_PLACEHOLDER");
 $('meta[property="og:title"], meta[name="twitter:title"]').attr(
   "content",
   "LAW_PAGE_TITLE_PLACEHOLDER",
 );
-$('meta[property="og:url"]').attr("content", "LAW_PAGE_CANONICAL_PLACEHOLDER");
+$('meta[property="og:url"]').attr("content", "LAW_PAGE_SOCIAL_URL_PLACEHOLDER");
 const socialTags = $('head meta[property^="og:"], head meta[name^="twitter:"]')
   .map((_, tag) => $.html(tag))
   .get()
@@ -137,15 +137,15 @@ function fillLawMetadata(html: string, title: string, href: string) {
     .replaceAll("LAW_PAGE_TITLE_PLACEHOLDER", () =>
       escapeHtml(`${title} | ${siteName}`),
     )
-    .replaceAll("LAW_PAGE_CANONICAL_PLACEHOLDER", () =>
+    .replace("LAW_PAGE_PATH_PLACEHOLDER", () => escapeHtml(href))
+    .replace("LAW_PAGE_SOCIAL_URL_PLACEHOLDER", () =>
       escapeHtml(new URL(href, siteOrigin).href),
     );
 }
 
 async function writeRedirect(file: string, href: string, title: string) {
   const metadata = fillLawMetadata(socialTags, title, href);
-  const canonical = escapeHtml(new URL(href, siteOrigin).href);
-  const html = `<!doctype html><html lang="sr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Пропис је премештен</title><link rel="canonical" href="${canonical}">${metadata}</head><body><main><p>Пропис је премештен на читљиву адресу.</p><a data-law-redirect href="${escapeHtml(href)}">Отворите пропис →</a></main><script type="module" src="${redirectUrl}"></script></body></html>`;
+  const html = `<!doctype html><html lang="sr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Пропис је премештен</title><link rel="canonical" href="${escapeHtml(href)}">${metadata}</head><body><main><p>Пропис је премештен на читљиву адресу.</p><a data-law-redirect href="${escapeHtml(href)}">Отворите пропис →</a></main><script type="module" src="${redirectUrl}"></script></body></html>`;
   await fs.writeFile(file, html);
 }
 

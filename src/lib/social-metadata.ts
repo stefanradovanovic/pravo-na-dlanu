@@ -11,10 +11,10 @@ export function socialMetadata(
       type: "website",
       siteName,
       locale: "sr_RS",
-      url: pathname,
+      url: pathname ? new URL(pathname, siteOrigin) : undefined,
       images: [
         {
-          url: "/share-open-palm.jpg",
+          url: new URL("/share-open-palm.jpg", siteOrigin),
           type: "image/jpeg",
           width: 1200,
           height: 630,

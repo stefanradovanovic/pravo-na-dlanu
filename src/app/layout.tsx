@@ -4,7 +4,7 @@ import { BackToTop } from "@/components/back-to-top";
 import { MobileNavigation } from "@/components/mobile-navigation";
 import { SiteAnalytics } from "@/components/site-analytics";
 import { UIAgentBridge } from "@/components/ui/agent-bridge";
-import { siteName, siteOrigin, socialMetadata } from "@/lib/social-metadata";
+import { siteName, socialMetadata } from "@/lib/social-metadata";
 import Link from "next/link";
 import "./globals.css";
 import "./site.css";
@@ -14,7 +14,6 @@ export const viewport: Viewport = {
   themeColor: "#fffefa",
 };
 export const metadata: Metadata = {
-  metadataBase: siteOrigin,
   ...socialMetadata(),
   title: {
     default: `${siteName} — разумите своја права`,

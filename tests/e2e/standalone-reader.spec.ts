@@ -19,6 +19,23 @@ test("law text and metadata are complete without JavaScript", async ({
     "href",
     "/propisi/ustav-republike-srbije",
   );
+  await expect(page.locator('head meta[property="og:url"]')).toHaveAttribute(
+    "content",
+    "https://pravo-na-dlanu.vercel.app/propisi/ustav-republike-srbije",
+  );
+  const shareImage = "https://pravo-na-dlanu.vercel.app/share-open-palm.jpg";
+  await expect(page.locator('head meta[property="og:image"]')).toHaveAttribute(
+    "content",
+    shareImage,
+  );
+  await expect(page.locator('head meta[name="twitter:image"]')).toHaveAttribute(
+    "content",
+    shareImage,
+  );
+  await expect(page.locator('head meta[name="twitter:card"]')).toHaveAttribute(
+    "content",
+    "summary_large_image",
+  );
   await expect(page.locator(".source-banner")).toContainText(
     "Датум преузимања не представља правну потврду важења.",
   );
