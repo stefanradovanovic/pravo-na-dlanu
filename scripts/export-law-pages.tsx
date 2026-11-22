@@ -16,6 +16,7 @@ import {
 } from "../src/lib/registry";
 import { getLibrary } from "../src/lib/content";
 import { lawPath } from "../src/lib/registry-types";
+import { siteName, siteOrigin } from "../src/lib/social-metadata";
 import { MobileNavigationLinks } from "../src/components/mobile-navigation-links";
 import { HeaderSearch } from "../src/components/header-search";
 
@@ -34,6 +35,15 @@ assert.ok($('link[rel="stylesheet"]').length, "Missing shared stylesheets");
 $("script, link[as=script], link[rel=modulepreload]").remove();
 $("title").text("LAW_PAGE_TITLE_PLACEHOLDER");
 $('link[rel="canonical"]').attr("href", "LAW_PAGE_CANONICAL_PLACEHOLDER");
+$('meta[property="og:title"], meta[name="twitter:title"]').attr(
+  "content",
+  "LAW_PAGE_TITLE_PLACEHOLDER",
+);
+$('meta[property="og:url"]').attr("content", "LAW_PAGE_CANONICAL_PLACEHOLDER");
+const socialTags = $('head meta[property^="og:"], head meta[name^="twitter:"]')
+  .map((_, tag) => $.html(tag))
+  .get()
+  .join("");
 $("main#main").replaceWith("LAW_PAGE_BODY_PLACEHOLDER");
 assert.equal(
   $("nav.mobile-navigation").length,
@@ -122,8 +132,20 @@ function island(
 function renderControl(props: ReaderControlProps) {
   return island(`reader-${props.kind}`, props, <ReaderControl {...props} />);
 }
-async function writeRedirect(file: string, href: string) {
-  const html = `<!doctype html><html lang="sr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Пропис је премештен</title><link rel="canonical" href="${escapeHtml(href)}"></head><body><main><p>Пропис је премештен на читљиву адресу.</p><a data-law-redirect href="${escapeHtml(href)}">Отворите пропис →</a></main><script type="module" src="${redirectUrl}"></script></body></html>`;
+function fillLawMetadata(html: string, title: string, href: string) {
+  return html
+    .replaceAll("LAW_PAGE_TITLE_PLACEHOLDER", () =>
+      escapeHtml(`${title} | ${siteName}`),
+    )
+    .replaceAll("LAW_PAGE_CANONICAL_PLACEHOLDER", () =>
+      escapeHtml(new URL(href, siteOrigin).href),
+    );
+}
+
+async function writeRedirect(file: string, href: string, title: string) {
+  const metadata = fillLawMetadata(socialTags, title, href);
+  const canonical = escapeHtml(new URL(href, siteOrigin).href);
+  const html = `<!doctype html><html lang="sr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Пропис је премештен</title><link rel="canonical" href="${canonical}">${metadata}</head><body><main><p>Пропис је премештен на читљиву адресу.</p><a data-law-redirect href="${escapeHtml(href)}">Отворите пропис →</a></main><script type="module" src="${redirectUrl}"></script></body></html>`;
   await fs.writeFile(file, html);
 }
 
@@ -144,23 +166,17 @@ for (const [index, record] of records.entries()) {
       }
     />,
   );
-  const html = template
-    .replace("LAW_PAGE_TITLE_PLACEHOLDER", () =>
-      escapeHtml(`${record.title} | Право на длану`),
-    )
-    .replace("LAW_PAGE_CANONICAL_PLACEHOLDER", () =>
-      escapeHtml(lawPath(record)),
-    )
+  const href = lawPath(record);
+  const html = fillLawMetadata(template, record.title, href)
     .replace("LAW_PAGE_BODY_PLACEHOLDER", () => body)
     .replace("LAW_PAGE_NAVIGATION_PLACEHOLDER", () =>
-      renderToStaticMarkup(
-        <MobileNavigationLinks pathname={lawPath(record)} />,
-      ),
+      renderToStaticMarkup(<MobileNavigationLinks pathname={href} />),
     );
   await fs.writeFile(path.join(root, "propisi", `${record.slug}.html`), html);
   await writeRedirect(
     path.join(root, "propisi", `${record.id}.html`),
-    lawPath(record),
+    href,
+    record.title,
   );
   if ((index + 1) % 100 === 0)
     console.log(`Exported ${index + 1}/${records.length} standalone law pages`);
@@ -171,6 +187,7 @@ for (const law of getLibrary().laws) {
   await writeRedirect(
     path.join(root, "zakoni", `${law.id}.html`),
     lawPath(record),
+    record.title,
   );
 }
 console.log(

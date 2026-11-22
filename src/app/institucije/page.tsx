@@ -1,9 +1,11 @@
 import type { Metadata } from "next";
 import { institutionMaps } from "@/lib/institution-map";
+import { socialMetadata } from "@/lib/social-metadata";
 import { InstitutionExplorer } from "./institution-explorer";
 import "./institutions.css";
 
 export const metadata: Metadata = {
+  ...socialMetadata("/institucije"),
   title: "Мапа институција Србије",
   description:
     "Истражите ко доноси одлуке, ко разматра жалбе и како су повезане институције у Србији.",
