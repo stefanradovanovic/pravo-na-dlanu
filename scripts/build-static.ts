@@ -7,6 +7,10 @@ const env: NodeJS.ProcessEnv = {
   NODE_ENV: "production",
   STANDALONE_LAWS: "1",
 };
+// Vercel builds this export as a static site, so pass its analytics settings to
+// the Next.js adapter under the public name it reads.
+env.NEXT_PUBLIC_VERCEL_OBSERVABILITY_CLIENT_CONFIG ??=
+  env.VERCEL_OBSERVABILITY_CLIENT_CONFIG;
 for (const args of [
   [path.resolve("node_modules/next/dist/bin/next"), "build"],
   ["--import", "tsx", "scripts/export-law-pages.tsx"],

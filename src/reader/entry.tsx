@@ -1,7 +1,16 @@
+import { inject } from "@vercel/analytics";
 import { hydrateRoot } from "react-dom/client";
 import { ReaderControl, type ReaderControlProps } from "./controls";
 import { BackToTop } from "@/components/back-to-top";
 import { HeaderSearch } from "@/components/header-search";
+import { redactAnalyticsUrl } from "@/lib/analytics";
+
+if (process.env.VERCEL === "1") {
+  inject(
+    { beforeSend: redactAnalyticsUrl },
+    process.env.NEXT_PUBLIC_VERCEL_OBSERVABILITY_CLIENT_CONFIG,
+  );
+}
 
 const topControl = document.getElementById("site-top-control");
 if (topControl) hydrateRoot(topControl, <BackToTop />);

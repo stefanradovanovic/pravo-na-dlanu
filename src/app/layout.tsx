@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { SiteHeader } from "@/components/site-header";
 import { BackToTop } from "@/components/back-to-top";
 import { MobileNavigation } from "@/components/mobile-navigation";
+import { SiteAnalytics } from "@/components/site-analytics";
 import { UIAgentBridge } from "@/components/ui/agent-bridge";
 import Link from "next/link";
 import "./globals.css";
@@ -43,6 +44,7 @@ export default function RootLayout({
           <BackToTop />
         </div>
         <MobileNavigation />
+        {process.env.VERCEL === "1" && <SiteAnalytics />}
       </body>
     </html>
   );

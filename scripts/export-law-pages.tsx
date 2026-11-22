@@ -68,7 +68,14 @@ const assets = await build({
   platform: "browser",
   target: "es2020",
   minify: true,
-  define: { "process.env.NODE_ENV": '"production"' },
+  define: {
+    "process.env.NODE_ENV": '"production"',
+    "process.env.VERCEL": JSON.stringify(process.env.VERCEL ?? ""),
+    "process.env.NEXT_PUBLIC_VERCEL_OBSERVABILITY_CLIENT_CONFIG":
+      JSON.stringify(
+        process.env.NEXT_PUBLIC_VERCEL_OBSERVABILITY_CLIENT_CONFIG ?? "",
+      ),
+  },
   outdir: path.join(root, "reader-assets"),
   entryNames: "[name]-[hash]",
   chunkNames: "chunk-[hash]",
