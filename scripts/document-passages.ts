@@ -2,7 +2,10 @@ import { unified } from "unified";
 import remarkParse from "remark-parse";
 import remarkGfm from "remark-gfm";
 import { load } from "cheerio";
-import { articleHeadings } from "../src/lib/document-navigation";
+import {
+  articleHeadings,
+  normalizeArticleHeadings,
+} from "../src/lib/document-navigation";
 import type { SearchPassage } from "../src/lib/search-snippet";
 
 type TextNode = {
@@ -29,7 +32,10 @@ export function documentPassages(markdown: string): SearchPassage[] {
   const headings = new Map(
     articleHeadings(markdown).map((heading) => [heading.line, heading]),
   );
-  const tree = unified().use(remarkParse).use(remarkGfm).parse(markdown);
+  const tree = unified()
+    .use(remarkParse)
+    .use(remarkGfm)
+    .parse(normalizeArticleHeadings(markdown));
   const passages: SearchPassage[] = [
     { anchor: "tekst-zakona", label: "Уводни текст", text: "" },
   ];

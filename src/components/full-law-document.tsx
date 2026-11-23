@@ -10,7 +10,15 @@ import { ReaderControl, type ReaderControlProps } from "@/reader/controls";
 import type { Facsimile } from "@/lib/registry-types";
 import { FacsimileReader } from "./facsimile-reader";
 import { categoryLabel, type RegistryRecord } from "@/lib/registry-types";
-import { articleHeadings } from "@/lib/document-navigation";
+import {
+  articleHeadings,
+  normalizeArticleHeadings,
+} from "@/lib/document-navigation";
+import { articleNavigationEntries } from "@/lib/article-navigation-entries";
+import {
+  getFacsimileArticles,
+  type FacsimileArticle,
+} from "@/lib/facsimile-articles";
 import { getLawExamples } from "@/lib/learning-examples";
 import { normalizeDocumentTitle } from "@/lib/document-presentation";
 import { remarkArticleSubtitles } from "@/lib/article-subtitles";
@@ -28,17 +36,28 @@ export function FullLawDocument({
   record,
   markdown,
   renderControl = (props) => <ReaderControl {...props} />,
-  renderScan = (document) => <FacsimileReader document={document} />,
+  renderScan = (document, articles) => (
+    <FacsimileReader document={document} articles={articles} />
+  ),
 }: {
   record: RegistryRecord;
   markdown: string;
   renderControl?: (props: ReaderControlProps) => ReactNode;
-  renderScan?: (document: Facsimile) => ReactNode;
+  renderScan?: (document: Facsimile, articles: FacsimileArticle[]) => ReactNode;
 }) {
   const sourceOnly = record.textStatus === "source-only";
   const scan = record.textStatus === "facsimile" ? record.facsimile : undefined;
-  const displayMarkdown = normalizeDocumentTitle(markdown, record.title);
-  const headings = articleHeadings(displayMarkdown);
+  const titledMarkdown = normalizeDocumentTitle(markdown, record.title);
+  const displayMarkdown = normalizeArticleHeadings(titledMarkdown);
+  const headings = articleHeadings(titledMarkdown);
+  const scanArticles = scan ? getFacsimileArticles(record.id, scan) : [];
+  const navigation = scan
+    ? scanArticles.map(({ number, subtitle }) => ({
+        id: `clan-${number}`,
+        label: `Члан ${number}.`,
+        subtitle,
+      }))
+    : articleNavigationEntries(headings, displayMarkdown, record);
   const examples = getLawExamples(record.id, headings);
   const anchors = new Map(headings.map((heading) => [heading.line, heading]));
   const version = scan?.version ?? record.citation;
@@ -49,7 +68,8 @@ export function FullLawDocument({
     <main id="main" className="reader full-document">
       <aside className="reader-sidebar">
         {renderControl({ kind: "back" })}
-        {headings.length > 0 && renderControl({ kind: "navigation", headings })}
+        {navigation.length > 0 &&
+          renderControl({ kind: "navigation", headings: navigation })}
       </aside>
       <div className="reader-main">
         <div className="document-toolbar">
@@ -119,7 +139,7 @@ export function FullLawDocument({
         </div>
         {examples && renderControl({ kind: "examples", ...examples })}
         {scan ? (
-          renderScan(scan)
+          renderScan(scan, scanArticles)
         ) : sourceOnly ? (
           <section className="pdf-source">
             <BookOpen size={32} />

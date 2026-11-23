@@ -5,10 +5,10 @@ import { DocumentActions } from "@/components/document-actions";
 import { ReaderSettings } from "@/components/reader-settings";
 import { ReaderBackLink } from "@/components/reader-back-link";
 import { LawExamples, type LawExamplesProps } from "@/components/law-examples";
-import type { ArticleHeading } from "@/lib/document-navigation";
+import type { ArticleNavigationEntry } from "@/lib/article-navigation-entries";
 
 export type ReaderControlProps =
-  | { kind: "navigation"; headings: ArticleHeading[] }
+  | { kind: "navigation"; headings: ArticleNavigationEntry[] }
   | { kind: "actions"; printable: boolean }
   | { kind: "settings" }
   | { kind: "back" }

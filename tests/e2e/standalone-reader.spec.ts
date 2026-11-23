@@ -15,6 +15,9 @@ test("law text and metadata are complete without JavaScript", async ({
   );
   await expect(page.locator("#clan-1")).toHaveCount(1);
   await expect(page.locator("#clan-206")).toHaveCount(1);
+  await expect(
+    page.locator('.article-navigation a[href="#clan-3"]'),
+  ).toContainText("Владавина права");
   await expect(page.locator('link[rel="canonical"]')).toHaveAttribute(
     "href",
     "/propisi/ustav-republike-srbije",
@@ -40,6 +43,35 @@ test("law text and metadata are complete without JavaScript", async ({
     "Датум преузимања не представља правну потврду важења.",
   );
   await context.close();
+});
+
+test("the article contents show a topic below the number and link to its article", async ({
+  page,
+  isMobile,
+}) => {
+  await page.goto("/propisi/zakon-o-radu");
+  const navigation = page.getByRole("navigation", { name: "Садржај закона" });
+  const contents = navigation.locator("details");
+  if (isMobile) {
+    await expect(contents).toHaveJSProperty("open", false);
+    await contents.locator("summary").click();
+  }
+  const article = navigation.getByRole("link", {
+    name: "Члан 3.",
+    exact: true,
+  });
+  await expect(article).toHaveAccessibleDescription(
+    "Колективни уговор и правилник о раду",
+  );
+  await expect(article.locator(".toc-subtitle")).toBeVisible();
+  await expect(
+    navigation.locator('a[href="#clan-21"] .toc-subtitle'),
+  ).toHaveText("Узнемиравање и сексуално узнемиравање");
+  if (isMobile) await article.tap();
+  else await article.press("Enter");
+  await expect(page).toHaveURL(/#clan-3$/);
+  await expect(page.locator("#clan-3")).toBeFocused();
+  if (isMobile) await expect(contents).toHaveJSProperty("open", false);
 });
 
 test("catalog opens a standalone reader with working examples, copy and print", async ({

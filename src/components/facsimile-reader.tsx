@@ -6,6 +6,7 @@ import { Download, ZoomIn, ZoomOut } from "lucide-react";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import type { Facsimile } from "@/lib/registry-types";
+import type { FacsimileArticle } from "@/lib/facsimile-articles";
 
 type Lease = {
   users: number;
@@ -58,12 +59,14 @@ function ScanPage({
   page,
   number,
   label,
+  articles,
   pool,
 }: {
   url: string;
   page: number;
   number: number;
   label: string;
+  articles: FacsimileArticle[];
   pool: PdfPool;
 }) {
   const wrapper = useRef<HTMLElement>(null);
@@ -131,6 +134,18 @@ function ScanPage({
         Страна скена {number} · {label}
       </figcaption>
       <div className="scan-paper">
+        {articles.map(({ number, top, left }) => (
+          <span
+            key={number}
+            id={`clan-${number}`}
+            className="scan-article-anchor"
+            style={{ top: `${top}%`, left: `${left}%` }}
+            tabIndex={-1}
+            role="heading"
+            aria-level={2}
+            aria-label={`Члан ${number}.`}
+          />
+        ))}
         {error ? (
           <p role="alert">
             Страна није учитана.{" "}
@@ -150,7 +165,13 @@ function ScanPage({
   );
 }
 
-export function FacsimileReader({ document }: { document: Facsimile }) {
+export function FacsimileReader({
+  document,
+  articles,
+}: {
+  document: Facsimile;
+  articles: FacsimileArticle[];
+}) {
   const [pool] = useState(() => new PdfPool());
   const [zoomed, setZoomed] = useState(false);
   const [target, setTarget] = useState("1");
@@ -236,6 +257,7 @@ export function FacsimileReader({ document }: { document: Facsimile }) {
             {...page}
             number={index + 1}
             label={document.pageLabels[index]}
+            articles={articles.filter((article) => article.page === index + 1)}
             pool={pool}
           />
         ))}
