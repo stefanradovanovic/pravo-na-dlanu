@@ -156,11 +156,11 @@ for (const [index, record] of records.entries()) {
     <FullLawDocument
       {...document}
       renderControl={renderControl}
-      renderScan={(document) =>
+      renderScan={(document, articles) =>
         island(
           "reader-scan",
-          { document },
-          <FacsimileReader document={document} />,
+          { document, articles },
+          <FacsimileReader document={document} articles={articles} />,
           true,
         )
       }

@@ -3,13 +3,13 @@ import { useEffect, useRef, useState, type MouseEvent } from "react";
 import { ArrowLeft, ArrowRight, ChevronDown } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button, buttonVariants } from "@/components/ui/button";
-import type { ArticleHeading } from "@/lib/document-navigation";
+import type { ArticleNavigationEntry } from "@/lib/article-navigation-entries";
 import { normalizeSearch } from "@/lib/search";
 
 export function ArticleNavigation({
   headings,
 }: {
-  headings: ArticleHeading[];
+  headings: ArticleNavigationEntry[];
 }) {
   const [query, setQuery] = useState("");
   const [open, setOpen] = useState(true);
@@ -123,7 +123,11 @@ export function ArticleNavigation({
     .replace(/^clan\s*/, "")
     .replaceAll(" ", "");
   const visible = headings.filter(
-    (heading) => !number || heading.id.split("-")[1] === number,
+    (heading) =>
+      !number ||
+      normalizeSearch(heading.label.split(" (", 1)[0])
+        .replace(/^clan\s*/u, "")
+        .replaceAll(" ", "") === number,
   );
   function jump(id: string) {
     if (!desktop) setOpen(false);
@@ -251,31 +255,29 @@ export function ArticleNavigation({
             </p>
           </form>
           <ul ref={list}>
-            {visible.map((heading) => (
-              <li key={heading.id}>
-                <a
-                  href={`#${heading.id}`}
-                  aria-label={heading.label}
-                  aria-describedby={
-                    heading.subtitle ? `toc-${heading.id}-caption` : undefined
-                  }
-                  aria-current={
-                    headings[active]?.id === heading.id ? "location" : undefined
-                  }
-                  onClick={(event) => follow(event, heading.id)}
-                >
-                  <span>{heading.label}</span>
-                  {heading.subtitle && (
-                    <span
-                      id={`toc-${heading.id}-caption`}
-                      className="toc-subtitle"
-                    >
+            {visible.map((heading) => {
+              const descriptionId = `toc-${heading.id}-caption`;
+              return (
+                <li key={heading.id}>
+                  <a
+                    href={`#${heading.id}`}
+                    aria-label={heading.label}
+                    aria-describedby={descriptionId}
+                    aria-current={
+                      headings[active]?.id === heading.id
+                        ? "location"
+                        : undefined
+                    }
+                    onClick={(event) => follow(event, heading.id)}
+                  >
+                    <span>{heading.label}</span>
+                    <span id={descriptionId} className="toc-subtitle">
                       {heading.subtitle}
                     </span>
-                  )}
-                </a>
-              </li>
-            ))}
+                  </a>
+                </li>
+              );
+            })}
           </ul>
           {!visible.length && <p role="status">Нема члана са тим бројем.</p>}
         </div>

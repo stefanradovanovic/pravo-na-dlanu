@@ -1,6 +1,8 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { articleHeadings } from "../src/lib/document-navigation";
+import { articleNavigationEntries } from "../src/lib/article-navigation-entries";
+import articleTopics from "../content/article-topics.json";
 import { documentPassages } from "../scripts/document-passages";
 import { findSearchSnippet } from "../src/lib/search-snippet";
 import {
@@ -21,6 +23,74 @@ test("article fragments distinguish inserted articles and repeated amendment num
   const passages = documentPassages(markdown);
   assert.equal(findSearchSnippet(passages, "izmena")?.anchor, "clan-1-2");
   assert.match(articleHeadings(markdown)[2].label, /2\. појављивање/);
+});
+
+test("article navigation uses official captions and short topics from each article", () => {
+  const markdown = [
+    "## Члан 1.",
+    "Службени наслов",
+    "## Члан 2.",
+    "Текст са службеним насловом.",
+    "## Члан 3.",
+    "\\*Службени гласник РС, број 1/2026",
+    "**Право на одмор** уређује се у складу са условима из овог закона и колективног уговора послодавца.",
+    "## Члан 3.",
+    "_Брисан је._",
+    "## Члан 4.",
+    "Службени гласник има основно издање и посебна издања.",
+  ].join("\n\n");
+  const entries = articleNavigationEntries(
+    articleHeadings(markdown),
+    markdown,
+    {
+      id: "test",
+    },
+  );
+  assert.deepEqual(
+    entries.map(({ id, subtitle }) => [id, subtitle]),
+    [
+      ["clan-1", "Текст одредбе"],
+      ["clan-2", "Службени наслов"],
+      ["clan-3", "Право на одмор"],
+      ["clan-3-2", "Брисана одредба"],
+      ["clan-4", "Основно издање и посебна издања"],
+    ],
+  );
+});
+
+test("footnoted article numbers get their own fragments without claiming established URLs", () => {
+  const markdown = "Члан 1.\\*\n\nПрви текст.\n\n## Члан 1.\n\nДруги текст.";
+  assert.deepEqual(
+    articleHeadings(markdown).map((heading) => heading.id),
+    ["clan-1-2", "clan-1"],
+  );
+  assert.equal(
+    findSearchSnippet(documentPassages(markdown), "prvi")?.anchor,
+    "clan-1-2",
+  );
+});
+
+test("editorial topics point to articles in the pinned source text", () => {
+  for (const [id, { textSha256, topics }] of Object.entries(articleTopics)) {
+    const { record, markdown } = getLawDocument(id)!;
+    const headings = articleHeadings(markdown);
+    assert.equal(record.textSha256, textSha256, id);
+    const entries = articleNavigationEntries(headings, markdown, record);
+    const stale = articleNavigationEntries(headings, markdown, {
+      id,
+      textSha256: "changed-source",
+    });
+    for (const [anchor, topic] of Object.entries(topics)) {
+      assert.equal(
+        entries.find((heading) => heading.id === anchor)?.subtitle,
+        topic,
+      );
+      assert.notEqual(
+        stale.find((heading) => heading.id === anchor)?.subtitle,
+        topic,
+      );
+    }
+  }
 });
 
 test("snippets preserve Cyrillic and map expanded letters back to original offsets", () => {

@@ -15,6 +15,7 @@ test("map opens a standalone document and returns to its category", async ({
 
 test("standalone facsimile renders its PDF and preserves zoom and download", async ({
   page,
+  isMobile,
 }) => {
   const errors: string[] = [];
   page.on("pageerror", (error) => errors.push(error.message));
@@ -33,5 +34,16 @@ test("standalone facsimile renders its PDF and preserves zoom and download", asy
     .getByRole("link", { name: "Преузми скен" })
     .getAttribute("href");
   expect((await page.request.get(url!)).status()).toBe(200);
+  const contents = page.getByRole("navigation", { name: "Садржај закона" });
+  if (isMobile) {
+    await expect(contents.locator("details")).toHaveJSProperty("open", false);
+    await contents.locator("summary").tap();
+  }
+  const article = contents.getByRole("link", { name: "Члан 7.", exact: true });
+  await expect(article).toHaveAccessibleDescription("Рок и рате отплате зајма");
+  if (isMobile) await article.tap();
+  else await article.press("Enter");
+  await expect(page).toHaveURL(/#clan-7$/);
+  await expect(page.locator("#scan-page-2 #clan-7")).toBeFocused();
   expect(errors).toEqual([]);
 });

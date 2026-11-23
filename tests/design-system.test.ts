@@ -3,6 +3,7 @@ import assert from "node:assert/strict";
 import { JSDOM } from "jsdom";
 import { createElement as h, act } from "react";
 import { articleHeadings } from "../src/lib/document-navigation";
+import { articleNavigationEntries } from "../src/lib/article-navigation-entries";
 
 const dom = new JSDOM("<!doctype html><html lang='sr'><body></body></html>", {
   url: "http://localhost/",
@@ -181,9 +182,9 @@ test("reader settings are named, operable by agents, bounded, and leave the law 
 });
 
 test("article search accepts agent changes and both scripts without losing native fragments", async () => {
-  const headings = articleHeadings(
-    "Република Србија\n\n## Члан 1.\n\nТекст.\n\n## Члан 12а.\n\nДруги текст.\n\n## Члан 1.\n",
-  );
+  const markdown =
+    "Република Србија\n\n## Члан 1.\n\nТекст.\n\n## Члан 12а.\n\nДруги текст.\n\n## Члан 1.\n";
+  const headings = articleHeadings(markdown);
   const view = render(
     h(
       "main",
@@ -191,7 +192,11 @@ test("article search accepts agent changes and both scripts without losing nativ
       h(
         "aside",
         { className: "reader-sidebar" },
-        h(ArticleNavigation, { headings }),
+        h(ArticleNavigation, {
+          headings: articleNavigationEntries(headings, markdown, {
+            id: "test",
+          }),
+        }),
       ),
       h(
         "article",
