@@ -1,7 +1,6 @@
 import type { InstitutionMap, InstitutionSource } from "./institution-map";
 
-export const assemblyRulesUrl =
-  "https://www.pravno-informacioni-sistem.rs/viewAct/2e13f645-6a22-4588-99c7-f0e159b67864";
+const assemblyRulesPath = "/propisi/poslovnik-narodne-skupstine";
 
 function constitution(article: number): InstitutionSource {
   return {
@@ -17,10 +16,10 @@ function assemblyLaw(article: number): InstitutionSource {
   };
 }
 
-function rules(articles: string): InstitutionSource {
+function rules(article: number, label = `члан ${article}.`): InstitutionSource {
   return {
-    title: `Пословник Народне скупштине, ${articles} (ПИС)`,
-    href: assemblyRulesUrl,
+    title: `Пословник Народне скупштине, ${label}`,
+    href: `${assemblyRulesPath}#clan-${article}`,
   };
 }
 
@@ -37,7 +36,7 @@ export const assemblyMap: InstitutionMap = {
       sources: [
         constitution(99),
         constitution(100),
-        rules("пречишћен текст, Службени гласник РС 20/2012"),
+        { title: "Пословник Народне скупштине", href: assemblyRulesPath },
       ],
     },
     {
@@ -59,7 +58,7 @@ export const assemblyMap: InstitutionMap = {
       name: "Посланичка група",
       summary:
         "Најмање пет посланика може да образује групу. Групу представља њен председник, а сваки посланик може да буде члан само једне групе.",
-      sources: [rules("члан 22."), assemblyLaw(31)],
+      sources: [rules(22), assemblyLaw(31)],
     },
     {
       id: "odbor",
@@ -84,7 +83,7 @@ export const assemblyMap: InstitutionMap = {
       label: "предлаже дневни ред",
       detail:
         "На седници у редовном заседању председник предлаже дневни ред. Посланици могу да предложе измене или допуне, а о дневном реду одлучује Скупштина.",
-      sources: [rules("чл. 85. и 92.")],
+      sources: [rules(85, "чл. 85. и 92.")],
     },
     {
       from: "skupstina",
@@ -116,7 +115,7 @@ export const assemblyMap: InstitutionMap = {
       label: "подноси извештај",
       detail:
         "Надлежни одбор може у извештају да препоручи Скупштини да прихвати или одбије предлог закона у начелу. Скупштина може да разматра предлог и ако одбор не достави извештај.",
-      sources: [rules("члан 155.")],
+      sources: [rules(155)],
     },
     {
       from: "poslanik",
@@ -124,7 +123,7 @@ export const assemblyMap: InstitutionMap = {
       label: "указује на повреду Пословника",
       detail:
         "Ако сматра да је председавајући прекршио правило на седници, посланик одмах наводи члан Пословника и објашњава повреду. Председавајући отклања повреду или образлаже зашто је не види. Ако посланик и даље сматра да је правило прекршено, може да затражи да о томе гласа Скупштина.",
-      sources: [rules("члан 103.")],
+      sources: [rules(103)],
     },
     {
       from: "poslanik",
@@ -132,7 +131,7 @@ export const assemblyMap: InstitutionMap = {
       label: "поставља питање",
       detail:
         "Посланик може да тражи одговор од Владе или од министра о пословима за које су надлежни. Писано посланичко питање може да упути преко председника Скупштине и између две седнице.",
-      sources: [assemblyLaw(40), rules("члан 204.")],
+      sources: [assemblyLaw(40), rules(204)],
     },
     {
       from: "skupstina",
@@ -151,22 +150,22 @@ export const assemblyMap: InstitutionMap = {
       {
         title: "Дневни ред",
         text: "У редовном заседању председник Скупштине предлаже дневни ред седнице. Посланици одлучују које ће тачке ући у дневни ред.",
-        sources: [rules("чл. 85 и 92–94")],
+        sources: [rules(85, "чл. 85 и 92–94")],
       },
       {
         title: "Рад одбора",
         text: "Пре расправе у сали, надлежни одбор разматра предлог закона и доставља Скупштини извештај са мишљењем и предлозима. Ако Влада није предложила закон, и она даје мишљење.",
-        sources: [rules("чл. 155–156")],
+        sources: [rules(155, "чл. 155–156")],
       },
       {
         title: "Расправа и амандмани",
         text: "Посланици најпре расправљају о предлогу у начелу. У расправи о појединостима разматрају конкретне измене текста предложене амандманима.",
-        sources: [rules("чл. 157–158 и 161")],
+        sources: [rules(157, "чл. 157–158 и 161")],
       },
       {
         title: "Гласање",
         text: "Ако нема поднетих амандмана, гласа се само о предлогу у целини. Ако их има, посланици прво одлучују о предлогу у начелу. Ако га прихвате, одлучују о амандманима за које је потребно гласање, па о целом предлогу.",
-        sources: [rules("чл. 160 и 164")],
+        sources: [rules(160, "чл. 160 и 164")],
       },
     ],
     note: {

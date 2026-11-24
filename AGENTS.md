@@ -4,7 +4,7 @@
 - Reuse the shadcn/ui component facade in `src/components/ui/`, now backed by UI SDK, and its shared tokens. Do not introduce page-specific input, pill, select, or button styles unless explicitly requested. The approved direction and implementation contract are in `docs/design-system.md`.
 - Before using UI SDK, follow `.agents/skills/ui-sdk/SKILL.md` and the installed `node_modules/@ui-sdk/react/docs/llms.txt` index, then read the relevant component page. For a new primitive, also search `docs/core.md` by heading and read `docs/rendering.md` in that package. The AI for UI skill coverage and workflow are in `docs/design/skills.md`.
 - Keep the interface and educational content in Serbian Cyrillic. Search must accept Cyrillic, Latin, and input without diacritics.
-- Scope is the Constitution and domestic laws in the current PIS national and education registers (458, 459). Exclude treaty register 206 and the historical Gazette archive. Do not exclude a current-register law solely because of its publication year.
+- Include the Constitution, domestic laws, and the National Assembly Rules of Procedure from the current PIS national and education registers (458, 459). Keep older laws that are still in these registers. Exclude treaty register 206 and the historical Gazette archive.
 - Store each complete law in one `content/corpus/*.md` document. Keep editorial learning examples in `content/learning.json`; never split a law into article documents or graph nodes. No CMS, database, or external AI service is required.
 - Keep quoted law, editorial explanations, and fictional examples clearly separated. Never describe an excerpt as a complete law or a source-access date as legal verification.
 - Every law needs a PIS source, the source's actual version, an access date, and an explicit coverage statement. Do not silently replace the law's wording.
@@ -19,3 +19,24 @@ This version has breaking changes — APIs, conventions, and file structure may 
 This block is written and re-added by `next dev` — verify at `node_modules/next/dist/server/lib/generate-agent-files.js`. Removing it from a diff only re-creates the uncommitted change; committing it with your work keeps the tree clean.
 
 <!-- END:nextjs-agent-rules -->
+
+## Git worktrees
+
+- When creating or first opening a worktree, use the GitHub CLI account specified by the user or saved for that worktree. If neither is available, ask whether to use `stefanradovanovic` or `klara-pelhe`. Save the login in `codex-github-account` inside the Git directory returned by `git rev-parse --absolute-git-dir`. Report the account with the worktree branch and path.
+- Before creating a worktree, run `git fetch origin` and wait for success. If the fetch fails, retry or report the failure before using a remote ref as the base.
+- Base new worktrees on `origin/master` by default. If the user names another remote branch, use its freshly fetched ref. Honor an explicit local branch, tag, or commit as the base.
+- To create a task branch from `master`, run `git worktree add --no-track -b codex/<task> <path> origin/master`. Verify the new worktree's `HEAD` against the intended base commit.
+- For `gh` operations, load the chosen account's token from `gh auth token --hostname github.com --user <login>` directly into `GH_TOKEN` for the command process. Keep the token out of output and files. In that process, verify the login with `gh api --hostname github.com user --jq .login`. If it fails or returns a different login, ask the user to sign in or choose another account before proceeding.
+- After confirming a pull request into `master` was merged, locate the `master` checkout with `git worktree list` and run `git pull --ff-only origin master` there. Verify that `master` and `origin/master` point to the same commit. If the update is blocked or the commits differ, report the cause and preserve local changes and commits.
+
+## Local previews
+
+- On Windows, start a preview from the current chat's worktree with `npm run dev -- --hostname 127.0.0.1 --port 3000`. Keep track of the process started for the chat and verify that the site responds before sharing its URL.
+- If the chat's preview is running when you open or merge a pull request, ask at the end of the turn whether to stop it. Ask once if you open and merge in the same turn. Keep the preview available while awaiting the answer.
+- If the user asks to close the preview, stop the process started for this chat and verify that its port is free. Run shared development servers separately from chat previews.
+
+## UI development
+
+- For UI implementation or review, read and apply the relevant installed AI for UI `SKILL.md` files in `.agents/skills/`. Use `emil-design-eng` for general UI work and the matching focused skill for a specific task. Follow the workflow in `docs/design/skills.md`.
+- Compose shared components and variants from the shadcn/ui facade. Make recurring UI patterns reusable and use the default `Button` variant from `src/components/ui/button.tsx` for primary actions.
+- Use the shared design tokens for typography, spacing, colors, radii, and other visual properties. If a design requirement needs a new shared token or component variant, propose it and get approval before adding or using it. Define the approved option in the shared design system.

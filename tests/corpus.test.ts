@@ -7,7 +7,8 @@ import {
   getRegistry,
 } from "../src/lib/registry";
 import { getLibrary } from "../src/lib/content";
-import { DOMESTIC_REGISTERS } from "../scripts/catalog-scope";
+import { articleHeadings } from "../src/lib/document-navigation";
+import { ASSEMBLY_RULES, DOMESTIC_REGISTERS } from "../scripts/catalog-scope";
 test("published corpus reconciles to the official register without duplicate documents", () => {
   const audit = auditLaws();
   assert.ok(audit.catalogRecords > 0);
@@ -37,4 +38,18 @@ test("constitution contains its first and final article in the same document", (
   const { markdown } = getLawDocument(law.id)!;
   assert.match(markdown, /Члан 1\./);
   assert.match(markdown, /Члан 206\./);
+});
+
+test("the consolidated Assembly rules include all 298 articles in one document", () => {
+  const rules = getRegistry().records.find(
+    (record) => record.registryId === ASSEMBLY_RULES.registryId,
+  );
+  assert.ok(rules);
+  assert.equal(rules.textStatus, "complete");
+  if (!rules.citation.endsWith(": 20/2012-3")) return;
+  const { markdown } = getLawDocument(rules.id)!;
+  assert.deepEqual(
+    articleHeadings(markdown).map(({ id }) => id),
+    Array.from({ length: 298 }, (_, index) => `clan-${index + 1}`),
+  );
 });
