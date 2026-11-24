@@ -1,7 +1,11 @@
 import fs from "node:fs/promises";
 import path from "node:path";
 import { createHash } from "node:crypto";
-import { DOMESTIC_REGISTERS, CATALOG_SCOPE } from "./catalog-scope";
+import {
+  ASSEMBLY_RULES,
+  DOMESTIC_REGISTERS,
+  CATALOG_SCOPE,
+} from "./catalog-scope";
 import { z } from "zod";
 import { assessSource, assertPisUrl, type SourceIssues } from "./source-policy";
 import { canonicalizeLaws } from "./canonicalize-laws";
@@ -77,20 +81,26 @@ async function request(url: string, body?: unknown): Promise<Response> {
   }
   throw new Error("Request exhausted");
 }
-async function collect(levels: number[]): Promise<Row[]> {
-  const result = searchSchema.parse(
+async function searchCatalog(
+  levels: readonly number[],
+  documentTypes: string[],
+) {
+  return searchSchema.parse(
     await (
       await request(DI + "advancedSearch", {
         l: [...levels, ...Array(5 - levels.length).fill(-1)],
         pau: null,
         aids: [],
-        dids: ["19", "53"],
+        dids: documentTypes,
         tmo: true,
         bmo: true,
         limit: 500,
       })
     ).json(),
   );
+}
+async function collect(levels: number[]): Promise<Row[]> {
+  const result = await searchCatalog(levels, ["19", "53"]);
   console.log(
     `Catalog ${levels.join("/") || "all"}: ${result.result.length}/${result.resultSize}`,
   );
@@ -126,6 +136,27 @@ async function collect(levels: number[]): Promise<Row[]> {
 const rows: Row[] = [];
 for (const register of DOMESTIC_REGISTERS)
   rows.push(...(await collect([register])));
+const rulesResult = await searchCatalog(ASSEMBLY_RULES.levels, ["81"]);
+const rulesRows = rulesResult.result.filter(
+  (row) =>
+    row.id === ASSEMBLY_RULES.registryId &&
+    row.docType === ASSEMBLY_RULES.documentType &&
+    row.uuid,
+);
+if (
+  rulesResult.resultSize !== rulesResult.result.length ||
+  rulesRows.length !== 1
+)
+  throw new Error(
+    "Could not reconcile the National Assembly Rules of Procedure in PIS",
+  );
+const [rulesRegister] = ASSEMBLY_RULES.levels;
+rows.push({ ...rulesRows[0], register: rulesRegister });
+partitions.push({
+  levels: [...ASSEMBLY_RULES.levels],
+  expected: 1,
+  received: 1,
+});
 await fs.writeFile(".cache/catalog.json", JSON.stringify(rows, null, 2));
 const groups = new Map<string, Row[]>();
 for (const row of rows) {
@@ -140,6 +171,11 @@ let done = 0;
 async function importRecord([id, memberships]: [string, Row[]]) {
   const row = memberships[0],
     cachedPath = path.join(cache, id + ".json");
+  const sourceTitle = row.title.split(/:|\.\s*Службени/)[0].trim();
+  const title =
+    row.id === ASSEMBLY_RULES.registryId
+      ? sourceTitle.replace(/ \(пречишћен текст\)$/, "")
+      : sourceTitle;
   try {
     let cached:
       { title: string; record: RegistryRecord; markdown: string } | undefined;
@@ -215,7 +251,7 @@ async function importRecord([id, memberships]: [string, Row[]]) {
       record = {
         id,
         registryId: row.id,
-        title: row.title.split(/:|\.\s*Службени/)[0].trim(),
+        title,
         citation: row.title,
         documentType: row.docType,
         categories,
@@ -236,7 +272,7 @@ async function importRecord([id, memberships]: [string, Row[]]) {
       markdown = content.markdown;
       await new Promise((r) => setTimeout(r, 100));
     }
-    record.title = row.title.split(/:|\.\s*Службени/)[0].trim();
+    record.title = title;
     markdown = assessSource(record, markdown, issues);
     const file =
       "---\n" + JSON.stringify(record, null, 2) + "\n---\n\n" + markdown + "\n";

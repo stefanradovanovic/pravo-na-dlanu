@@ -6,7 +6,11 @@ import { normalizeSearch } from "../src/lib/search";
 import { duplicateGroups, sha256 } from "./legal-source";
 import { lawIdentity } from "./canonicalize-laws";
 import { assertPisUrl } from "./source-policy";
-import { isDomesticRegister, CATALOG_SCOPE } from "./catalog-scope";
+import {
+  ASSEMBLY_RULES,
+  isDomesticRegister,
+  CATALOG_SCOPE,
+} from "./catalog-scope";
 import {
   attachFacsimile,
   verifyFacsimileAssets,
@@ -16,6 +20,10 @@ import {
 export function auditLaws() {
   const { records, report } = getRegistry();
   assert.equal(report.scope, CATALOG_SCOPE, "Unexpected catalog scope");
+  assert.ok(
+    records.some((record) => record.registryId === ASSEMBLY_RULES.registryId),
+    "Missing National Assembly Rules of Procedure",
+  );
   const facsimiles: Facsimiles = JSON.parse(
     fs.readFileSync("content/facsimiles.json", "utf8"),
   );
@@ -101,7 +109,13 @@ export function auditLaws() {
   const titleWarnings: { id: string; title: string }[] = [];
   for (const r of records) {
     assert.ok(/^(?:[a-f0-9-]{36}|reg-\d+)$/.test(r.id));
-    assert.ok(["Закон", "Устав"].includes(r.documentType));
+    if (r.registryId === ASSEMBLY_RULES.registryId) {
+      assert.equal(r.documentType, ASSEMBLY_RULES.documentType);
+      assert.equal(r.register, ASSEMBLY_RULES.levels[0]);
+      assert.equal(r.textStatus, "complete");
+    } else {
+      assert.ok(["Закон", "Устав"].includes(r.documentType));
+    }
     assert.ok(
       r.categories.length && new Set(r.categories).size === r.categories.length,
     );

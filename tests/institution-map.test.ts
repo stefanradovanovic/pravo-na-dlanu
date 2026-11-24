@@ -1,11 +1,9 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 import { articleHeadings } from "../src/lib/document-navigation";
-import { assemblyRulesUrl } from "../src/lib/assembly-map";
 import { institutionMaps } from "../src/lib/institution-map";
 import { getLawDocument, getRegistry } from "../src/lib/registry";
 import { lawPath } from "../src/lib/registry-types";
-import { assertPisUrl } from "../scripts/source-policy";
 
 test("each institution relationship connects named nodes on the same map", () => {
   const mapIds = new Set(institutionMaps.map((map) => map.id));
@@ -28,7 +26,7 @@ test("each institution relationship connects named nodes on the same map", () =>
   }
 });
 
-test("each map source is a law article or the Assembly’s official Rules of Procedure", () => {
+test("each map source opens a canonical document or one of its articles", () => {
   const records = new Map(
     getRegistry().records.map((record) => [lawPath(record), record]),
   );
@@ -43,17 +41,10 @@ test("each map source is a law article or the Assembly’s official Rules of Pro
   }
   const anchors = new Map<string, Set<string>>();
   for (const citation of citations) {
-    if (citation === assemblyRulesUrl) {
-      assertPisUrl(citation);
-      assert.equal(
-        new URL(citation).pathname,
-        "/viewAct/2e13f645-6a22-4588-99c7-f0e159b67864",
-      );
-      continue;
-    }
     const [pathname, fragment] = citation.split("#");
     const record = records.get(pathname);
     assert.ok(record, citation);
+    if (!fragment) continue;
     if (!anchors.has(pathname)) {
       const law = getLawDocument(record.id);
       assert.ok(law, citation);

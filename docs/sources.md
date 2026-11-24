@@ -1,7 +1,7 @@
 # Sources and data contract
 
 Canonical catalog: [PIS register](https://www.pravno-informacioni-sistem.rs/reg-search).
-Scope is **domestic laws and the Constitution**: records with document types Устав (19) or Закон (53) in the current PIS roots 458 (national) and 459 (education). International treaty register 206 and the historical Gazette archive are excluded, as are bylaws, municipal acts and other document types. Current-register membership determines inclusion, not publication year: an older law can remain in force. PIS also retains some older acts that were not formally repealed, with editorial notes; presence is not an independent assertion that every provision applies today.
+The catalog includes all records classified as Устав (19) or Закон (53) in the current PIS roots 458 (national) and 459 (education). It also includes the National Assembly Rules of Procedure, PIS record 420235, from the National Assembly subcategory of the national register. International treaty register 206 and the historical Gazette archive are excluded. Current-register membership determines inclusion regardless of publication year. PIS also retains some older acts that were never formally repealed, with editorial notes.
 
 The public register's own application uses these unauthenticated endpoints:
 

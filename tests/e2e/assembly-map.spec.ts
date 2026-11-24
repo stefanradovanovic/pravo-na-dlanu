@@ -17,11 +17,13 @@ test("open and reload the Assembly topic by its shareable address", async ({
   await expect(
     procedure.getByRole("heading", { name: "Кворум и потребна већина" }),
   ).toBeVisible();
-  await expect(
-    procedure.getByRole("link", { name: /Пословник.*85 и 92–94/ }),
-  ).toHaveAttribute("href", /pravno-informacioni-sistem\.rs\/viewAct\//);
   await page.reload();
   await expect(tab).toHaveAttribute("aria-selected", "true");
+  await procedure.getByRole("link", { name: /Пословник.*85 и 92–94/ }).click();
+  await expect(page).toHaveURL(
+    /\/propisi\/poslovnik-narodne-skupstine#clan-85$/,
+  );
+  await expect(page.locator("#clan-85")).toBeInViewport();
 });
 
 test("follow the Assembly card, switch topics by keyboard and retrace them", async ({

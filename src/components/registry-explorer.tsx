@@ -181,10 +181,7 @@ export function RegistryExplorer({ registry }: { registry: Registry }) {
         <div className="catalog-intro-copy">
           <div className="eyebrow">БИБЛИОТЕКА ПРОПИСА</div>
           <h1>Упознајте своја права.</h1>
-          <p>
-            Устав и закони Србије. Пронађите пропис, прочитајте цео текст и
-            проверите извор.
-          </p>
+          <p>Пронађите пропис, прочитајте цео текст и проверите извор.</p>
           <div className="home-learning-link">
             <Link
               href="/ucenje"
@@ -409,13 +406,13 @@ export function RegistryExplorer({ registry }: { registry: Registry }) {
                   {searching
                     ? "Резултати претраге"
                     : category === "all"
-                      ? "Устав и закони Србије"
+                      ? "Прописи Републике Србије"
                       : categoryLabel(category)}
                 </h2>
                 <p>
                   {searching
-                    ? `${matches.length} докумената · ${mode === "full" ? "претрага фразе у тексту" : "претрага назива закона"}`
-                    : "Изаберите област и истражите законе који јој припадају."}
+                    ? `${matches.length} докумената · ${mode === "full" ? "претрага фразе у тексту" : "претрага назива прописа"}`
+                    : "Изаберите област и истражите прописе који јој припадају."}
                 </p>
               </div>
               <TabsList aria-label="Начин приказа">
@@ -562,9 +559,8 @@ export function RegistryExplorer({ registry }: { registry: Registry }) {
               <p>
                 {report.fullTextRecords?.toLocaleString("sr-RS")} HTML текстова;{" "}
                 {(report.facsimileRecords ?? 0).toLocaleString("sr-RS")} у
-                факсимилу. Домаћи закони и Устав из актуелног регистра ПИС-а.
-                Сваки закон има један документ. Погледајте обухват и проверу
-                извора.
+                факсимилу. Збирка обухвата Устав, домаће законе и Пословник
+                Народне скупштине. Погледајте обухват и проверу извора.
               </p>
               {!!report.sourceOnlyRecords && (
                 <p className="source-warning">
