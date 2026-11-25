@@ -1,0 +1,1135 @@
+{
+  "Апелационо јавно тужилаштво у Београду": {
+    "addresses": [
+      "Катанићева бр.15, 11000 Београд"
+    ],
+    "phone": {
+      "number": "+381 11 6354 882"
+    },
+    "email": {
+      "label": "Електронски контакт тужилаштва",
+      "address": "uprava@beograd.apjt.rs"
+    },
+    "source": "https://beograd.apjt.rs/?language=sr_cyr"
+  },
+  "Апелационо јавно тужилаштво у Крагујевцу": {
+    "addresses": [
+      "Ул Слободе 4, 34000 Крагујевац"
+    ],
+    "phone": {
+      "number": "+381 34 305 251"
+    },
+    "email": {
+      "label": "Електронски контакт тужилаштва",
+      "address": "uprava@kragujevac.apjt.rs"
+    },
+    "source": "https://kragujevac.apjt.rs/?language=sr_cyr"
+  },
+  "Апелационо јавно тужилаштво у Нишу": {
+    "addresses": [
+      "Војводе Путника 1, 18106 Ниш"
+    ],
+    "phone": {
+      "number": "+381 18 506 802"
+    },
+    "email": {
+      "label": "Електронски контакт тужилаштва",
+      "address": "uprava@nis.apjt.rs"
+    },
+    "source": "https://nis.apjt.rs/?language=sr_cyr"
+  },
+  "Апелационо јавно тужилаштво у Новом Саду": {
+    "addresses": [
+      "Сутјеска бр.3, 21101 Нови Сад"
+    ],
+    "phone": {
+      "number": "+381 21 522 381"
+    },
+    "email": {
+      "label": "Електронски контакт тужилаштва",
+      "address": "uprava@novisad.apjt.rs"
+    },
+    "source": "https://novisad.apjt.rs/?language=sr_cyr"
+  },
+  "Више јавно тужилаштво у Београду": {
+    "addresses": [
+      "Булевар краља Александра I Карађорђевића 17а, Београд"
+    ],
+    "phone": {
+      "label": "Информације",
+      "number": "+381 11 745 1234"
+    },
+    "email": {
+      "label": "Управа",
+      "address": "uprava@beograd.vjt.rs"
+    },
+    "source": "https://beograd.vjt.rs/kontakt-2-2/"
+  },
+  "Више јавно тужилаштво у Ваљеву": {
+    "addresses": [
+      "Вука Караџића бр. 5, 14000 Ваљево"
+    ],
+    "phone": {
+      "number": "+381 14 295 740"
+    },
+    "email": {
+      "label": "Електронски контакт тужилаштва",
+      "address": "uprava@valjevo.vjt.rs"
+    },
+    "source": "https://valjevo.vjt.rs/?language=sr_cyr"
+  },
+  "Више јавно тужилаштво у Врању": {
+    "addresses": [
+      "Стефана Првовенчаног бр.1, 17500 Врање"
+    ],
+    "phone": {
+      "number": "+381 17 422 133"
+    },
+    "email": {
+      "label": "Електронски контакт тужилаштва",
+      "address": "uprava@vranje.vjt.rs"
+    },
+    "source": "https://vranje.vjt.rs/?language=sr_cyr"
+  },
+  "Више јавно тужилаштво у Зајечару": {
+    "addresses": [
+      "Генерала Гамбете ББ, 19000 Зајечар"
+    ],
+    "phone": {
+      "number": "+381 19 442 180"
+    },
+    "email": {
+      "label": "Електронски контакт тужилаштва",
+      "address": "uprava@zajecar.vjt.rs"
+    },
+    "source": "https://zajecar.vjt.rs/?language=sr_cyr"
+  },
+  "Више јавно тужилаштво у Зрењанину": {
+    "addresses": [
+      "Кеј 2. октобра бр.1, 23101 Зрењанин"
+    ],
+    "phone": {
+      "number": "+381 23 563 684"
+    },
+    "email": {
+      "label": "Електронски контакт тужилаштва",
+      "address": "uprava@zrenjanin.vjt.rs"
+    },
+    "source": "https://zrenjanin.vjt.rs/?language=sr_cyr"
+  },
+  "Више јавно тужилаштво у Јагодини": {
+    "addresses": [
+      "Књегиње Милице бр.86, 35000 Јагодина"
+    ],
+    "phone": {
+      "number": "+381 35 8221 801"
+    },
+    "email": {
+      "label": "Електронски контакт тужилаштва",
+      "address": "uprava@jagodina.vjt.rs"
+    },
+    "source": "https://jagodina.vjt.rs/?language=sr_cyr"
+  },
+  "Више јавно тужилаштво у Крагујевцу": {
+    "addresses": [
+      "Слободе 4, 34000 Крагујевац"
+    ],
+    "phone": {
+      "number": "+381 34 334 425"
+    },
+    "email": {
+      "label": "Електронски контакт тужилаштва",
+      "address": "uprava@kragujevac.vjt.rs"
+    },
+    "source": "https://kragujevac.vjt.rs/?language=sr_cyr"
+  },
+  "Више јавно тужилаштво у Краљеву": {
+    "addresses": [
+      "Карађорђева 5, 36000 Краљево"
+    ],
+    "phone": {
+      "number": "+381 36 323 399"
+    },
+    "email": {
+      "label": "Писарница",
+      "address": "pisarnica@kraljevo.vjt.rs"
+    },
+    "source": "https://kraljevo.vjt.rs/?language=sr_cyr"
+  },
+  "Више јавно тужилаштво у Крушевцу": {
+    "addresses": [
+      "Трг Косовских јунака бр.3, 37000 Крушевац"
+    ],
+    "phone": {
+      "number": "+381 37 413 617"
+    },
+    "email": {
+      "label": "Електронски контакт тужилаштва",
+      "address": "uprava@krusevac.vjt.rs"
+    },
+    "source": "https://krusevac.vjt.rs/?language=sr_cyr"
+  },
+  "Више јавно тужилаштво у Лесковцу": {
+    "addresses": [
+      "Пана Ђукића 13, 16000 Лесковац"
+    ],
+    "phone": {
+      "number": "+381 16 253 810"
+    },
+    "email": {
+      "label": "Електронски контакт тужилаштва",
+      "address": "uprava@leskovac.vjt.rs"
+    },
+    "source": "https://leskovac.vjt.rs/informator/"
+  },
+  "Више јавно тужилаштво у Неготину": {
+    "addresses": [
+      "Трг Стевана Мокрањца бр.1, 19300 Неготин"
+    ],
+    "phone": {
+      "number": "+381 19 542 364"
+    },
+    "email": {
+      "label": "Електронски контакт тужилаштва",
+      "address": "uprava@negotin.vjt.rs"
+    },
+    "source": "https://negotin.vjt.rs/?language=sr_cyr"
+  },
+  "Више јавно тужилаштво у Нишу": {
+    "addresses": [
+      "Вожда Карађорђа 23, 18105 Ниш"
+    ],
+    "phone": {
+      "number": "+381 18 504 175"
+    },
+    "email": {
+      "label": "Управа",
+      "address": "uprava@nis.vjt.rs"
+    },
+    "source": "https://nis.vjt.rs/?language=sr_cyr"
+  },
+  "Више јавно тужилаштво у Новом Пазару": {
+    "addresses": [
+      "Житни Трг бр.:16, 36300 Нови Пазар"
+    ],
+    "phone": {
+      "number": "+381 20 313 983"
+    },
+    "email": {
+      "label": "Електронски контакт тужилаштва",
+      "address": "uprava@novipazar.vjt.rs"
+    },
+    "source": "https://novipazar.vjt.rs/?language=sr_cyr"
+  },
+  "Више јавно тужилаштво у Новом Саду": {
+    "addresses": [
+      "Сутјеска 3, 21101 Нови Сад"
+    ],
+    "phone": {
+      "number": "+381 21 4876 444"
+    },
+    "email": {
+      "label": "Управа",
+      "address": "uprava@novisad.vjt.rs"
+    },
+    "source": "https://novisad.vjt.rs/?language=sr_cyr"
+  },
+  "Више јавно тужилаштво у Панчеву": {
+    "addresses": [
+      "Војводе Радомира Путника бр.13-15, 26101 Панчево"
+    ],
+    "phone": {
+      "number": "+381 13 345 482"
+    },
+    "email": {
+      "label": "Електронски контакт тужилаштва",
+      "address": "uprava@pancevo.vjt.rs"
+    },
+    "source": "https://pancevo.vjt.rs/?language=sr_cyr"
+  },
+  "Више јавно тужилаштво у Пироту": {
+    "addresses": [
+      "Српских владара бр. 126а, 18300 Пирот"
+    ],
+    "phone": {
+      "number": "+381 10 322 441"
+    },
+    "email": {
+      "label": "Електронски контакт тужилаштва",
+      "address": "uprava@pirot.vjt.rs"
+    },
+    "source": "https://pirot.vjt.rs/?language=sr_cyr"
+  },
+  "Више јавно тужилаштво у Пожаревцу": {
+    "addresses": [
+      "Јована Шербановића бр.4, 12000 Пожаревац"
+    ],
+    "phone": {
+      "number": "+381 12 523 789"
+    },
+    "email": {
+      "label": "Електронски контакт тужилаштва",
+      "address": "uprava@pozarevac.vjt.rs"
+    },
+    "source": "https://pozarevac.vjt.rs/?language=sr_cyr"
+  },
+  "Више јавно тужилаштво у Прокупљу": {
+    "addresses": [
+      "21. српске дивизије бр.1 18400 Прокупље"
+    ],
+    "phone": {
+      "number": "+381 27 321 076"
+    },
+    "email": {
+      "label": "Електронски контакт тужилаштва",
+      "address": "uprava@prokuplje.vjt.rs"
+    },
+    "source": "https://prokuplje.vjt.rs/?language=sr_cyr"
+  },
+  "Више јавно тужилаштво у Смедереву": {
+    "addresses": [
+      "Трг Републике бр.2, 11300 Смедерево"
+    ],
+    "phone": {
+      "number": "+381 26 621 514"
+    },
+    "email": {
+      "label": "Електронски контакт тужилаштва",
+      "address": "uprava@smederevo.vjt.rs"
+    },
+    "source": "https://smederevo.vjt.rs/?language=sr_cyr"
+  },
+  "Више јавно тужилаштво у Сомбору": {
+    "addresses": [
+      "Његошева бр.4, 25000 Сомбор"
+    ],
+    "phone": {
+      "number": "+381 25 412 271"
+    },
+    "email": {
+      "label": "Електронски контакт тужилаштва",
+      "address": "uprava@sombor.vjt.rs"
+    },
+    "source": "https://sombor.vjt.rs/?language=sr_cyr"
+  },
+  "Више јавно тужилаштво у Сремској Митровици": {
+    "addresses": [
+      "Светог Димитрија бр.39, 22000 Сремска Митровица"
+    ],
+    "phone": {
+      "number": "+381 22 600 161"
+    },
+    "email": {
+      "label": "Електронски контакт тужилаштва",
+      "address": "uprava@sremskamitrovica.vjt.rs"
+    },
+    "source": "https://sremskamitrovica.vjt.rs/?language=sr_cyr"
+  },
+  "Више јавно тужилаштво у Суботици": {
+    "addresses": [
+      "Сенћански пут бр.1, 24000 Суботица"
+    ],
+    "phone": {
+      "number": "+381 24 558 261"
+    },
+    "email": {
+      "label": "Електронски контакт тужилаштва",
+      "address": "uprava@subotica.vjt.rs"
+    },
+    "source": "https://subotica.vjt.rs/?language=sr_cyr"
+  },
+  "Више јавно тужилаштво у Ужицу": {
+    "addresses": [
+      "Наде Матић бр.6, 31102 Ужице"
+    ],
+    "phone": {
+      "number": "+381 31 512 936"
+    },
+    "email": {
+      "label": "Електронски контакт тужилаштва",
+      "address": "uprava@uzice.vjt.rs"
+    },
+    "source": "https://uzice.vjt.rs/?language=sr_cyr"
+  },
+  "Више јавно тужилаштво у Чачку": {
+    "addresses": [
+      "Цара Душана бр.6, 32102 Чачак"
+    ],
+    "phone": {
+      "number": "+381 32 322 269"
+    },
+    "email": {
+      "label": "Електронски контакт тужилаштва",
+      "address": "uprava@cacak.vjt.rs"
+    },
+    "source": "https://cacak.vjt.rs/?language=sr_cyr"
+  },
+  "Више јавно тужилаштво у Шапцу": {
+    "addresses": [
+      "Господар Јевремова бр.8, 15000 Шабац"
+    ],
+    "phone": {
+      "number": "+381 15 304 915"
+    },
+    "email": {
+      "label": "Електронски контакт тужилаштва",
+      "address": "uprava@sabac.vjt.rs"
+    },
+    "source": "https://sabac.vjt.rs/?language=sr_cyr"
+  },
+  "Друго основно јавно тужилаштво у Београду": {
+    "addresses": [
+      "Булевар краља Александра I Карађорђевића 17а, Београд"
+    ],
+    "phone": {
+      "number": "+381 11 745 1245"
+    },
+    "email": {
+      "label": "Електронски контакт тужилаштва",
+      "address": "uprava@drugo.ojt.rs"
+    },
+    "source": "https://drugo.ojt.rs/kontakt-7/?language=sr_cyr"
+  },
+  "Основно јавно тужилаштво у Алексинцу": {
+    "addresses": [
+      "Аце Милојевића бр. 2, 18 220 Алексинац"
+    ],
+    "phone": {
+      "number": "+381 18 804 333"
+    },
+    "email": {
+      "label": "Електронски контакт тужилаштва",
+      "address": "uprava@aleksinac.ojt.rs"
+    },
+    "source": "https://aleksinac.ojt.rs/?language=sr_cyr"
+  },
+  "Основно јавно тужилаштво у Аранђеловцу": {
+    "addresses": [
+      "Књаза Милоша бр.102, 34300 Аранђеловац"
+    ],
+    "phone": {
+      "number": "+381 34 726 047"
+    },
+    "email": {
+      "label": "Електронски контакт тужилаштва",
+      "address": "uprava@arandjelovac.ojt.rs"
+    },
+    "source": "https://arandjelovac.ojt.rs/?language=sr_cyr"
+  },
+  "Основно јавно тужилаштво у Бачкој Паланци": {
+    "addresses": [
+      "Краља Петра I бр.18, 21400 Бачка Паланка"
+    ],
+    "phone": {
+      "number": "+381 21 752 172"
+    },
+    "email": {
+      "label": "Електронски контакт тужилаштва",
+      "address": "uprava@backapalanka.ojt.rs"
+    },
+    "source": "https://backapalanka.ojt.rs/?language=sr_cyr"
+  },
+  "Основно јавно тужилаштво у Бечеју": {
+    "addresses": [
+      "Главна бр. 6, 21220 Бечеј"
+    ],
+    "phone": {
+      "number": "+381 21 6919 242"
+    },
+    "email": {
+      "label": "Електронски контакт тужилаштва",
+      "address": "uprava@becej.ojt.rs"
+    },
+    "source": "https://becej.ojt.rs/?language=sr_cyr"
+  },
+  "Основно јавно тужилаштво у Бору": {
+    "addresses": [
+      "Моше Пијаде бр.3, 19210 Бор"
+    ],
+    "phone": {
+      "number": "+381 30 422 290"
+    },
+    "email": {
+      "label": "Електронски контакт тужилаштва",
+      "address": "uprava@bor.ojt.rs"
+    },
+    "source": "https://bor.ojt.rs/?language=sr_cyr"
+  },
+  "Основно јавно тужилаштво у Брусу": {
+    "addresses": [
+      "Мике Ђорђевића ББ, 37220 Брус"
+    ],
+    "phone": {
+      "number": "+381 37 826 082"
+    },
+    "email": {
+      "label": "Електронски контакт тужилаштва",
+      "address": "uprava@brus.ojt.rs"
+    },
+    "source": "https://brus.ojt.rs/?language=sr_cyr"
+  },
+  "Основно јавно тужилаштво у Ваљеву": {
+    "addresses": [
+      "Вука Караџића бр.5, 14000 Ваљево"
+    ],
+    "phone": {
+      "number": "+381 14 221 674"
+    },
+    "email": {
+      "label": "Електронски контакт тужилаштва",
+      "address": "uprava@valjevo.ojt.rs"
+    },
+    "source": "https://valjevo.ojt.rs/?language=sr_cyr"
+  },
+  "Основно јавно тужилаштво у Великој Плани": {
+    "addresses": [
+      "Момира Гајића бр.7, 11320 Велика Плана"
+    ],
+    "phone": {
+      "number": "+381 26 514 050"
+    },
+    "email": {
+      "label": "Електронски контакт тужилаштва",
+      "address": "uprava@velikaplana.ojt.rs"
+    },
+    "source": "https://velikaplana.ojt.rs/?language=sr_cyr"
+  },
+  "Основно јавно тужилаштво у Великом Градишту": {
+    "addresses": [
+      "Житни Трг бр.1, 12220 Велико Градиште"
+    ],
+    "phone": {
+      "number": "+381 12 661 220"
+    },
+    "email": {
+      "label": "Електронски контакт тужилаштва",
+      "address": "uprava@velikogradiste.ojt.rs"
+    },
+    "source": "https://velikogradiste.ojt.rs/?language=sr_cyr"
+  },
+  "Основно јавно тужилаштво у Владичином Хану": {
+    "addresses": [
+      "Светосавска бр.1, Владичин Хан"
+    ],
+    "phone": {
+      "number": "+381 17 471 414"
+    },
+    "email": {
+      "label": "Електронски контакт тужилаштва",
+      "address": "uprava@vladicinhan.ojt.rs"
+    },
+    "source": "https://vladicinhan.ojt.rs/?language=sr_cyr"
+  },
+  "Основно јавно тужилаштво у Врању": {
+    "addresses": [
+      "ул. Краља Стефана Првовенчаног бр.1, 17500 Врање"
+    ],
+    "phone": {
+      "number": "+381 17 423 834"
+    },
+    "email": {
+      "label": "Електронски контакт тужилаштва",
+      "address": "uprava@vranje.ojt.rs"
+    },
+    "source": "https://vranje.ojt.rs/?language=sr_cyr"
+  },
+  "Основно јавно тужилаштво у Врбасу": {
+    "addresses": [
+      "Палих бораца 9ц, 21460 Врбас"
+    ],
+    "phone": {
+      "number": "+381 21 704 114"
+    },
+    "email": {
+      "label": "Електронски контакт тужилаштва",
+      "address": "uprava@vrbas.ojt.rs"
+    },
+    "source": "https://vrbas.ojt.rs/?language=sr_cyr"
+  },
+  "Основно јавно тужилаштво у Вршцу": {
+    "addresses": [
+      "Стеријина бр. 60, 26300 Вршац"
+    ],
+    "phone": {
+      "number": "+381 13 839 878"
+    },
+    "email": {
+      "label": "Електронски контакт тужилаштва",
+      "address": "uprava@vrsac.ojt.rs"
+    },
+    "source": "https://vrsac.ojt.rs/?language=sr_cyr"
+  },
+  "Основно јавно тужилаштво у Горњем Милановцу": {
+    "addresses": [
+      "Кнеза Александра Карађорђевића бр.29, 32300 Горњи Милановац"
+    ],
+    "phone": {
+      "number": "+381 32 710 672"
+    },
+    "email": {
+      "label": "Електронски контакт тужилаштва",
+      "address": "uprava@gornjimilanovac.ojt.rs"
+    },
+    "source": "https://gornjimilanovac.ojt.rs/?language=sr_cyr"
+  },
+  "Основно јавно тужилаштво у Деспотовцу": {
+    "addresses": [
+      "Савез Бораца бр.71, 35213 Деспотовац"
+    ],
+    "phone": {
+      "number": "+381 35 611 018"
+    },
+    "email": {
+      "label": "Електронски контакт тужилаштва",
+      "address": "uprava@despotovac.ojt.rs"
+    },
+    "source": "https://despotovac.ojt.rs/?language=sr_cyr"
+  },
+  "Основно јавно тужилаштво у Зајечару": {
+    "addresses": [
+      "Трг Ослобођења 32, 19000 Зајечар"
+    ],
+    "phone": {
+      "number": "+381 19 422 131"
+    },
+    "email": {
+      "label": "Електронски контакт тужилаштва",
+      "address": "uprava@zajecar.ojt.rs"
+    },
+    "source": "https://zajecar.ojt.rs/?language=sr_cyr"
+  },
+  "Основно јавно тужилаштво у Зрењанину": {
+    "addresses": [
+      "Кеј 2 октобра бр.1, 23101 Зрењанин"
+    ],
+    "phone": {
+      "number": "+381 23 564 251"
+    },
+    "email": {
+      "label": "Електронски контакт тужилаштва",
+      "address": "uprava@zrenjanin.ojt.rs"
+    },
+    "source": "https://zrenjanin.ojt.rs/?language=sr_cyr"
+  },
+  "Основно јавно тужилаштво у Јагодини": {
+    "addresses": [
+      "Кнегиње Милице 15 35000 Јагодина"
+    ],
+    "phone": {
+      "number": "+381 35 242 539"
+    },
+    "email": {
+      "label": "Електронски контакт тужилаштва",
+      "address": "uprava@jagodina.ojt.rs"
+    },
+    "source": "https://jagodina.ojt.rs/?language=sr_cyr"
+  },
+  "Основно јавно тужилаштво у Кикинди": {
+    "addresses": [
+      "Светозара Милетића бр. 1, 23300 Кикинда"
+    ],
+    "phone": {
+      "number": "+381 230 422 307"
+    },
+    "email": {
+      "label": "Електронски контакт тужилаштва",
+      "address": "uprava@kikinda.ojt.rs"
+    },
+    "source": "https://kikinda.ojt.rs/?language=sr_cyr"
+  },
+  "Основно јавно тужилаштво у Крагујевцу": {
+    "addresses": [
+      "Улица Слободе бр. 4, 34000 Крагујевац"
+    ],
+    "phone": {
+      "number": "+381 34 332 440"
+    },
+    "email": {
+      "label": "Електронски контакт тужилаштва",
+      "address": "uprava@kragujevac.ojt.rs"
+    },
+    "source": "https://kragujevac.ojt.rs/?language=sr_cyr"
+  },
+  "Основно јавно тужилаштво у Краљеву": {
+    "addresses": [
+      "Пљакина бр.4, 36000 Краљево"
+    ],
+    "phone": {
+      "number": "+381 36 321 793"
+    },
+    "email": {
+      "label": "Електронски контакт тужилаштва",
+      "address": "uprava@kraljevo.ojt.rs"
+    },
+    "source": "https://kraljevo.ojt.rs/?language=sr_cyr"
+  },
+  "Основно јавно тужилаштво у Крушевцу": {
+    "addresses": [
+      "Косовских Јунака бр.3, 37000 Крушевац"
+    ],
+    "phone": {
+      "number": "+381 37 413 640"
+    },
+    "email": {
+      "label": "Електронски контакт тужилаштва",
+      "address": "uprava@krusevac.ojt.rs"
+    },
+    "source": "https://krusevac.ojt.rs/?language=sr_cyr"
+  },
+  "Основно јавно тужилаштво у Куршумлији": {
+    "addresses": [
+      "Палих Бораца бр.29, 18430 Куршумлија"
+    ],
+    "phone": {
+      "number": "+381 27 381 047"
+    },
+    "email": {
+      "label": "Електронски контакт тужилаштва",
+      "address": "uprava@kursumlija.ojt.rs"
+    },
+    "source": "https://kursumlija.ojt.rs/?language=sr_cyr"
+  },
+  "Основно јавно тужилаштво у Лазаревцу": {
+    "addresses": [
+      "Карађорђева бр.19, 11550 Лазаревац"
+    ],
+    "phone": {
+      "number": "+381 11 8122 729"
+    },
+    "email": {
+      "label": "Електронски контакт тужилаштва",
+      "address": "uprava@lazarevac.ojt.rs"
+    },
+    "source": "https://lazarevac.ojt.rs/?language=sr_cyr"
+  },
+  "Основно јавно тужилаштво у Лебану": {
+    "addresses": [
+      "Цара Душана 118, 16230 Лебане"
+    ],
+    "phone": {
+      "number": "+381 64 642 9431"
+    },
+    "email": {
+      "label": "Управа",
+      "address": "uprava@lebane.ojt.rs"
+    },
+    "source": "https://lebane.ojt.rs/?language=sr_cyr"
+  },
+  "Основно јавно тужилаштво у Лесковцу": {
+    "addresses": [
+      "Косте Стаменковића 16, 16000 Лесковац"
+    ],
+    "phone": {
+      "number": "+381 16 251 792"
+    },
+    "email": {
+      "label": "Електронски контакт тужилаштва",
+      "address": "uprava@leskovac.ojt.rs"
+    },
+    "source": "https://leskovac.ojt.rs/kontakt-7/"
+  },
+  "Основно јавно тужилаштво у Лозници": {
+    "addresses": [
+      "Јована Цвијића 40, 15300 Лозница"
+    ],
+    "phone": {
+      "number": "+381 15 882 356"
+    },
+    "email": {
+      "label": "Електронски контакт тужилаштва",
+      "address": "uprava@loznica.ojt.rs"
+    },
+    "source": "https://loznica.ojt.rs/?language=sr_cyr"
+  },
+  "Основно јавно тужилаштво у Мионици": {
+    "addresses": [
+      "Војводе Мишића бр.28, 14242 Мионица"
+    ],
+    "phone": {
+      "number": "+381 14 3422 233"
+    },
+    "email": {
+      "label": "Електронски контакт тужилаштва",
+      "address": "uprava@mionica.ojt.rs"
+    },
+    "source": "https://mionica.ojt.rs/?language=sr_cyr"
+  },
+  "Основно јавно тужилаштво у Младеновцу": {
+    "addresses": [
+      "Краља Александра Обреновића бр.76, 11400 Младеновац"
+    ],
+    "phone": {
+      "number": "+381 11 8244 145"
+    },
+    "email": {
+      "label": "Електронски контакт тужилаштва",
+      "address": "uprava@mladenovac.ojt.rs"
+    },
+    "source": "https://mladenovac.ojt.rs/?language=sr_cyr"
+  },
+  "Основно јавно тужилаштво у Неготину": {
+    "addresses": [
+      "Трг Стевана Мокрањца бр.1, 19300 Неготин"
+    ],
+    "phone": {
+      "number": "+381 19 542 139"
+    },
+    "email": {
+      "label": "Електронски контакт тужилаштва",
+      "address": "uprava@negotin.ojt.rs"
+    },
+    "source": "https://negotin.ojt.rs/?language=sr_cyr"
+  },
+  "Основно јавно тужилаштво у Нишу": {
+    "addresses": [
+      "Вожда Карађорђа 23, 18105 Ниш"
+    ],
+    "phone": {
+      "number": "+381 18 504 133"
+    },
+    "email": {
+      "label": "Електронски контакт тужилаштва",
+      "address": "uprava@nis.ojt.rs"
+    },
+    "source": "https://nis.ojt.rs/?language=sr_cyr"
+  },
+  "Основно јавно тужилаштво у Новом Пазару": {
+    "addresses": [
+      "Житни трг бр. 16, 36300 Нови Пазар"
+    ],
+    "phone": {
+      "number": "+381 20 312 129"
+    },
+    "email": {
+      "label": "Електронски контакт тужилаштва",
+      "address": "uprava@novipazar.ojt.rs"
+    },
+    "source": "https://novipazar.ojt.rs/?language=sr_cyr"
+  },
+  "Основно јавно тужилаштво у Новом Саду": {
+    "addresses": [
+      "Сутјеска бр.3, 21101 Нови Сад"
+    ],
+    "phone": {
+      "number": "+381 21 4876 350"
+    },
+    "email": {
+      "label": "Електронски контакт тужилаштва",
+      "address": "uprava@novisad.ojt.rs"
+    },
+    "source": "https://novisad.ojt.rs/?language=sr_cyr"
+  },
+  "Основно јавно тужилаштво у Обреновцу": {
+    "addresses": [
+      "Александра Аце Симовића бр.9а, 11500 Обреновац"
+    ],
+    "phone": {
+      "number": "+381 11 8722 128"
+    },
+    "email": {
+      "label": "Електронски контакт тужилаштва",
+      "address": "uprava@obrenovac.ojt.rs"
+    },
+    "source": "https://obrenovac.ojt.rs/?language=sr_cyr"
+  },
+  "Основно јавно тужилаштво у Панчеву": {
+    "addresses": [
+      "Војводе Радомира Путника бр.13-15, 26101 Панчево"
+    ],
+    "phone": {
+      "number": "+381 13 352 609"
+    },
+    "email": {
+      "label": "Електронски контакт тужилаштва",
+      "address": "uprava@pancevo.ojt.rs"
+    },
+    "source": "https://pancevo.ojt.rs/?language=sr_cyr"
+  },
+  "Основно јавно тужилаштво у Параћину": {
+    "addresses": [
+      "Мајора Марка бр.1, 35250 Параћин"
+    ],
+    "phone": {
+      "number": "+381 35 563 332"
+    },
+    "email": {
+      "label": "Електронски контакт тужилаштва",
+      "address": "uprava@paracin.ojt.rs"
+    },
+    "source": "https://paracin.ojt.rs/?language=sr_cyr"
+  },
+  "Основно јавно тужилаштво у Петровцу на Млави": {
+    "addresses": [
+      "Српских Владара бр.159, 12300 Петровац на Млави"
+    ],
+    "phone": {
+      "number": "+381 12 326 081"
+    },
+    "email": {
+      "label": "Електронски контакт тужилаштва",
+      "address": "uprava@petrovacnamlavi.ojt.rs"
+    },
+    "source": "https://petrovacnamlavi.ojt.rs/?language=sr_cyr"
+  },
+  "Основно јавно тужилаштво у Пироту": {
+    "addresses": [
+      "Српских владара бр. 126а, 18300 Пирот"
+    ],
+    "phone": {
+      "number": "+381 10 341 391"
+    },
+    "email": {
+      "label": "Електронски контакт тужилаштва",
+      "address": "uprava@pirot.ojt.rs"
+    },
+    "source": "https://pirot.ojt.rs/?language=sr_cyr"
+  },
+  "Основно јавно тужилаштво у Пожаревцу": {
+    "addresses": [
+      "Јована Шербановића бр.4, 12000 Пожаревац"
+    ],
+    "phone": {
+      "number": "+381 12 531 015"
+    },
+    "email": {
+      "label": "Електронски контакт тужилаштва",
+      "address": "uprava@pozarevac.ojt.rs"
+    },
+    "source": "https://pozarevac.ojt.rs/?language=sr_cyr"
+  },
+  "Основно јавно тужилаштво у Пожеги": {
+    "addresses": [
+      "Уче Димитријевића бр.6, 31210 Пожега"
+    ],
+    "phone": {
+      "number": "+381 31 811 135"
+    },
+    "email": {
+      "label": "Електронски контакт тужилаштва",
+      "address": "uprava@pozega.ojt.rs"
+    },
+    "source": "https://pozega.ojt.rs/?language=sr_cyr"
+  },
+  "Основно јавно тужилаштво у Пријепољу": {
+    "addresses": [
+      "Валтерова бр.171, 31300 Пријепоље"
+    ],
+    "phone": {
+      "number": "+381 33 712 280"
+    },
+    "email": {
+      "label": "Електронски контакт тужилаштва",
+      "address": "uprava@prijepolje.ojt.rs"
+    },
+    "source": "https://prijepolje.ojt.rs/?language=sr_cyr"
+  },
+  "Основно јавно тужилаштво у Прокупљу": {
+    "addresses": [
+      "21 Српске Дивизије бр.1, 18400 Прокупље"
+    ],
+    "phone": {
+      "number": "+381 27 321 703"
+    },
+    "email": {
+      "label": "Електронски контакт тужилаштва",
+      "address": "uprava@prokuplje.ojt.rs"
+    },
+    "source": "https://prokuplje.ojt.rs/?language=sr_cyr"
+  },
+  "Основно јавно тужилаштво у Рашкој": {
+    "addresses": [
+      "Ратка Луковића бр.23, 36530 Рашка"
+    ],
+    "phone": {
+      "number": "+381 36 739 230"
+    },
+    "email": {
+      "label": "Електронски контакт тужилаштва",
+      "address": "uprava@raska.ojt.rs"
+    },
+    "source": "https://raska.ojt.rs/?language=sr_cyr"
+  },
+  "Основно јавно тужилаштво у Руми": {
+    "addresses": [
+      "Железничка бр.10, 22400 Рума"
+    ],
+    "phone": {
+      "number": "+381 22 470 148"
+    },
+    "email": {
+      "label": "Електронски контакт тужилаштва",
+      "address": "uprava@ruma.ojt.rs"
+    },
+    "source": "https://ruma.ojt.rs/?language=sr_cyr"
+  },
+  "Основно јавно тужилаштво у Сенти": {
+    "addresses": [
+      "Главни Трг бр.2, 24400 Сента"
+    ],
+    "phone": {
+      "number": "+381 24 811 511"
+    },
+    "email": {
+      "label": "Електронски контакт тужилаштва",
+      "address": "uprava@senta.ojt.rs"
+    },
+    "source": "https://senta.ojt.rs/?language=sr_cyr"
+  },
+  "Основно јавно тужилаштво у Смедереву": {
+    "addresses": [
+      "Омладинска бр. 1, 11300 Смедерево"
+    ],
+    "phone": {
+      "number": "+381 26 4622 140"
+    },
+    "email": {
+      "label": "Електронски контакт тужилаштва",
+      "address": "uprava@smederevo.ojt.rs"
+    },
+    "source": "https://smederevo.ojt.rs/?language=sr_cyr"
+  },
+  "Основно јавно тужилаштво у Сомбору": {
+    "addresses": [
+      "Његошева бр.4, 25000 Сомбор"
+    ],
+    "phone": {
+      "number": "+381 25 412 558"
+    },
+    "email": {
+      "label": "Електронски контакт тужилаштва",
+      "address": "uprava@sombor.ojt.rs"
+    },
+    "source": "https://sombor.ojt.rs/?language=sr_cyr"
+  },
+  "Основно јавно тужилаштво у Сремској Митровици": {
+    "addresses": [
+      "Светог Димитрија бр.39, 22000 Сремска Митровица"
+    ],
+    "phone": {
+      "number": "+381 22 600 164"
+    },
+    "email": {
+      "label": "Електронски контакт тужилаштва",
+      "address": "uprava@sremskamitrovica.ojt.rs"
+    },
+    "source": "https://sremskamitrovica.ojt.rs/?language=sr_cyr"
+  },
+  "Основно јавно тужилаштво у Старој Пазови": {
+    "addresses": [
+      "Карађорђева бр.3, 22300 Стара Пазова"
+    ],
+    "phone": {
+      "number": "+381 22 312 053"
+    },
+    "email": {
+      "label": "Електронски контакт тужилаштва",
+      "address": "uprava@starapazova.ojt.rs"
+    },
+    "source": "https://starapazova.ojt.rs/?language=sr_cyr"
+  },
+  "Основно јавно тужилаштво у Суботици": {
+    "addresses": [
+      "Сенћански пут бр.1, 24000 Суботица"
+    ],
+    "phone": {
+      "number": "+381 24 558 488"
+    },
+    "email": {
+      "label": "Електронски контакт тужилаштва",
+      "address": "uprava@subotica.ojt.rs"
+    },
+    "source": "https://subotica.ojt.rs/?language=sr_cyr"
+  },
+  "Основно јавно тужилаштво у Трстенику": {
+    "addresses": [
+      "Улица Др.Милуновића број 3"
+    ],
+    "phone": {
+      "number": "+381 37 716 032"
+    },
+    "email": {
+      "label": "Електронски контакт тужилаштва",
+      "address": "uprava@trstenik.ojt.rs"
+    },
+    "source": "https://trstenik.ojt.rs/?language=sr_cyr"
+  },
+  "Основно јавно тужилаштво у Убу": {
+    "addresses": [
+      "Вељка Влаховића бр.6"
+    ],
+    "phone": {
+      "number": "+381 14 412 492"
+    },
+    "email": {
+      "label": "Електронски контакт тужилаштва",
+      "address": "uprava@ub.ojt.rs"
+    },
+    "source": "https://ub.ojt.rs/?language=sr_cyr"
+  },
+  "Основно јавно тужилаштво у Ужицу": {
+    "addresses": [
+      "Наде Матић бр.6, 31000 Ужице"
+    ],
+    "phone": {
+      "number": "+381 31 514 248"
+    },
+    "email": {
+      "label": "Електронски контакт тужилаштва",
+      "address": "uprava@uzice.ojt.rs"
+    },
+    "source": "https://uzice.ojt.rs/?language=sr_cyr"
+  },
+  "Основно јавно тужилаштво у Чачку": {
+    "addresses": [
+      "Цара Душана бр.8/1, 32102 Чачак"
+    ],
+    "phone": {
+      "number": "+381 32 323 161"
+    },
+    "email": {
+      "label": "Електронски контакт тужилаштва",
+      "address": "uprava@cacak.ojt.rs"
+    },
+    "source": "https://cacak.ojt.rs/?language=sr_cyr"
+  },
+  "Основно јавно тужилаштво у Шапцу": {
+    "addresses": [
+      "Карађорђева бр.25, 15000 Шабац"
+    ],
+    "phone": {
+      "number": "+381 15 354 614"
+    },
+    "email": {
+      "label": "Електронски контакт тужилаштва",
+      "address": "uprava@sabac.ojt.rs"
+    },
+    "source": "https://sabac.ojt.rs/?language=sr_cyr"
+  },
+  "Прво основно јавно тужилаштво у Београду": {
+    "addresses": [
+      "Катанићева 15, Београд"
+    ],
+    "phone": {
+      "number": "+381 11 635 4774"
+    },
+    "email": {
+      "label": "Електронски контакт тужилаштва",
+      "address": "uprava@prvo.ojt.rs"
+    },
+    "source": "https://prvo.ojt.rs/kontakt-2/"
+  },
+  "Треће основно јавно тужилаштво у Београду": {
+    "addresses": [
+      "Булевар Михајла Пупина 16, 11070 Београд"
+    ],
+    "phone": {
+      "label": "Писарница",
+      "number": "+381 11 2018 324"
+    },
+    "email": {
+      "label": "Управа",
+      "address": "uprava@trece.ojt.rs"
+    },
+    "source": "https://trece.ojt.rs/kontakt-7/"
+  }
+}

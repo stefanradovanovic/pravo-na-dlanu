@@ -18,6 +18,18 @@ export type InstitutionProfile = {
   keywords?: string;
   mapId?: string;
   ministryDetails?: MinistryDetails;
+  contact?: {
+    title?: string;
+    details: InstitutionContact;
+    directory?: InstitutionSource;
+  };
+};
+
+export type InstitutionContact = {
+  addresses: string[];
+  phone?: { label?: string; number: string };
+  email?: { label: string; address: string };
+  source: string;
 };
 
 type InstitutionSection = {
@@ -47,6 +59,8 @@ const constitution = (article: number) =>
   articleSource("Устав Републике Србије", article);
 const ministryLaw = "Закон о министарствима";
 const localGovernmentLaw = "Закон о локалној самоуправи";
+export const prosecutionContactDirectory =
+  "https://portal.sud.rs/cr/javna-tuzilastva/javna-tuzilastva";
 
 function ministry(
   id: keyof typeof ministryDetails,
@@ -441,6 +455,20 @@ export const institutionGroups: readonly InstitutionGroup[] = [
         ],
         sources: [constitution(167), constitution(170)],
         mapId: "ustavni-sud",
+        contact: {
+          details: {
+            addresses: ["Булевар краља Александра 15, Београд"],
+            phone: {
+              label: "Писарница · обавештења о предметима од 9 до 14 часова",
+              number: "+381 11 285 53 29",
+            },
+            email: {
+              label: "Информације од јавног значаја",
+              address: "informacija@ustavni.sud.rs",
+            },
+            source: "https://www.ustavni.sud.rs/kontakt",
+          },
+        },
       },
       {
         id: "javno-tuzilastvo",
@@ -456,6 +484,23 @@ export const institutionGroups: readonly InstitutionGroup[] = [
           constitution(155),
           articleSource("Законик о кривичном поступку", 43),
         ],
+        contact: {
+          title: "Врховно јавно тужилаштво",
+          details: {
+            addresses: ["Немањина 22–26, Београд"],
+            phone: { number: "+381 11 3613 702" },
+            email: {
+              label: "Кабинет",
+              address: "kabinet@vrhovnojt.gov.rs",
+            },
+            source:
+              "https://portal.sud.rs/cr/javna-tuzilastva/republicko-javno-tuzilastvo",
+          },
+          directory: {
+            title: "Списак контаката на Порталу правосуђа",
+            href: prosecutionContactDirectory,
+          },
+        },
       },
       {
         id: "sudovi",

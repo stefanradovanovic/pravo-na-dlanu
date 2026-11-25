@@ -1,0 +1,772 @@
+{
+  "Основни суд у Алексинцу": {
+    "addresses": [
+      "Аце Милојевића бр. 2, 18220 Алексинац"
+    ],
+    "phone": {
+      "number": "+381 18 804 821"
+    },
+    "email": {
+      "label": "Електронски контакт суда",
+      "address": "uprava@al.os.sud.rs"
+    },
+    "source": "https://portal.sud.rs/cr/sudovi/osnovni-sudovi/osnovni-sud-u-aleksincu"
+  },
+  "Основни суд у Аранђеловцу": {
+    "addresses": [
+      "Књаза Милоша 102"
+    ],
+    "email": {
+      "label": "Електронски контакт суда",
+      "address": "uprava@ar.os.sud.rs"
+    },
+    "source": "https://portal.sud.rs/cr/sudovi/osnovni-sudovi/osnovni-sud-u-arandjelovcu",
+    "phone": {
+      "label": "Централа",
+      "number": "+381 34 617 0637"
+    }
+  },
+  "Основни суд у Бачкој Паланци": {
+    "addresses": [
+      "Краља Петра I 18, 21400 Бачка Паланка"
+    ],
+    "phone": {
+      "number": "+381 21 754 299"
+    },
+    "email": {
+      "label": "Електронски контакт суда",
+      "address": "uprava@bp.os.sud.rs"
+    },
+    "source": "https://portal.sud.rs/cr/sudovi/osnovni-sudovi/osnovni-sud-u-backoj-palanci"
+  },
+  "Основни суд у Бечеју": {
+    "addresses": [
+      "Главна бр. 6, Бечеј"
+    ],
+    "phone": {
+      "number": "+381 21 6911 751"
+    },
+    "email": {
+      "label": "Електронски контакт суда",
+      "address": "uprava@bc.os.sud.rs"
+    },
+    "source": "https://portal.sud.rs/cr/sudovi/osnovni-sudovi/osnovni-sud-u-beceju"
+  },
+  "Основни суд у Бору": {
+    "addresses": [
+      "Моше Пијаде бр. 5"
+    ],
+    "phone": {
+      "number": "+381 30 458 490"
+    },
+    "email": {
+      "label": "Електронски контакт суда",
+      "address": "uprava@bo.os.sud.rs"
+    },
+    "source": "https://portal.sud.rs/cr/sudovi/osnovni-sudovi/osnovni-sud-u-boru"
+  },
+  "Основни суд у Брусу": {
+    "addresses": [
+      "Мике Ђорђевића бб, 37220 Брус"
+    ],
+    "phone": {
+      "number": "+381 37 825 190"
+    },
+    "email": {
+      "label": "Електронски контакт суда",
+      "address": "uprava@br.os.sud.rs"
+    },
+    "source": "https://portal.sud.rs/cr/sudovi/osnovni-sudovi/osnovni-sud-u-brusu"
+  },
+  "Основни суд у Бујановцу": {
+    "addresses": [
+      "Трг Карађорђа Петровића 115, 17520 Бујановац"
+    ],
+    "phone": {
+      "number": "+381 17 851 021"
+    },
+    "email": {
+      "label": "Електронски контакт суда",
+      "address": "uprava@bu.os.sud.rs"
+    },
+    "source": "https://portal.sud.rs/cr/sudovi/osnovni-sudovi/osnovni-sud-u-bujanovcu"
+  },
+  "Основни суд у Ваљеву": {
+    "addresses": [
+      "Карађорђева 50"
+    ],
+    "phone": {
+      "number": "+381 14 221 615"
+    },
+    "email": {
+      "label": "Електронски контакт суда",
+      "address": "uprava@va.os.sud.rs"
+    },
+    "source": "https://portal.sud.rs/cr/sudovi/osnovni-sudovi/osnovni-sud-u-valjevu"
+  },
+  "Основни суд у Великој Плани": {
+    "addresses": [
+      "Момира Гајића 7, 11320 Велика Плана"
+    ],
+    "phone": {
+      "number": "+381 26 516 205"
+    },
+    "email": {
+      "label": "Електронски контакт суда",
+      "address": "uprava@vp.os.sud.rs"
+    },
+    "source": "https://portal.sud.rs/cr/sudovi/osnovni-sudovi/osnovni-sud-u-velikoj-plani"
+  },
+  "Основни суд у Великом Градишту": {
+    "addresses": [
+      "Житни Трг бб, 12220 Велико Градиште"
+    ],
+    "phone": {
+      "number": "+381 12 662 151"
+    },
+    "email": {
+      "label": "Електронски контакт суда",
+      "address": "uprava@vg.os.sud.rs"
+    },
+    "source": "https://portal.sud.rs/cr/sudovi/osnovni-sudovi/osnovni-sud-u-velikom-gradistu"
+  },
+  "Основни суд у Врању": {
+    "addresses": [
+      "V Kонгреса бр. 2, Врање"
+    ],
+    "phone": {
+      "number": "+381 17 423 990"
+    },
+    "email": {
+      "label": "Електронски контакт суда",
+      "address": "uprava@vr.os.sud.rs"
+    },
+    "source": "https://portal.sud.rs/cr/sudovi/osnovni-sudovi/osnovni-sud-u-vranju"
+  },
+  "Основни суд у Врбасу": {
+    "addresses": [
+      "Врбас 21460, Палих Бораца 9/ц"
+    ],
+    "phone": {
+      "number": "+381 21 706 477"
+    },
+    "email": {
+      "label": "Електронски контакт суда",
+      "address": "uprava@vb.os.sud.rs"
+    },
+    "source": "https://portal.sud.rs/cr/sudovi/osnovni-sudovi/osnovni-sud-u-vrbasu"
+  },
+  "Основни суд у Вршцу": {
+    "addresses": [
+      "Жaркa Зрењанина 41 – 43"
+    ],
+    "phone": {
+      "number": "+381 13 831 343"
+    },
+    "email": {
+      "label": "Електронски контакт суда",
+      "address": "uprava@vs.os.sud.rs"
+    },
+    "source": "https://portal.sud.rs/cr/sudovi/osnovni-sudovi/osnovni-sud-u-vrscu"
+  },
+  "Основни суд у Горњем Милановцу": {
+    "addresses": [
+      "Кнеза Александра Карађорђевића 29, 32300 Горњи Милановац"
+    ],
+    "phone": {
+      "number": "+381 32 713 960"
+    },
+    "email": {
+      "label": "Електронски контакт суда",
+      "address": "uprava@gm.os.sud.rs"
+    },
+    "source": "https://portal.sud.rs/cr/sudovi/osnovni-sudovi/osnovni-sud-u-gornjem-milanovcu"
+  },
+  "Основни суд у Деспотовцу": {
+    "addresses": [
+      "Савеза Бораца 71, 35213 Деспотовац"
+    ],
+    "phone": {
+      "number": "+381 35 611 145"
+    },
+    "email": {
+      "label": "Електронски контакт суда",
+      "address": "uprava@de.os.sud.rs"
+    },
+    "source": "https://portal.sud.rs/cr/sudovi/osnovni-sudovi/osnovni-sud-u-despotovcu"
+  },
+  "Основни суд у Димитровграду": {
+    "addresses": [
+      "Трг Др Зорана Ђинђића 2, 18320 Димитровград"
+    ],
+    "phone": {
+      "number": "+381 10 363 171"
+    },
+    "email": {
+      "label": "Електронски контакт суда",
+      "address": "uprava@dg.os.sud.rs"
+    },
+    "source": "https://portal.sud.rs/cr/sudovi/osnovni-sudovi/osnovni-sud-u-dimitrovgradu"
+  },
+  "Основни суд у Зајечару": {
+    "addresses": [
+      "ул. Трг Ослобођења бр. 30, 19000 Zaječar"
+    ],
+    "phone": {
+      "number": "+381 19 422 165"
+    },
+    "email": {
+      "label": "Електронски контакт суда",
+      "address": "uprava@za.os.sud.rs"
+    },
+    "source": "https://portal.sud.rs/cr/sudovi/osnovni-sudovi/osnovni-sud-u-zajecaru"
+  },
+  "Основни суд у Зрењанину": {
+    "addresses": [
+      "Кеј 2. октобра бр. 1, 23000 Зрењанин"
+    ],
+    "phone": {
+      "number": "+381 23 564 737"
+    },
+    "email": {
+      "label": "Електронски контакт суда",
+      "address": "uprava@zr.os.sud.rs"
+    },
+    "source": "https://portal.sud.rs/cr/sudovi/osnovni-sudovi/osnovni-sud-u-zrenjaninu"
+  },
+  "Основни суд у Ивањици": {
+    "addresses": [
+      "Ивањица 32250, Бошка Петровића бр. 9"
+    ],
+    "phone": {
+      "number": "+381 32 662 390"
+    },
+    "email": {
+      "label": "Електронски контакт суда",
+      "address": "uprava@ic.os.sud.rs"
+    },
+    "source": "https://portal.sud.rs/cr/sudovi/osnovni-sudovi/osnovni-sud-u-ivanjici"
+  },
+  "Основни суд у Јагодини": {
+    "addresses": [
+      "Кнегиње Милице 84, 35000 Јагодина"
+    ],
+    "phone": {
+      "number": "+381 35 221 409"
+    },
+    "email": {
+      "label": "Електронски контакт суда",
+      "address": "uprava@ja.os.sud.rs"
+    },
+    "source": "https://portal.sud.rs/cr/sudovi/osnovni-sudovi/osnovni-sud-u-jagodini"
+  },
+  "Основни суд у Кикинди": {
+    "addresses": [
+      "Светозара Милетића 1, 23300 Кикинда"
+    ],
+    "phone": {
+      "number": "+381 230 423 746"
+    },
+    "email": {
+      "label": "Електронски контакт суда",
+      "address": "uprava@ki.os.sud.rs"
+    },
+    "source": "https://portal.sud.rs/cr/sudovi/osnovni-sudovi/osnovni-sud-u-kikindi"
+  },
+  "Основни суд у Књажевцу": {
+    "addresses": [
+      "Књажевац 19350, Кеј Димитрија Туцовића бр. 5"
+    ],
+    "phone": {
+      "number": "+381 19 731 402"
+    },
+    "email": {
+      "label": "Електронски контакт суда",
+      "address": "uprava@kz.os.sud.rs"
+    },
+    "source": "https://portal.sud.rs/cr/sudovi/osnovni-sudovi/osnovni-sud-u-knjazevcu"
+  },
+  "Основни суд у Крагујевцу": {
+    "addresses": [
+      "Улица Слободе, бр 4"
+    ],
+    "phone": {
+      "number": "+381 34 6196 000"
+    },
+    "email": {
+      "label": "Електронски контакт суда",
+      "address": "uprava@kg.os.sud.rs"
+    },
+    "source": "https://portal.sud.rs/cr/sudovi/osnovni-sudovi/osnovni-sud-u-kragujevcu"
+  },
+  "Основни суд у Краљеву": {
+    "addresses": [
+      "Пљакина 4, Краљево"
+    ],
+    "phone": {
+      "label": "Централа",
+      "number": "+381 36 334 278"
+    },
+    "email": {
+      "label": "Електронски контакт суда",
+      "address": "kontakt@kv.os.sud.rs"
+    },
+    "source": "https://kv.os.sud.rs/tekst/331/kontakt-podaci.php"
+  },
+  "Основни суд у Крушевцу": {
+    "addresses": [
+      "Трг Косовских јунака бр. 3"
+    ],
+    "email": {
+      "label": "Електронски контакт суда",
+      "address": "uprava@ks.os.sud.rs"
+    },
+    "source": "https://portal.sud.rs/cr/sudovi/osnovni-sudovi/osnovni-sud-u-krusevcu",
+    "phone": {
+      "label": "Судска управа",
+      "number": "+381 37 413 600"
+    }
+  },
+  "Основни суд у Куршумлији": {
+    "addresses": [
+      "Палих бораца 37, 18430 Куршумлијаja"
+    ],
+    "phone": {
+      "number": "+381 27 381 702"
+    },
+    "email": {
+      "label": "Електронски контакт суда",
+      "address": "uprava@ku.os.sud.rs"
+    },
+    "source": "https://portal.sud.rs/cr/sudovi/osnovni-sudovi/osnovni-sud-u-kursumliji"
+  },
+  "Основни суд у Лазаревцу": {
+    "addresses": [
+      "Карађорђева 19, 11550 Лазаревац"
+    ],
+    "phone": {
+      "number": "+381 11 8123 167"
+    },
+    "email": {
+      "label": "Електронски контакт суда",
+      "address": "uprava@la.os.sud.rs"
+    },
+    "source": "https://portal.sud.rs/cr/sudovi/osnovni-sudovi/osnovni-sud-u-lazarevcu"
+  },
+  "Основни суд у Лебану": {
+    "addresses": [
+      "Цара Душана 118, 16230 Лебане"
+    ],
+    "phone": {
+      "number": "+381 16 843 531"
+    },
+    "email": {
+      "label": "Електронски контакт суда",
+      "address": "uprava@lb.os.sud.rs"
+    },
+    "source": "https://portal.sud.rs/cr/sudovi/osnovni-sudovi/osnovni-sud-u-lebanu"
+  },
+  "Основни суд у Лесковцу": {
+    "addresses": [
+      "Косте Стаменковића бр.16 ,16000 Лесковац"
+    ],
+    "phone": {
+      "number": "+381 16 242 812"
+    },
+    "email": {
+      "label": "Електронски контакт суда",
+      "address": "uprava@le.os.sud.rs"
+    },
+    "source": "https://portal.sud.rs/cr/sudovi/osnovni-sudovi/osnovni-sud-u-leskovcu"
+  },
+  "Основни суд у Лозници": {
+    "addresses": [
+      "15300 Лозница, Јована Цвијића бб"
+    ],
+    "phone": {
+      "number": "+381 15 661 950"
+    },
+    "email": {
+      "label": "Електронски контакт суда",
+      "address": "uprava@lo.os.sud.rs"
+    },
+    "source": "https://portal.sud.rs/cr/sudovi/osnovni-sudovi/osnovni-sud-u-loznici"
+  },
+  "Основни суд у Мајданпеку": {
+    "addresses": [
+      "Трг ослобођења 9A, Мајданпек 19250"
+    ],
+    "phone": {
+      "number": "+381 30 581 332"
+    },
+    "email": {
+      "label": "Електронски контакт суда",
+      "address": "uprava@ma.os.sud.rs"
+    },
+    "source": "https://portal.sud.rs/cr/sudovi/osnovni-sudovi/osnovni-sud-u-majdanpeku"
+  },
+  "Основни суд у Мионици": {
+    "addresses": [
+      "Војводе Мишића број 28, 14242 Мионица"
+    ],
+    "phone": {
+      "number": "+381 14 3421 225"
+    },
+    "email": {
+      "label": "Електронски контакт суда",
+      "address": "uprava@mi.os.sud.rs"
+    },
+    "source": "https://portal.sud.rs/cr/sudovi/osnovni-sudovi/osnovni-sud-u-mionici"
+  },
+  "Основни суд у Младеновцу": {
+    "addresses": [
+      "Младеновац 11400, Краља Александра Обреновића 76"
+    ],
+    "phone": {
+      "number": "+381 11 8231 144"
+    },
+    "email": {
+      "label": "Електронски контакт суда",
+      "address": "uprava@ml.os.sud.rs"
+    },
+    "source": "https://portal.sud.rs/cr/sudovi/osnovni-sudovi/osnovni-sud-u-mladenovcu"
+  },
+  "Основни суд у Неготину": {
+    "addresses": [
+      "22. Септембра број 26, 19320 Кладово"
+    ],
+    "phone": {
+      "number": "+381 19 542 158"
+    },
+    "email": {
+      "label": "Електронски контакт суда",
+      "address": "uprava@ne.os.sud.rs"
+    },
+    "source": "https://portal.sud.rs/cr/sudovi/osnovni-sudovi/osnovni-sud-u-negotinu"
+  },
+  "Основни суд у Новом Пазару": {
+    "addresses": [
+      "Житни трг бр. 16"
+    ],
+    "phone": {
+      "number": "+381 20 312 511"
+    },
+    "email": {
+      "label": "Електронски контакт суда",
+      "address": "uprava@np.os.sud.rs"
+    },
+    "source": "https://portal.sud.rs/cr/sudovi/osnovni-sudovi/osnovni-sud-u-novom-pazaru"
+  },
+  "Основни суд у Обреновцу": {
+    "addresses": [
+      "Обреновац 11500, Александра Аце Симовића 9а"
+    ],
+    "phone": {
+      "number": "+381 11 8727 627"
+    },
+    "email": {
+      "label": "Електронски контакт суда",
+      "address": "uprava@ob.os.sud.rs"
+    },
+    "source": "https://portal.sud.rs/cr/sudovi/osnovni-sudovi/osnovni-sud-u-obrenovcu"
+  },
+  "Основни суд у Панчеву": {
+    "addresses": [
+      "Војводе Радомира Путника 13-15, 26101 Панчево"
+    ],
+    "phone": {
+      "number": "+381 13 344 366"
+    },
+    "email": {
+      "label": "Електронски контакт суда",
+      "address": "uprava@pa.os.sud.rs"
+    },
+    "source": "https://portal.sud.rs/cr/sudovi/osnovni-sudovi/osnovni-sud-u-pancevu"
+  },
+  "Основни суд у Параћину": {
+    "addresses": [
+      "Мајора Марка 1, 35250 Параћин"
+    ],
+    "phone": {
+      "number": "+381 35 563 401"
+    },
+    "email": {
+      "label": "Електронски контакт суда",
+      "address": "uprava@pn.os.sud.rs"
+    },
+    "source": "https://portal.sud.rs/cr/sudovi/osnovni-sudovi/osnovni-sud-u-paracinu"
+  },
+  "Основни суд у Петровцу на Млави": {
+    "addresses": [
+      "Петровац на Млави 12300, Српских Владара 159"
+    ],
+    "phone": {
+      "number": "+381 12 331 260"
+    },
+    "email": {
+      "label": "Електронски контакт суда",
+      "address": "uprava@pt.os.sud.rs"
+    },
+    "source": "https://portal.sud.rs/cr/sudovi/osnovni-sudovi/osnovni-sud-u-petrovcu-na-mlavi"
+  },
+  "Основни суд у Пироту": {
+    "addresses": [
+      "Српских владара 124, Пирот"
+    ],
+    "phone": {
+      "number": "+381 10 321 585"
+    },
+    "email": {
+      "label": "Судска управа",
+      "address": "uprava@pi.os.sud.rs"
+    },
+    "source": "https://pi.os.sud.rs/tekst/274/kontakt-podaci.php"
+  },
+  "Основни суд у Пожаревцу": {
+    "addresses": [
+      "Трг Стевана Максимовића бр. 1, Пожаревац"
+    ],
+    "phone": {
+      "number": "+381 12 852 538"
+    },
+    "email": {
+      "label": "Електронски контакт суда",
+      "address": "uprava@po.os.sud.rs"
+    },
+    "source": "https://portal.sud.rs/cr/sudovi/osnovni-sudovi/osnovni-sud-u-pozarevcu"
+  },
+  "Основни суд у Прибоју": {
+    "addresses": [
+      "Вука Караџића 28, 31330 Прибој"
+    ],
+    "phone": {
+      "number": "+381 33 2445 171"
+    },
+    "email": {
+      "label": "Електронски контакт суда",
+      "address": "uprava@pb.os.sud.rs"
+    },
+    "source": "https://portal.sud.rs/cr/sudovi/osnovni-sudovi/osnovni-sud-u-priboju"
+  },
+  "Основни суд у Пријепољу": {
+    "addresses": [
+      "Валтерова 171"
+    ],
+    "phone": {
+      "number": "+381 33 712 116"
+    },
+    "email": {
+      "label": "Електронски контакт суда",
+      "address": "uprava@pp.os.sud.rs"
+    },
+    "source": "https://portal.sud.rs/cr/sudovi/osnovni-sudovi/osnovni-sud-u-prijepolju"
+  },
+  "Основни суд у Прокупљу": {
+    "addresses": [
+      "21. Српске Дивизије 1"
+    ],
+    "phone": {
+      "number": "+381 27 321 784"
+    },
+    "email": {
+      "label": "Електронски контакт суда",
+      "address": "uprava@pk.os.sud.rs"
+    },
+    "source": "https://portal.sud.rs/cr/sudovi/osnovni-sudovi/osnovni-sud-u-prokuplju"
+  },
+  "Основни суд у Рашкој": {
+    "addresses": [
+      "Ратка Луковића 23, 36350 Рашка"
+    ],
+    "phone": {
+      "number": "+381 36 736 109"
+    },
+    "email": {
+      "label": "Електронски контакт суда",
+      "address": "uprava@ra.os.sud.rs"
+    },
+    "source": "https://portal.sud.rs/cr/sudovi/osnovni-sudovi/osnovni-sud-u-raskoj"
+  },
+  "Основни суд у Руми": {
+    "addresses": [
+      "Железничка 10, 22400 Рума"
+    ],
+    "phone": {
+      "number": "+381 22 478 333"
+    },
+    "email": {
+      "label": "Електронски контакт суда",
+      "address": "uprava@ru.os.sud.rs"
+    },
+    "source": "https://portal.sud.rs/cr/sudovi/osnovni-sudovi/osnovni-sud-u-rumi"
+  },
+  "Основни суд у Сенти": {
+    "addresses": [
+      "Главни Трг 2, 24400 Сента"
+    ],
+    "phone": {
+      "number": "+381 24 814 081"
+    },
+    "email": {
+      "label": "Електронски контакт суда",
+      "address": "uprava@se.os.sud.rs"
+    },
+    "source": "https://portal.sud.rs/cr/sudovi/osnovni-sudovi/osnovni-sud-u-senti"
+  },
+  "Основни суд у Сјеници": {
+    "addresses": [
+      "Ивана Васојевића Васкета бб, 36310 Сјеница"
+    ],
+    "phone": {
+      "number": "+381 20 5741 223"
+    },
+    "email": {
+      "label": "Електронски контакт суда",
+      "address": "uprava@sj.os.sud.rs"
+    },
+    "source": "https://portal.sud.rs/cr/sudovi/osnovni-sudovi/osnovni-sud-u-sjenici"
+  },
+  "Основни суд у Смедереву": {
+    "addresses": [
+      "Трг Републике 2"
+    ],
+    "phone": {
+      "number": "+381 26 613 205"
+    },
+    "email": {
+      "label": "Електронски контакт суда",
+      "address": "uprava@sd.os.sud.rs"
+    },
+    "source": "https://portal.sud.rs/cr/sudovi/osnovni-sudovi/osnovni-sud-u-smederevu"
+  },
+  "Основни суд у Сомбору": {
+    "addresses": [
+      "Венац Војводе Степе Степановића 13"
+    ],
+    "phone": {
+      "number": "+381 25 414 806"
+    },
+    "email": {
+      "label": "Електронски контакт суда",
+      "address": "uprava@so.os.sud.rs"
+    },
+    "source": "https://portal.sud.rs/cr/sudovi/osnovni-sudovi/osnovni-sud-u-somboru"
+  },
+  "Основни суд у Сремској Митровици": {
+    "addresses": [
+      "Трг Светог Димитрија 39"
+    ],
+    "phone": {
+      "number": "+381 22 600 100"
+    },
+    "email": {
+      "label": "Електронски контакт суда",
+      "address": "uprava@sm.os.sud.rs"
+    },
+    "source": "https://portal.sud.rs/cr/sudovi/osnovni-sudovi/osnovni-sud-u-sremskoj-mitrovici"
+  },
+  "Основни суд у Старој Пазови": {
+    "addresses": [
+      "Карађорђева 3, 22300 Стара Пазова"
+    ],
+    "phone": {
+      "number": "+381 22 560 743"
+    },
+    "email": {
+      "label": "Електронски контакт суда",
+      "address": "uprava@st.os.sud.rs"
+    },
+    "source": "https://portal.sud.rs/cr/sudovi/osnovni-sudovi/osnovni-sud-u-staroj-pazovi"
+  },
+  "Основни суд у Суботици": {
+    "addresses": [
+      "Сенћански пут бр. 1, 24000 Суботица"
+    ],
+    "phone": {
+      "number": "+381 24 554 111"
+    },
+    "email": {
+      "label": "Електронски контакт суда",
+      "address": "uprava@su.os.sud.rs"
+    },
+    "source": "https://portal.sud.rs/cr/sudovi/osnovni-sudovi/osnovni-sud-u-subotici"
+  },
+  "Основни суд у Сурдулици": {
+    "addresses": [
+      "Српских Владара бр.9, 17530 Сурдулица"
+    ],
+    "phone": {
+      "number": "+381 17 825 020"
+    },
+    "email": {
+      "label": "Електронски контакт суда",
+      "address": "uprava@sc.os.sud.rs"
+    },
+    "source": "https://portal.sud.rs/cr/sudovi/osnovni-sudovi/osnovni-sud-u-surdulici"
+  },
+  "Основни суд у Трстенику": {
+    "addresses": [
+      "Доктора Милуновића бб, 37240 Трстеник"
+    ],
+    "phone": {
+      "number": "+381 37 713 057"
+    },
+    "email": {
+      "label": "Електронски контакт суда",
+      "address": "uprava@ts.os.sud.rs"
+    },
+    "source": "https://portal.sud.rs/cr/sudovi/osnovni-sudovi/osnovni-sud-u-trsteniku"
+  },
+  "Основни суд у Убу": {
+    "addresses": [
+      "3. октобра 4, 14210 Уб"
+    ],
+    "phone": {
+      "number": "+381 14 411 315"
+    },
+    "email": {
+      "label": "Електронски контакт суда",
+      "address": "uprava@ub.os.sud.rs"
+    },
+    "source": "https://portal.sud.rs/cr/sudovi/osnovni-sudovi/osnovni-sud-u-ubu"
+  },
+  "Основни суд у Ужицу": {
+    "addresses": [
+      "Наде Матић бр. 6"
+    ],
+    "phone": {
+      "number": "+381 31 513 105"
+    },
+    "email": {
+      "label": "Електронски контакт суда",
+      "address": "uprava@ue.os.sud.rs"
+    },
+    "source": "https://portal.sud.rs/cr/sudovi/osnovni-sudovi/osnovni-sud-u-uzicu"
+  },
+  "Основни суд у Шапцу": {
+    "addresses": [
+      "Карађорђева 25, 15000 Шабац"
+    ],
+    "phone": {
+      "number": "+381 15 354 614"
+    },
+    "email": {
+      "label": "Електронски контакт суда",
+      "address": "uprava@sa.os.sud.rs"
+    },
+    "source": "https://portal.sud.rs/cr/sudovi/osnovni-sudovi/osnovni-sud-u-sapcu"
+  },
+  "Основни суд у Шиду": {
+    "addresses": [
+      "Цара Душана бр. 4, 22240 Шид"
+    ],
+    "phone": {
+      "number": "+381 22 712 126"
+    },
+    "email": {
+      "label": "Електронски контакт суда",
+      "address": "uprava@si.os.sud.rs"
+    },
+    "source": "https://portal.sud.rs/cr/sudovi/osnovni-sudovi/osnovni-sud-u-sidu"
+  }
+}
