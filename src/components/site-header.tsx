@@ -4,38 +4,16 @@ import { usePathname } from "next/navigation";
 import { Scale, Search } from "lucide-react";
 import { buttonVariants } from "@/components/ui/button";
 import { HeaderSearch } from "./header-search";
+import {
+  getCurrentNavigationHref,
+  searchNavigationHref,
+  siteNavigation,
+} from "./site-navigation";
 
 export function SiteHeader() {
-  const pathname = usePathname();
-  const links = [
-    {
-      href: "/",
-      text: "Прописи",
-      label: "Истражи право",
-      active:
-        pathname === "/" ||
-        pathname.startsWith("/propisi") ||
-        pathname.startsWith("/zakoni"),
-    },
-    {
-      href: "/institucije",
-      text: "Институције",
-      label: "Мапе институција",
-      active: pathname.startsWith("/institucije"),
-    },
-    {
-      href: "/ucenje",
-      text: "Учење",
-      label: "Учи кроз примере",
-      active: pathname.startsWith("/ucenje"),
-    },
-    {
-      href: "/vodic",
-      text: "Водич",
-      label: "Како читати закон",
-      active: pathname.startsWith("/vodic"),
-    },
-  ];
+  const currentHref = getCurrentNavigationHref(usePathname());
+  const selectedHref = currentHref === searchNavigationHref ? "/" : currentHref;
+
   return (
     <header className="site-header">
       <Link
@@ -52,16 +30,18 @@ export function SiteHeader() {
         </span>
       </Link>
       <nav aria-label="Главна навигација">
-        {links.map((link) => (
-          <Link
-            key={link.href}
-            href={link.href}
-            aria-label={link.label}
-            aria-current={link.active ? "page" : undefined}
-          >
-            {link.text}
-          </Link>
-        ))}
+        {siteNavigation
+          .filter((link) => "desktop" in link)
+          .map(({ href, desktop }) => (
+            <Link
+              key={href}
+              href={href}
+              aria-label={desktop.accessibleLabel}
+              aria-current={selectedHref === href ? "page" : undefined}
+            >
+              {desktop.label}
+            </Link>
+          ))}
       </nav>
       <div id="site-header-search" className="contents">
         <HeaderSearch />
@@ -72,7 +52,7 @@ export function SiteHeader() {
           size: "icon",
           className: "header-search-mobile",
         })}
-        href="/#pretraga"
+        href={searchNavigationHref}
         aria-label="Претражи прописе"
       >
         <Search size={21} aria-hidden="true" />
