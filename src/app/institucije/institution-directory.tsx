@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { ArrowRight, ChevronDown, Search } from "lucide-react";
+import { ChevronDown, Search } from "lucide-react";
 import { buttonVariants } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -30,11 +30,6 @@ function ProfileCard({ profile }: { profile: InstitutionProfile }) {
       </ul>
       <footer>
         <InstitutionSources sources={profile.sources} />
-        {profile.mapId && (
-          <a className="text-link" href={`#${profile.mapId}`}>
-            На интерактивној мапи
-          </a>
-        )}
       </footer>
     </article>
   );
@@ -184,15 +179,6 @@ export function InstitutionDirectory({
             </section>
           ))}
         </div>
-        {!searching && (
-          <a
-            className="text-link institution-map-link"
-            href="#veze-institucija"
-          >
-            Погледај везе између институција
-            <ArrowRight size={18} aria-hidden="true" />
-          </a>
-        )}
       </div>
     </section>
   );
