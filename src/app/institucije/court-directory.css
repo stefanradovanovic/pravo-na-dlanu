@@ -1,50 +1,71 @@
-.court-directory {
+.territorial-directory {
   display: grid;
   gap: var(--space-3);
   margin-block-start: var(--space-3);
 }
 
-.court-directory h4 {
+.territorial-directory h4 {
   font: 600 var(--text-reading) / var(--leading-title) var(--type-editorial);
 }
 
-.court-directory > .institution-search-status {
+.territorial-directory > .institution-search-status {
   margin: 0;
   font-size: var(--text-caption);
 }
 
-.court-groups > * {
+.court-jurisdiction + .court-jurisdiction {
+  margin-block-start: var(--space-4);
+}
+
+.court-jurisdiction > h5 {
+  margin-block-end: var(--space-2);
+  font: 600 var(--text-body) / var(--leading-title) var(--type-editorial);
+}
+
+.territorial-group {
   border-block-start: 1px solid var(--border);
 }
 
-.court-groups > div {
+.territorial-group-result {
   padding-block: var(--space-3);
 }
 
-.court-group-content {
+.territorial-group-result > :is(h5, h6) {
+  font-weight: 600;
+}
+
+.territorial-group-content {
   display: grid;
   gap: var(--space-3);
   padding: var(--space-2) var(--space-3) var(--space-3);
 }
 
-.court-list > li {
+.territorial-list > li {
   display: grid;
-  gap: var(--space-1);
   padding-block: var(--space-2);
 }
 
-.court-list > li + li {
+.territorial-list > li > :nth-child(n + 3) {
+  margin-block-start: var(--space-1);
+}
+
+.territorial-list > li + li {
   border-block-start: 1px solid var(--border);
 }
 
-.court-list p,
+.territorial-list p,
 .court-directory-notes {
   color: var(--muted-foreground);
   font-size: var(--text-caption);
-  line-height: var(--leading-body);
+}
+
+.territorial-list .territorial-change {
+  border-inline-start: 2px solid var(--border);
+  padding-inline-start: var(--space-2);
 }
 
 .court-directory-notes {
   display: grid;
   gap: var(--space-2);
+  line-height: var(--leading-body);
 }

@@ -2,6 +2,16 @@ import assert from "node:assert/strict";
 import { test } from "node:test";
 import { articleHeadings } from "../src/lib/document-navigation";
 import { getCourtDirectory } from "../src/lib/court-directory";
+import { getProsecutionDirectory } from "../src/lib/prosecution-directory";
+import {
+  courtContacts,
+  courtDepartmentContacts,
+} from "../src/lib/court-contacts";
+import {
+  normalizeCourtSearch,
+  searchCourtGroups,
+  searchProsecutionGroups,
+} from "../src/lib/court-search";
 import {
   filterInstitutionGroups,
   institutionGroups,
@@ -83,7 +93,7 @@ test("the court directory counts courts separately from departments and applies 
   const after = getCourtDirectory("2027-03-01");
   assert.deepEqual(
     before.groups.map((group) => group.courts.length),
-    [66, 25, 4, 1, 16, 1, 44, 1, 1],
+    [1, 4, 25, 66, 1, 16, 1, 44, 1],
   );
   assert.equal(
     before.groups.flatMap((group) => group.departments ?? []).length,
@@ -119,6 +129,137 @@ test("the court directory counts courts separately from departments and applies 
   );
 });
 
+test("municipality search follows court districts and switches the basic court on the effective date", () => {
+  const before = getCourtDirectory("2027-02-28");
+  const after = getCourtDirectory("2027-03-01");
+  const search = (directory: typeof before, name: string) =>
+    searchCourtGroups(directory.groups, normalizeCourtSearch(name));
+  const courts = (result: ReturnType<typeof search>) =>
+    result.groups.flatMap(({ courts }) => courts.map(({ name }) => name));
+
+  const zemun = search(before, "Земун");
+  assert.equal(zemun.place, "Земун");
+  assert.deepEqual(search(before, "Zemun"), zemun);
+  assert.deepEqual(courts(zemun), [
+    "Врховни суд",
+    "Апелациони суд у Београду",
+    "Виши суд у Београду",
+    "Трећи основни суд у Београду",
+    "Привредни апелациони суд",
+    "Привредни суд у Београду",
+    "Прекршајни апелациони суд",
+    "Прекршајни суд у Београду",
+    "Управни суд",
+  ]);
+  assert.deepEqual(
+    courts(search(after, "Zemun")),
+    courts(zemun).map((name) => name.replace(/^Трећи /u, "Четврти ")),
+  );
+  assert.ok(
+    courts(search(after, "Novi Beograd")).includes(
+      "Трећи основни суд у Београду",
+    ),
+  );
+  assert.ok(
+    courts(search(before, "Bac")).includes("Основни суд у Бачкој Паланци"),
+  );
+  assert.ok(
+    !courts(search(before, "Bac")).includes("Апелациони суд у Београду"),
+  );
+  const kosjeric = search(before, "Kosjeric");
+  assert.ok(courts(kosjeric).includes("Апелациони суд у Крагујевцу"));
+  assert.equal(
+    kosjeric.groups.find(({ title }) => title === "Управни суд")
+      ?.departments?.[0]?.name,
+    "Одељење у Крагујевцу",
+  );
+});
+
+test("public contacts belong to the correct court or department and cite official sources", () => {
+  const { groups } = getCourtDirectory("2026-11-25");
+  const courts = groups.flatMap(({ courts }) => courts);
+  const basic =
+    groups.find(({ title }) => title === "Основни судови")?.courts ?? [];
+  assert.equal(basic.length, 66);
+  for (const { name, contact } of basic) {
+    assert.ok(
+      contact?.addresses.length && contact.phone && contact.email,
+      name,
+    );
+  }
+  for (const [name, contact] of Object.entries(courtContacts)) {
+    assert.ok(contact?.addresses.length, name);
+    assert.equal(courts.find((court) => court.name === name)?.contact, contact);
+  }
+  for (const [title, contacts] of Object.entries(courtDepartmentContacts)) {
+    const departments = groups.find(
+      (group) => group.title === title,
+    )?.departments;
+    for (const [name, contact] of Object.entries(contacts ?? {})) {
+      assert.ok(contact?.addresses.length, name);
+      assert.equal(
+        departments?.find((department) => department.name === name)?.contact,
+        contact,
+      );
+    }
+  }
+  for (const { contact } of [
+    ...courts,
+    ...groups.flatMap((group) => group.departments ?? []),
+  ]) {
+    if (!contact) continue;
+    assert.match(
+      contact.source,
+      /^https:\/\/(?:[^/]+\.sud\.rs|www\.beograd\.rs)\//,
+    );
+    if (contact.phone) assert.match(contact.phone.number, /^\+381(?: \d+)+$/);
+    if (contact.email) assert.match(contact.email.address, /^[^\s@]+@[^\s@]+$/);
+  }
+});
+
+test("prosecution directory covers statutory districts and lists public office contacts", () => {
+  const before = getProsecutionDirectory(getCourtDirectory("2027-02-28"));
+  const after = getProsecutionDirectory(getCourtDirectory("2027-03-01"));
+  assert.deepEqual(
+    before.groups.map(({ offices }) => offices.length),
+    [58, 25, 4],
+  );
+  assert.deepEqual(
+    after.groups.map(({ offices }) => offices.length),
+    [59, 25, 4],
+  );
+  for (const { offices } of before.groups) {
+    for (const { name, contact } of offices) {
+      assert.ok(
+        contact?.addresses.length && contact.phone && contact.email,
+        name,
+      );
+      assert.match(contact.phone.number, /^\+381(?: \d+)+$/);
+      assert.match(contact.email.address, /^[^\s@]+@[^\s@]+$/);
+      assert.match(contact.source, /^https:\/\//);
+    }
+  }
+  const lookup = (data: typeof before, query: string) =>
+    searchProsecutionGroups(data.groups, normalizeCourtSearch(query));
+  assert.deepEqual(lookup(before, "Zemun"), lookup(before, "Земун"));
+  assert.equal(
+    lookup(before, "Zemun").groups[0]?.offices[0]?.name,
+    "Треће основно јавно тужилаштво у Београду",
+  );
+  assert.equal(
+    lookup(after, "Zemun").groups[0]?.offices[0]?.name,
+    "Четврто основно јавно тужилаштво у Београду",
+  );
+  assert.equal(
+    lookup(before, "Presevo").groups[0]?.offices[0]?.name,
+    "Основно јавно тужилаштво у Врању",
+  );
+  assert.equal(
+    lookup(before, "Medvedja").groups[0]?.offices[0]?.name,
+    "Основно јавно тужилаштво у Лебану",
+  );
+});
+
 test("each map and directory source opens a canonical document or one of its articles", () => {
   const records = new Map(
     getRegistry().records.map((record) => [lawPath(record), record]),
@@ -151,8 +292,11 @@ test("each map and directory source opens a canonical document or one of its art
   for (const group of courts.groups) {
     for (const source of group.sources) citations.add(source.href);
   }
-  if (courts.transition) citations.add(courts.transition.href);
+  if (courts.transition) citations.add(courts.transition.source.href);
   for (const source of courts.territorialScope) citations.add(source.href);
+  for (const group of getProsecutionDirectory(courts).groups) {
+    for (const source of group.sources) citations.add(source.href);
+  }
   const anchors = new Map<string, Set<string>>();
   for (const citation of citations) {
     const [pathname, fragment] = citation.split("#");

@@ -89,12 +89,64 @@ test("find a ministry, read its duties and follow its legal source", async ({
 test.describe("institutions without JavaScript", () => {
   test.use({ javaScriptEnabled: false });
 
+  test("shows judiciary contacts in bordered profiles", async ({ page }) => {
+    await page.goto("/institucije#institucija-ustavni-sud");
+    const profile = (name: string) =>
+      page.getByRole("article").filter({
+        has: page.getByRole("heading", { name, exact: true }),
+      });
+    const constitutional = profile("Уставни суд");
+    await expect(
+      constitutional.getByText("Булевар краља Александра 15, Београд"),
+    ).toBeVisible();
+    await expect(
+      constitutional.getByRole("link", { name: "+381 11 285 53 29" }),
+    ).toHaveAttribute("href", "tel:+381112855329");
+    await expect(
+      constitutional.getByRole("link", { name: "informacija@ustavni.sud.rs" }),
+    ).toHaveAttribute("href", "mailto:informacija@ustavni.sud.rs");
+
+    const prosecution = profile("Јавно тужилаштво");
+    await expect(
+      prosecution.getByRole("heading", { name: "Врховно јавно тужилаштво" }),
+    ).toBeVisible();
+    await expect(
+      prosecution.getByText("Немањина 22–26, Београд"),
+    ).toBeVisible();
+    await expect(
+      prosecution.getByRole("link", { name: "kabinet@vrhovnojt.gov.rs" }),
+    ).toHaveAttribute("href", "mailto:kabinet@vrhovnojt.gov.rs");
+    await expect(
+      prosecution.getByRole("link", {
+        name: "Списак контаката на Порталу правосуђа",
+      }),
+    ).toHaveAttribute(
+      "href",
+      "https://portal.sud.rs/cr/javna-tuzilastva/javna-tuzilastva",
+    );
+
+    for (const name of ["Уставни суд", "Јавно тужилаштво", "Судови"]) {
+      await expect(profile(name)).toHaveCSS("border-inline-start-width", "1px");
+    }
+  });
+
   test("browse court types and jurisdictions by keyboard", async ({ page }) => {
     await page.goto("/institucije#institucija-sudovi");
     const directory = page.getByRole("region", {
       name: "Списак судова и надлежности",
     });
     await expect(directory.getByText(/судова у мрежи/)).toBeVisible();
+    await expect(directory.locator("summary").first()).toContainText(
+      "Врховни суд",
+    );
+    await expect(
+      directory.getByRole("heading", {
+        name: "Остали судови опште надлежности",
+      }),
+    ).toBeVisible();
+    await expect(
+      directory.getByRole("heading", { name: "Судови посебне надлежности" }),
+    ).toBeVisible();
     const basic = directory
       .locator("details")
       .filter({ hasText: "Основни судови" });
@@ -105,6 +157,19 @@ test.describe("institutions without JavaScript", () => {
     await expect(
       basic.getByText("Територија града Чачка", { exact: true }),
     ).toBeVisible();
+    const contact = basic.getByRole("listitem").filter({
+      has: page.getByText("Основни суд у Чачку", { exact: true }),
+    });
+    await expect(contact.getByText("Цара Душана 8/1, Чачак")).toBeVisible();
+    await expect(
+      contact.getByRole("link", { name: "+381 32 322 242" }),
+    ).toHaveAttribute("href", "tel:+38132322242");
+    await expect(
+      contact.getByRole("link", { name: "uprava@ca.os.sud.rs" }),
+    ).toHaveAttribute("href", "mailto:uprava@ca.os.sud.rs");
+    await expect(
+      contact.getByRole("link", { name: /Извор контакта/ }),
+    ).toHaveAttribute("href", "https://www.ca.os.sud.rs/kontakti.html");
     await expect(
       basic.getByRole("link", { name: "Закон о уређењу судова, члан 24." }),
     ).toBeVisible();
@@ -168,13 +233,21 @@ test("find a court by city and by a municipality it covers", async ({
   ).toBeVisible();
   await search.fill("osnovni sud zemun");
   await expect(
-    directory.getByText(/(Трећи|Четврти) основни суд у Београду/, {
-      exact: true,
-    }),
+    directory.getByText(/^(Трећи|Четврти) основни суд у Београду$/),
   ).toBeVisible();
   await expect(
     directory.getByText("Основни суд у Чачку", { exact: true }),
   ).toHaveCount(0);
+  for (const query of ["Zemun", "Земун"]) {
+    await search.fill(query);
+    await expect(directory.getByRole("status")).toContainText("„Земун“");
+    await expect(
+      directory.getByText("Виши суд у Београду", { exact: true }),
+    ).toBeVisible();
+    await expect(
+      directory.getByText("Апелациони суд у Београду", { exact: true }),
+    ).toBeVisible();
+  }
   await search.fill("Kosovska Mitrovica");
   await expect(directory.getByText(/привремено су пренете/)).toBeVisible();
   await search.fill("zzzx");
@@ -183,6 +256,57 @@ test("find a court by city and by a municipality it covers", async ({
   );
   await search.clear();
   await expect(directory.getByText(/судова у мрежи/)).toBeVisible();
+  await search.fill("Bac");
+  const basic = directory.getByRole("listitem").filter({
+    has: page.getByText("Основни суд у Бачкој Паланци", { exact: true }),
+  });
+  await expect(
+    basic.getByText("Краља Петра I 18, 21400 Бачка Паланка"),
+  ).toBeVisible();
+  await expect(
+    basic.getByRole("link", { name: "uprava@bp.os.sud.rs" }),
+  ).toHaveAttribute("href", "mailto:uprava@bp.os.sud.rs");
+});
+
+test("find a prosecution office by municipality and show its public contacts", async ({
+  page,
+}) => {
+  await page.goto("/institucije#institucija-javno-tuzilastvo");
+  const directory = page.getByRole("region", {
+    name: "Списак јавних тужилаштава и подручја",
+  });
+  const search = directory.getByRole("searchbox", {
+    name: "Пронађи јавно тужилаштво",
+  });
+  for (const query of ["Bojnik", "Бојник"]) {
+    await search.fill(query);
+    await expect(directory.getByRole("status")).toContainText("„Бојник“");
+    const office = directory.getByRole("listitem").filter({
+      has: page.getByText("Основно јавно тужилаштво у Лебану", { exact: true }),
+    });
+    await expect(
+      office.getByText("Цара Душана 118, 16230 Лебане"),
+    ).toBeVisible();
+    await expect(
+      office.getByRole("link", { name: "+381 64 642 9431" }),
+    ).toHaveAttribute("href", "tel:+381646429431");
+    await expect(
+      office.getByRole("link", { name: "uprava@lebane.ojt.rs" }),
+    ).toHaveAttribute("href", "mailto:uprava@lebane.ojt.rs");
+  }
+  await search.fill("Zemun");
+  await expect(
+    directory.getByText("Више јавно тужилаштво у Београду", { exact: true }),
+  ).toBeVisible();
+  await expect(
+    directory.getByText("Апелационо јавно тужилаштво у Београду", {
+      exact: true,
+    }),
+  ).toBeVisible();
+  await search.fill("zzzx");
+  await expect(directory.getByRole("status")).toHaveText(
+    "Нема јавних тужилаштава за овај упит.",
+  );
 });
 
 test("open the courts profile and its legal source from the overview", async ({

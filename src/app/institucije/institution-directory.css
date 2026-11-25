@@ -153,6 +153,42 @@
   overflow-wrap: anywhere;
 }
 
+.institution-profile-contact,
+.institution-contact {
+  display: grid;
+  justify-items: start;
+  gap: var(--space-1);
+}
+
+.institution-profile-contact h4 {
+  font-size: var(--text-body);
+  font-weight: 600;
+}
+
+.institution-contact,
+.institution-profile-contact > .text-link {
+  font-size: var(--text-caption);
+}
+
+.institution-contact {
+  color: var(--muted-foreground);
+  overflow-wrap: anywhere;
+}
+
+.institution-contact dl > div {
+  display: grid;
+  grid-template-columns: max-content minmax(0, 1fr);
+  column-gap: var(--space-2);
+}
+
+.institution-contact dt {
+  font-weight: 600;
+}
+
+.institution-contact dd {
+  grid-column: 2;
+}
+
 .institution-directory-sidebar,
 .institution-group h2,
 .institution-profile h3 {

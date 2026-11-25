@@ -9,9 +9,12 @@ import {
   type InstitutionGroup,
   type InstitutionProfile,
 } from "@/lib/institution-directory";
+import type { ProsecutionDirectoryData } from "@/lib/prosecution-directory";
 import { CourtDirectory } from "./court-directory";
+import { InstitutionContactDetails } from "./institution-contact-details";
 import { InstitutionSearchInput } from "./institution-search-input";
 import { InstitutionSources } from "./institution-sources";
+import { ProsecutionDirectory } from "./prosecution-directory";
 import { useInstitutionFragment } from "./use-institution-fragment";
 
 function profileAnchor(id: string) {
@@ -25,6 +28,9 @@ function ProfileCard({
   profile: InstitutionProfile;
   children?: ReactNode;
 }) {
+  const { contact } = profile;
+  const contactTitle = contact?.title ?? "Контакт";
+  const contactAnchor = `${profileAnchor(profile.id)}-kontakt`;
   return (
     <article className="institution-profile">
       <h3 id={profileAnchor(profile.id)} tabIndex={-1}>
@@ -36,6 +42,23 @@ function ProfileCard({
           <li key={duty}>{duty}</li>
         ))}
       </ul>
+      {contact && (
+        <section
+          className="institution-profile-contact"
+          aria-labelledby={contactAnchor}
+        >
+          <h4 id={contactAnchor}>{contactTitle}</h4>
+          <InstitutionContactDetails
+            contact={contact.details}
+            name={contact.title ?? profile.name}
+          />
+          {contact.directory && (
+            <a className="text-link" href={contact.directory.href}>
+              {contact.directory.title}
+            </a>
+          )}
+        </section>
+      )}
       <footer>
         <InstitutionSources sources={profile.sources} />
       </footer>
@@ -47,9 +70,11 @@ function ProfileCard({
 export function InstitutionDirectory({
   groups,
   courts,
+  prosecutions,
 }: {
   groups: readonly InstitutionGroup[];
   courts: CourtDirectoryData;
+  prosecutions: ProsecutionDirectoryData;
 }) {
   const [query, setQuery] = useState("");
   const fragment = useInstitutionFragment();
@@ -179,6 +204,9 @@ export function InstitutionDirectory({
                   <ProfileCard key={profile.id} profile={profile}>
                     {profile.id === "sudovi" && (
                       <CourtDirectory data={courts} />
+                    )}
+                    {profile.id === "javno-tuzilastvo" && (
+                      <ProsecutionDirectory data={prosecutions} />
                     )}
                   </ProfileCard>
                 ))}

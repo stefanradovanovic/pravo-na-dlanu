@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { getCourtDirectory } from "@/lib/court-directory";
 import { institutionGroups } from "@/lib/institution-directory";
+import { getProsecutionDirectory } from "@/lib/prosecution-directory";
 import { socialMetadata } from "@/lib/social-metadata";
 import { InstitutionDirectory } from "./institution-directory";
 import "./institutions.css";
@@ -11,10 +12,11 @@ export const metadata: Metadata = {
   ...socialMetadata("/institucije"),
   title: "Мапа институција Србије",
   description:
-    "Преглед институција Србије, са списковима министарстава и судова, њиховим надлежностима и везама ка прописима.",
+    "Преглед институција Србије, са списковима министарстава, судова и јавних тужилаштава, њиховим надлежностима и везама ка прописима.",
 };
 
 export default function InstitutionsPage() {
+  const courts = getCourtDirectory();
   return (
     <main id="main" className="institution-page">
       <header className="institution-intro">
@@ -22,7 +24,8 @@ export default function InstitutionsPage() {
       </header>
       <InstitutionDirectory
         groups={institutionGroups}
-        courts={getCourtDirectory()}
+        courts={courts}
+        prosecutions={getProsecutionDirectory(courts)}
       />
     </main>
   );

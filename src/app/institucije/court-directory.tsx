@@ -1,58 +1,95 @@
 "use client";
 
 import { useState } from "react";
-import { ChevronDown } from "lucide-react";
-import { buttonVariants } from "@/components/ui/button";
 import type { CourtDirectoryData, CourtGroup } from "@/lib/court-directory";
-import { normalizeSearch } from "@/lib/search";
+import { normalizeCourtSearch, searchCourtGroups } from "@/lib/court-search";
 import { InstitutionSearchInput } from "./institution-search-input";
 import { InstitutionSources } from "./institution-sources";
+import {
+  TerritorialEntryList,
+  TerritorialGroup,
+  UpcomingTerritorialChange,
+} from "./territorial-directory-parts";
 
-function CourtList({
-  entries,
-  label,
+type CourtTransition = NonNullable<CourtDirectoryData["transition"]>;
+
+function CourtGroupView({
+  group,
+  searching,
+  place,
+  transition,
 }: {
-  entries: CourtGroup["courts"];
-  label: string;
+  group: CourtGroup;
+  searching: boolean;
+  place?: string;
+  transition?: CourtTransition;
 }) {
   return (
-    <ul className="court-list" aria-label={label}>
-      {entries.map(({ name, area }) => (
-        <li key={name}>
-          <strong>{name}</strong>
-          <p>{area}</p>
-        </li>
-      ))}
-    </ul>
+    <TerritorialGroup
+      title={group.title}
+      count={group.courts.length}
+      description={group.responsibility}
+      heading={group.jurisdiction === "supreme" ? "h5" : "h6"}
+      searching={searching}
+    >
+      <div className="territorial-group-content">
+        {group.courts.length > 0 && (
+          <TerritorialEntryList
+            entries={group.courts}
+            label="Судови"
+            place={place}
+            renderNote={
+              searching && transition
+                ? (name) => {
+                    const change = transition.changes.find(
+                      (change) =>
+                        change.court === name &&
+                        (!place || change.places.includes(place)),
+                    );
+                    return (
+                      change && (
+                        <UpcomingTerritorialChange
+                          {...transition}
+                          description={change.description}
+                        />
+                      )
+                    );
+                  }
+                : undefined
+            }
+          />
+        )}
+        {group.departments && group.departments.length > 0 && (
+          <div>
+            <strong>Одељења ван седишта</strong>
+            <TerritorialEntryList
+              entries={group.departments}
+              label="Одељења ван седишта"
+              place={place}
+            />
+          </div>
+        )}
+        <InstitutionSources sources={group.sources} />
+      </div>
+    </TerritorialGroup>
   );
 }
 
-function CourtGroupContent({ group }: { group: CourtGroup }) {
-  return (
-    <div className="court-group-content">
-      {group.courts.length > 0 && (
-        <CourtList entries={group.courts} label="Судови" />
-      )}
-      {group.departments && group.departments.length > 0 && (
-        <div>
-          <strong>Одељења ван седишта</strong>
-          <CourtList entries={group.departments} label="Одељења ван седишта" />
-        </div>
-      )}
-      <InstitutionSources sources={group.sources} />
-    </div>
-  );
-}
-
-const normalize = (value: string) =>
-  normalizeSearch(value).replaceAll("dj", "d");
+const jurisdictions = [
+  { id: "supreme" },
+  { id: "general", label: "Остали судови опште надлежности" },
+  { id: "special", label: "Судови посебне надлежности" },
+] as const;
 const mitrovicaCourts =
   "Основни, Виши и Прекршајни суд у Косовској Митровици обухваћени су прелазним одредбама за АП Косово и Метохију.";
-const mitrovicaSearchText = normalize(`${mitrovicaCourts} Косовска Митровица`);
+const mitrovicaSearchText = normalizeCourtSearch(
+  `${mitrovicaCourts} Косовска Митровица`,
+);
 
 export function CourtDirectory({ data }: { data: CourtDirectoryData }) {
   const [query, setQuery] = useState("");
-  const normalizedQuery = normalize(query);
+  const { transition } = data;
+  const normalizedQuery = normalizeCourtSearch(query);
   const terms = normalizedQuery.split(" ");
   const showTerritorialScope =
     !normalizedQuery ||
@@ -60,27 +97,7 @@ export function CourtDirectory({ data }: { data: CourtDirectoryData }) {
       (term) => term.startsWith("kosov") || term.startsWith("mitrovic"),
     ) &&
       terms.every((term) => mitrovicaSearchText.includes(term)));
-  const groups = normalizedQuery
-    ? data.groups
-        .map((group) => {
-          const match = ({
-            name,
-            area,
-            seat,
-          }: CourtGroup["courts"][number]) => {
-            const text = normalize(`${name} ${seat} ${area} ${group.title}`);
-            return terms.every((term) => text.includes(term));
-          };
-          return {
-            ...group,
-            courts: group.courts.filter(match),
-            departments: group.departments?.filter(match),
-          };
-        })
-        .filter(
-          ({ courts, departments }) => courts.length || departments?.length,
-        )
-    : data.groups;
+  const { groups, place } = searchCourtGroups(data.groups, normalizedQuery);
   const count = groups.reduce(
     (total, group) =>
       total +
@@ -94,20 +111,28 @@ export function CourtDirectory({ data }: { data: CourtDirectoryData }) {
 
   return (
     <section
-      className="court-directory"
+      className="territorial-directory"
       aria-labelledby="court-directory-title"
     >
       <header>
         <h4 id="court-directory-title">Списак судова и надлежности</h4>
         <p className="heading-description">
-          Пронађите суд по називу или месту и погледајте за које предмете и
-          подручје је надлежан.
+          Унесите назив суда, општине или града да видите који судови покривају
+          то подручје и којим се предметима баве.
+        </p>
+        <p className="heading-description">
+          <a
+            className="text-link"
+            href="https://www.vrh.sud.rs/sr/корисни-линкови"
+          >
+            Списак званичних сајтова судова
+          </a>
         </p>
       </header>
       <div role="search" aria-label="Претрага судова">
         <InstitutionSearchInput
           label="Пронађи суд"
-          placeholder="Назив суда или место"
+          placeholder="Назив суда, општина или град"
           value={query}
           onValueChange={setQuery}
         />
@@ -115,54 +140,47 @@ export function CourtDirectory({ data }: { data: CourtDirectoryData }) {
       <p className="institution-search-status" role="status">
         {normalizedQuery
           ? count
-            ? `Број резултата · ${count}`
+            ? place
+              ? `Судови и одељења за место „${place}“ · ${count}`
+              : `Број резултата · ${count}`
             : showTerritorialScope
               ? "Судови из прелазних одредаба"
               : "Нема судова за овај упит."
           : `${count} судова у мрежи · приступ извору ${sourceDate}`}
       </p>
       <div className="court-groups">
-        {groups.map((group) =>
-          normalizedQuery ? (
-            <div key={group.title}>
-              <h5>{group.title}</h5>
-              <p className="heading-description">{group.responsibility}</p>
-              <CourtGroupContent group={group} />
+        {jurisdictions.map((jurisdiction) => {
+          const entries = groups.filter(
+            (group) => group.jurisdiction === jurisdiction.id,
+          );
+          if (!entries.length) return null;
+          return (
+            <div className="court-jurisdiction" key={jurisdiction.id}>
+              {"label" in jurisdiction && <h5>{jurisdiction.label}</h5>}
+              {entries.map((group) => (
+                <CourtGroupView
+                  key={group.title}
+                  group={group}
+                  searching={Boolean(normalizedQuery)}
+                  place={place}
+                  transition={transition}
+                />
+              ))}
             </div>
-          ) : (
-            <details className="institution-disclosure" key={group.title}>
-              <summary
-                className={buttonVariants({
-                  variant: "ghost",
-                  className: "institution-group-link",
-                })}
-              >
-                <span>
-                  <strong>
-                    {group.title}
-                    {group.courts.length > 1 ? ` (${group.courts.length})` : ""}
-                  </strong>
-                  <span>{group.responsibility}</span>
-                </span>
-                <ChevronDown aria-hidden="true" />
-              </summary>
-              <CourtGroupContent group={group} />
-            </details>
-          ),
-        )}
+          );
+        })}
       </div>
-      {(showTerritorialScope || (!normalizedQuery && data.transition)) && (
+      {(showTerritorialScope || (!normalizedQuery && transition)) && (
         <div className="court-directory-notes">
-          {!normalizedQuery && data.transition && (
-            <p>
-              Од 1. марта 2027. Четврти основни суд у Београду преузима Земун и
-              Сурчин, а Трећи основни суд задржава Нови Београд. Основни суд у
-              Пожеги добија судску јединицу у Косјерићу.{" "}
-              <a className="text-link" href={data.transition.href}>
-                {data.transition.title}
-              </a>
-            </p>
-          )}
+          {!normalizedQuery &&
+            transition &&
+            transition.changes.map((change) => (
+              <UpcomingTerritorialChange
+                key={change.court}
+                {...transition}
+                description={change.description}
+              />
+            ))}
           {showTerritorialScope && (
             <>
               <p>
