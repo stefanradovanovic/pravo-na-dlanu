@@ -1,0 +1,206 @@
+.institution-intro > p {
+  color: var(--muted-foreground);
+  font-size: var(--text-reading);
+}
+
+.institution-intro > nav,
+.institution-group-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2) var(--space-3);
+  margin-top: var(--space-4);
+}
+
+.institution-procedures,
+.institution-directory {
+  margin-top: var(--space-12);
+  border-top: 1px solid var(--border);
+  padding-top: var(--space-8);
+}
+
+.institution-section-heading {
+  display: grid;
+  gap: var(--space-2);
+  margin-bottom: var(--space-6);
+}
+
+.institution-section-heading h2 {
+  font: 400 var(--text-title) / var(--leading-title) var(--type-editorial);
+}
+
+.institution-section-heading p,
+.institution-search-status {
+  color: var(--muted-foreground);
+}
+
+.institution-directory-search {
+  display: grid;
+  max-width: 28rem;
+  gap: var(--space-2);
+}
+
+.institution-directory-search label {
+  font-size: var(--text-body);
+  font-weight: 600;
+}
+
+.institution-search-status:not(:empty) {
+  margin-top: var(--space-2);
+}
+
+.institution-group-links {
+  column-gap: var(--space-6);
+}
+
+.institution-group {
+  margin-top: var(--space-8);
+}
+
+.institution-group > header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--space-2) var(--space-4);
+  margin-bottom: var(--space-3);
+}
+
+.institution-group h3 {
+  font: 400 var(--text-reading) / var(--leading-title) var(--type-editorial);
+}
+
+.institution-group > header a {
+  font-size: var(--text-caption);
+}
+
+.institution-card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 19rem), 1fr));
+  gap: var(--space-3);
+}
+
+.institution-profile,
+.institution-flow {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  min-width: 0;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: var(--space-4);
+  background: var(--card);
+  overflow-wrap: anywhere;
+}
+
+.institution-section-heading h2,
+.institution-group h3,
+.institution-profile h4 {
+  scroll-margin-top: calc(var(--header-height) + var(--space-4));
+}
+
+.institution-profile:has(h4:target) {
+  border-color: var(--ring);
+}
+
+.institution-profile h4,
+.institution-flow h3 {
+  font: 600 var(--text-reading) / var(--leading-title) var(--type-ui);
+}
+
+.institution-profile > p {
+  font-size: var(--text-body);
+  line-height: var(--leading-body);
+}
+
+.institution-duties {
+  list-style: none;
+  border-radius: var(--radius);
+  padding: var(--space-2) var(--space-3);
+  background: var(--editorial);
+  color: var(--editorial-foreground);
+  font-size: var(--text-caption);
+}
+
+.institution-duties li {
+  position: relative;
+  padding: var(--space-1) 0 var(--space-1) var(--space-4);
+}
+
+.institution-duties li::before,
+.institution-duties li::after {
+  position: absolute;
+  inset-inline-start: 0;
+  border-color: var(--editorial-border);
+  border-style: solid;
+  border-width: 0;
+  content: "";
+}
+
+.institution-duties li::before {
+  inset-block: 0;
+  border-inline-start-width: 1px;
+}
+
+.institution-duties li:first-child::before {
+  inset-block-start: 50%;
+}
+
+.institution-duties li:last-child::before {
+  inset-block-end: 50%;
+}
+
+.institution-duties li::after {
+  inset-block-start: 50%;
+  width: var(--space-2);
+  border-block-start-width: 1px;
+}
+
+.institution-profile footer,
+.institution-flow > .institution-sources {
+  margin-top: auto;
+}
+
+.institution-profile footer > a {
+  display: inline-block;
+  margin-top: var(--space-2);
+  font-size: var(--text-body);
+}
+
+.institution-flow ol {
+  display: grid;
+  gap: var(--space-4);
+  padding-inline-start: 0;
+  list-style: none;
+}
+
+.institution-flow ol > li {
+  position: relative;
+  display: grid;
+  border-inline-start: 2px solid var(--editorial-border);
+  padding: var(--space-2) var(--space-3);
+  background: var(--editorial);
+  font-size: var(--text-body);
+}
+
+.institution-flow ol li + li::before {
+  position: absolute;
+  inset-inline-start: var(--space-2);
+  inset-block-end: 100%;
+  color: var(--editorial-foreground);
+  content: "↓" / "";
+  line-height: var(--space-4);
+}
+
+.institution-flow ol span {
+  color: var(--editorial-foreground);
+}
+
+.institution-flow-detail {
+  margin-top: var(--space-1);
+  color: var(--muted-foreground);
+  font-size: var(--text-caption);
+}
+
+.institution-flow-note {
+  color: var(--muted-foreground);
+  font-size: var(--text-body);
+}

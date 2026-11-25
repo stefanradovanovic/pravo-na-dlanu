@@ -2,7 +2,7 @@
 
 import { useRef, useState, useSyncExternalStore } from "react";
 import { flushSync } from "react-dom";
-import { ArrowLeft, ArrowRight, BookOpen, Network } from "lucide-react";
+import { ArrowLeft, ArrowRight, Network } from "lucide-react";
 import { Button, buttonVariants } from "@/components/ui/button";
 import {
   Dialog,
@@ -25,8 +25,8 @@ import type {
   InstitutionMap,
   InstitutionNode,
   InstitutionProcedure,
-  InstitutionSource,
 } from "@/lib/institution-map";
+import { InstitutionSources } from "./institution-sources";
 import "./institution-procedure.css";
 
 function subscribeToTopic(change: () => void) {
@@ -40,21 +40,6 @@ function subscribeToTopic(change: () => void) {
 
 function currentTopic() {
   return window.location.hash.slice(1);
-}
-
-function Sources({ sources }: { sources: InstitutionSource[] }) {
-  return (
-    <ul className="institution-sources" aria-label="Извори">
-      {sources.map((source) => (
-        <li key={source.href}>
-          <BookOpen size={15} aria-hidden="true" />
-          <a className="text-link" href={source.href}>
-            {source.title}
-          </a>
-        </li>
-      ))}
-    </ul>
-  );
 }
 
 function Procedure({
@@ -73,7 +58,7 @@ function Procedure({
           <li key={step.title}>
             <h3>{step.title}</h3>
             <p>{step.text}</p>
-            <Sources sources={step.sources} />
+            <InstitutionSources sources={step.sources} />
           </li>
         ))}
       </ol>
@@ -81,7 +66,7 @@ function Procedure({
         <>
           <h3>{procedure.note.title}</h3>
           <p>{procedure.note.text}</p>
-          <Sources sources={procedure.note.sources} />
+          <InstitutionSources sources={procedure.note.sources} />
         </>
       )}
     </section>
@@ -121,7 +106,7 @@ function Relationship({
               <DialogDescription>{description}</DialogDescription>
             </DialogHeader>
             <p className="institution-edge-detail">{edge.detail}</p>
-            <Sources sources={edge.sources} />
+            <InstitutionSources sources={edge.sources} />
           </DialogContent>
         </Dialog>
       </div>
@@ -199,7 +184,7 @@ function TopicMap({ map }: { map: InstitutionMap }) {
                 </a>
               </p>
             )}
-            <Sources sources={focus.sources} />
+            <InstitutionSources sources={focus.sources} />
           </article>
           <ul
             className="institution-branches"

@@ -27,6 +27,36 @@ const procedureMaps = [
   },
 ];
 
+test("find a ministry, read its duties and follow its legal source", async ({
+  page,
+}) => {
+  await page.goto("/institucije");
+  await page
+    .getByRole("link", { name: "Преглед институција", exact: true })
+    .click();
+  await expect(page.locator("#pregled-institucija")).toBeInViewport();
+
+  const search = page.getByRole("searchbox", { name: "Пронађи институцију" });
+  await search.fill("непостојећа институција");
+  await expect(page.getByText("Нема резултата за овај упит.")).toBeVisible();
+  await search.fill("pasos");
+  const ministry = page.getByRole("article").filter({
+    has: page.getByRole("heading", { name: "Министарство унутрашњих послова" }),
+  });
+  await expect(
+    ministry.getByRole("list", { name: "Изабране надлежности" }),
+  ).toContainText("Обавља послове у вези са личним исправама");
+  await search.clear();
+  await expect(
+    page.getByRole("heading", { name: "Министарство за јавна улагања" }),
+  ).toBeVisible();
+  await ministry
+    .getByRole("link", { name: "Закон о министарствима, члан 13." })
+    .click();
+  await expect(page).toHaveURL(/\/propisi\/zakon-o-ministarstvima#clan-13$/);
+  await expect(page.locator("#clan-13")).toBeInViewport();
+});
+
 for (const {
   slug,
   topic,
