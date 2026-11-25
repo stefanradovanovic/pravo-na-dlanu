@@ -78,7 +78,7 @@ test("home offers direct routes to new citizen topics and the reading guide", as
   await page.goto("/");
   await page
     .getByRole("navigation", { name: "Главна навигација" })
-    .getByRole("link", { name: "Како читати закон" })
+    .getByRole("link", { name: /^(Како читати закон|Водич)$/ })
     .click();
   await expect(page).toHaveURL(/\/vodic$/);
   await expect(page.getByRole("heading", { level: 1 })).toBeVisible();

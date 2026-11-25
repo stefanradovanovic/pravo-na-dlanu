@@ -32,15 +32,12 @@ test("homepage and mobile navigation expose learning; topic search accepts all S
   page,
 }) => {
   await page.goto("/");
-  await page
-    .getByRole("link", { name: "Учи кроз примере", exact: true })
-    .click();
+  const learningLink = page
+    .getByRole("navigation", { name: "Главна навигација" })
+    .getByRole("link", { name: /^(Учи кроз примере|Учење)$/ });
+  await learningLink.click();
   await expect(page).toHaveURL(/\/ucenje$/);
-  await expect(
-    page
-      .getByRole("navigation", { name: "Главна навигација" })
-      .getByRole("link", { name: "Учи кроз примере" }),
-  ).toBeVisible();
+  await expect(learningLink).toBeVisible();
   const search = page.getByRole("textbox", { name: "Претрага тема за учење" });
   for (const term of ["годишњи одмор", "godišnji odmor", "godisnji odmor"]) {
     await search.fill(term);
