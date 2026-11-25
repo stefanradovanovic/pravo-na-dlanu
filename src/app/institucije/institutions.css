@@ -1,10 +1,18 @@
+html:has(.institution-page),
+.institution-page .institution-directory-sidebar,
+.institution-page .institution-group-index > ul {
+  scrollbar-width: thin;
+  scrollbar-color:
+    color-mix(in srgb, var(--brand) 70%, var(--background))
+    transparent;
+}
+
 .institution-page {
-  max-width: 74rem;
+  max-width: var(--layout-wide);
   margin-inline: auto;
-  padding: var(--space-12) clamp(1rem, 3vw, 2rem);
+  padding: var(--space-8) clamp(1rem, 3vw, 2rem);
 }
 .institution-intro {
-  max-width: var(--measure-reading);
   margin-bottom: var(--space-8);
 }
 .institution-intro h1 {
@@ -34,8 +42,7 @@
   gap: var(--space-1);
   flex-shrink: 0;
 }
-.institution-picker label,
-.institution-note {
+.institution-picker label {
   color: var(--muted-foreground);
   font-size: var(--text-caption);
 }
@@ -168,10 +175,6 @@
 .institution-connector > .ui-button {
   position: relative;
   max-width: 100%;
-}
-.institution-note {
-  max-width: var(--measure-reading);
-  margin-top: var(--space-4);
 }
 @media (max-width: 760px) {
   .institution-page {

@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState, useSyncExternalStore } from "react";
+import { useRef, useState } from "react";
 import { flushSync } from "react-dom";
 import { ArrowLeft, ArrowRight, Network } from "lucide-react";
 import { Button, buttonVariants } from "@/components/ui/button";
@@ -27,20 +27,8 @@ import type {
   InstitutionProcedure,
 } from "@/lib/institution-map";
 import { InstitutionSources } from "./institution-sources";
+import { useInstitutionFragment } from "./use-institution-fragment";
 import "./institution-procedure.css";
-
-function subscribeToTopic(change: () => void) {
-  window.addEventListener("hashchange", change);
-  window.addEventListener("popstate", change);
-  return () => {
-    window.removeEventListener("hashchange", change);
-    window.removeEventListener("popstate", change);
-  };
-}
-
-function currentTopic() {
-  return window.location.hash.slice(1);
-}
 
 function Procedure({
   id,
@@ -208,7 +196,7 @@ function TopicMap({ map }: { map: InstitutionMap }) {
 }
 
 export function InstitutionExplorer({ maps }: { maps: InstitutionMap[] }) {
-  const hash = useSyncExternalStore(subscribeToTopic, currentTopic, () => "");
+  const hash = useInstitutionFragment();
   const active = maps.find((map) => map.id === hash) ?? maps[0];
   return (
     <Tabs value={active.id}>

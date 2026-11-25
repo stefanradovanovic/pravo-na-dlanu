@@ -15,6 +15,7 @@ export type InstitutionProfile = {
 export type InstitutionGroup = {
   id: string;
   title: string;
+  description: string;
   source?: InstitutionSource;
   profiles: readonly InstitutionProfile[];
 };
@@ -32,6 +33,7 @@ function articleSource(
 const constitution = (article: number) =>
   articleSource("Устав Републике Србије", article);
 const ministryLaw = "Закон о министарствима";
+const localGovernmentLaw = "Закон о локалној самоуправи";
 
 function ministry(
   id: string,
@@ -336,18 +338,19 @@ export const institutionGroups: readonly InstitutionGroup[] = [
   {
     id: "drzavna-vlast",
     title: "Државна власт",
+    description: "Закони, државна политика и представљање Србије",
     profiles: [
       {
         id: "narodna-skupstina",
         name: "Народна скупштина",
         summary:
-          "Народна скупштина доноси законе, усваја републички буџет и бира Владу. Посланици надзиру рад Владе и могу да одлучују о поверењу Влади.",
+          "Народна скупштина је представничко тело у којем посланици расправљају и гласају о законима и другим одлукама Републике.",
         duties: [
           "Доноси законе",
           "Усваја републички буџет",
-          "Бира и надзире Владу",
+          "Бира Владу, надзире њен рад и може да гласа о неповерењу",
         ],
-        sources: [constitution(99), constitution(130)],
+        sources: [constitution(98), constitution(99), constitution(130)],
         mapId: "narodna-skupstina",
         keywords: "парламент",
       },
@@ -355,30 +358,43 @@ export const institutionGroups: readonly InstitutionGroup[] = [
         id: "predsednik-republike",
         name: "Председник Републике",
         summary:
-          "Председник представља Србију у земљи и иностранству и предлаже Скупштини кандидата за председника Владе. Изгласани закон проглашава указом или га, уз образложење, враћа Скупштини на поновно одлучивање.",
+          "Председник се бира непосредно и представља Србију у земљи и иностранству.",
         duties: [
-          "Представља Републику",
-          "Предлаже кандидата за председника Владе",
-          "Проглашава законе указом",
+          "Предлаже Скупштини кандидата за председника Владе",
+          "Проглашава закон указом или га враћа Скупштини на поновно одлучивање",
+          "Поставља и опозива амбасадоре на предлог Владе",
         ],
-        sources: [constitution(112), constitution(113)],
+        sources: [constitution(112), constitution(113), constitution(114)],
         mapId: "vlast",
       },
       {
         id: "vlada",
         name: "Влада Републике Србије",
         summary:
-          "Влада утврђује и води политику, извршава законе и предлаже законе Скупштини. Председник Владе води и усмерава рад Владе и усклађује рад њених чланова.",
-        duties: ["Води државну политику", "Извршава законе", "Предлаже законе"],
-        sources: [constitution(123), constitution(125)],
+          "Влада је носилац извршне власти. Председник Владе води њен рад и усклађује рад њених чланова.",
+        duties: [
+          "Утврђује и води државну политику",
+          "Извршава законе и доноси уредбе за њихово извршавање",
+          "Предлаже законе Народној скупштини",
+          "Усмерава и надзире рад органа државне управе",
+        ],
+        sources: [constitution(122), constitution(123), constitution(125)],
         mapId: "vlada",
         keywords: "премијер",
       },
     ],
   },
   {
+    id: "ministarstva",
+    title: "Министарства",
+    description: "Државна управа по областима",
+    source: articleSource(ministryLaw, 2),
+    profiles: ministries,
+  },
+  {
     id: "pravosudje",
     title: "Судови и јавна тужилаштва",
+    description: "Суђење, кривично гоњење и оцена уставности",
     profiles: [
       {
         id: "sudovi",
@@ -432,6 +448,7 @@ export const institutionGroups: readonly InstitutionGroup[] = [
   {
     id: "prava-izbori-i-novac",
     title: "Заштита права, избори и јавни новац",
+    description: "Притужбе, избори, надзор и монетарна политика",
     profiles: [
       {
         id: "zastitnik-gradjana",
@@ -537,10 +554,82 @@ export const institutionGroups: readonly InstitutionGroup[] = [
     ],
   },
   {
-    id: "ministarstva",
-    title: "Министарства",
-    source: articleSource(ministryLaw, 2),
-    profiles: ministries,
+    id: "lokalni-organi",
+    title: "Локална самоуправа",
+    description: "Локалне одлуке, комуналне услуге и послови општинске управе",
+    source: articleSource(localGovernmentLaw, 27),
+    profiles: [
+      {
+        id: "skupstina-opstine",
+        name: "Скупштина општине",
+        summary:
+          "Скупштину чине одборници које грађани бирају на локалним изборима. Она доноси општинске прописе и одлучује о новцу и плановима општине.",
+        duties: [
+          "Доноси статут, буџет и завршни рачун општине",
+          "Усваја урбанистичке планове и програм развоја",
+          "Бира председника општине и чланове општинског већа",
+          "Уређује локалне таксе и накнаде у оквиру закона",
+        ],
+        sources: [
+          articleSource(localGovernmentLaw, 28),
+          articleSource(localGovernmentLaw, 32),
+          articleSource(localGovernmentLaw, 43),
+          articleSource(localGovernmentLaw, 45),
+        ],
+        keywords: "скупштина града одборник локални избори",
+        mapId: "lokalna-samouprava",
+      },
+      {
+        id: "predsednik-opstine",
+        name: "Председник општине",
+        summary:
+          "Председник представља и заступа општину. Бира га скупштина општине из реда одборника.",
+        duties: [
+          "Предлаже решења за питања о којима одлучује скупштина",
+          "Даје налоге за извршење усвојеног буџета",
+          "Усмерава и усклађује рад општинске управе",
+          "Доноси појединачне акте за које је овлашћен",
+        ],
+        sources: [
+          articleSource(localGovernmentLaw, 43),
+          articleSource(localGovernmentLaw, 44),
+        ],
+        keywords: "градоначелник",
+        mapId: "lokalna-samouprava",
+      },
+      {
+        id: "opstinsko-vece",
+        name: "Општинско веће",
+        summary:
+          "Општинско веће припрема предлоге за скупштину и стара се да њене одлуке буду спроведене. Председник општине је и председник већа.",
+        duties: [
+          "Предлаже општински статут, буџет и друге одлуке",
+          "Надзире рад општинске управе",
+          "У другостепеном управном поступку одлучује о правима и обавезама у пословима општине",
+          "Прати рад јавних предузећа која је општина основала",
+        ],
+        sources: [
+          articleSource(localGovernmentLaw, 45),
+          articleSource(localGovernmentLaw, 46),
+        ],
+        keywords: "градско веће жалба",
+        mapId: "lokalna-samouprava",
+      },
+      {
+        id: "opstinska-uprava",
+        name: "Општинска управа",
+        summary:
+          "Општинска управа обавља свакодневне административне послове општине. Поступа и у пословима које су Република или покрајина повериле општини.",
+        duties: [
+          "У првом степену решава о правима и обавезама у пословима општине",
+          "Припрема нацрте општинских прописа и других аката",
+          "Спроводи одлуке органа општине и надзире примену општинских прописа",
+          "Обавља стручне и административне послове за органе општине",
+        ],
+        sources: [articleSource(localGovernmentLaw, 52)],
+        keywords: "градска управа захтев",
+      },
+    ],
   },
 ];
 
@@ -620,21 +709,26 @@ export function filterInstitutionGroups(
   groups: readonly InstitutionGroup[],
   query: string,
 ) {
-  const words = normalizeSearch(query)
-    .replaceAll("dj", "d")
-    .split(" ")
-    .filter(Boolean);
+  const searchText = (text: string) =>
+    normalizeSearch(text).replaceAll("dj", "d");
+  const words = searchText(query).split(" ").filter(Boolean);
   if (!words.length) return groups;
 
   return groups
-    .map((group) => ({
-      ...group,
-      profiles: group.profiles.filter(({ name, summary, duties, keywords }) => {
-        const text = normalizeSearch(
-          [name, summary, ...duties, keywords].join(" "),
-        ).replaceAll("dj", "d");
-        return words.every((word) => text.includes(word));
-      }),
-    }))
+    .map((group) => {
+      const title = searchText(group.title);
+      if (words.every((word) => title.includes(word))) return group;
+      return {
+        ...group,
+        profiles: group.profiles.filter(
+          ({ name, summary, duties, keywords }) => {
+            const text = searchText(
+              [name, summary, ...duties, keywords].join(" "),
+            );
+            return words.every((word) => text.includes(word));
+          },
+        ),
+      };
+    })
     .filter((group) => group.profiles.length > 0);
 }
