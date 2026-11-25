@@ -20,18 +20,17 @@
 }
 .ds-hero-title {
   display: flex;
-  align-items: center;
+  align-items: baseline;
   flex-wrap: wrap;
-  gap: var(--space-6);
-  margin: var(--space-6) 0 var(--space-4);
+  gap: var(--space-3) var(--space-6);
+  margin-block-start: var(--space-6);
 }
 .ds-hero h1 {
   font: 400 clamp(2rem, 4.3vw, 3.5rem)/1.15 var(--type-editorial);
   letter-spacing: -0.035em;
 }
-.ds-hero > p {
+.ds-hero-title p {
   max-width: 65ch;
-  color: var(--muted-foreground);
   font-size: 16px;
   line-height: 1.75;
 }
@@ -112,8 +111,6 @@
   letter-spacing: -0.025em;
 }
 .ds-section-heading p {
-  margin-top: var(--space-3);
-  color: var(--muted-foreground);
   line-height: var(--leading-body);
   max-width: 70ch;
 }
@@ -478,7 +475,7 @@
     padding: 0;
   }
   .ds-hero-title {
-    gap: var(--space-4);
+    column-gap: var(--space-4);
   }
   .ds-palette,
   .ds-radius-scale {

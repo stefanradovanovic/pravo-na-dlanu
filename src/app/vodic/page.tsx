@@ -30,7 +30,7 @@ export default function ReadingGuidePage() {
           <br />
           <span>корак по корак.</span>
         </h1>
-        <p>
+        <p className="heading-description">
           Не морате да знате све правне изразе да бисте почели. Научите где да
           тражите правило, шта да прочитате уз њега и како да проверите извор.
         </p>

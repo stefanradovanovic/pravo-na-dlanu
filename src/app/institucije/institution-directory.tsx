@@ -54,7 +54,7 @@ export function InstitutionDirectory({
         <h2 id="pregled-institucija" tabIndex={-1}>
           Преглед институција
         </h2>
-        <p>
+        <p className="heading-description">
           Кључне надлежности државних органа и министарстава, са изворима у
           прописима.
         </p>

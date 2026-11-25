@@ -364,7 +364,7 @@ export function LearningWorkspace({ catalog }: { catalog: LearningCatalog }) {
                     ← Све теме
                   </Link>
                   <h2>{topic.title}</h2>
-                  <p>{topic.description}</p>
+                  <p className="heading-description">{topic.description}</p>
                   <div className="learning-actions">
                     <a
                       href="#vezba"
@@ -449,7 +449,9 @@ export function LearningWorkspace({ catalog }: { catalog: LearningCatalog }) {
                   <div className="learning-section-heading">
                     <div>
                       <h2>Која тема вас занима?</h2>
-                      <p>Почните од ситуација које препознајете.</p>
+                      <p className="heading-description">
+                        Почните од ситуација које препознајете.
+                      </p>
                     </div>
                     <div className="learning-search">
                       <Search size={17} />

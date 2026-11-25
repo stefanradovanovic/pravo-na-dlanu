@@ -26,7 +26,7 @@ export default function LearningPage() {
           <br />
           <span>Боље разумевање својих права.</span>
         </h1>
-        <p>
+        <p className="heading-description">
           Размислите, изаберите одговор и откријте правило.
           <br />
           Кратке вежбе о Уставу, послу, куповини, подацима и јавној власти.

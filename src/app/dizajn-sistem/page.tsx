@@ -47,10 +47,10 @@ function SectionHeading({
   return (
     <header className="ds-section-heading">
       <span className="ds-number">{number}</span>
-      <div>
+      <hgroup>
         <h2>{title}</h2>
-        <p>{children}</p>
-      </div>
+        <p className="heading-description">{children}</p>
+      </hgroup>
     </header>
   );
 }
@@ -63,13 +63,15 @@ export default function DesignSystemPage() {
           <Scale size={16} aria-hidden="true" /> ПРАВО НА ДЛАНУ / ДИЗАЈН СИСТЕМ
         </div>
         <div className="ds-hero-title">
-          <h1>Јасноћа у сваком детаљу.</h1>
+          <hgroup>
+            <h1>Јасноћа у сваком детаљу.</h1>
+            <p className="heading-description">
+              Заједнички визуелни језик за право које је лакше пронаћи, читати и
+              разумети. Мирне површине, јасна хијерархија и познате компоненте.
+            </p>
+          </hgroup>
           <Badge variant="outline">Верзија 2.0</Badge>
         </div>
-        <p>
-          Заједнички визуелни језик за право које је лакше пронаћи, читати и
-          разумети. Мирне површине, јасна хијерархија и познате компоненте.
-        </p>
         <div className="ds-hero-meta">
           <span>Ћирилица на првом месту</span>
           <span>shadcn/ui · UI SDK</span>
@@ -180,7 +182,8 @@ export default function DesignSystemPage() {
 
           <section id="razmaci" className="ds-section">
             <SectionHeading number="03" title="Размаци и облик">
-              Основа је 4 пиксела. Ивице прате постојећу shadcn/ui скалу.
+              Наслов и његов опис раздвајају 8 пиксела. Ивице прате постојећу
+              shadcn/ui скалу.
             </SectionHeading>
             <div className="ds-spacing-scale">
               {[1, 2, 3, 4, 6, 8, 12, 16].map((step) => (

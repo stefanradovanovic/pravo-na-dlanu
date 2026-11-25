@@ -85,9 +85,6 @@ html {
 .page-intro h1 {
   letter-spacing: -0.9px;
 }
-.page-intro > p {
-  margin-top: 1rem;
-}
 .search-wrap .ui-input {
   height: 3.5rem;
   padding-left: 3rem;
@@ -803,8 +800,6 @@ html {
   margin-top: 0.75rem;
 }
 .catalog-intro-copy > p {
-  color: var(--muted-foreground);
-  margin-top: 1rem;
   max-width: 50ch;
 }
 .home-document-links {

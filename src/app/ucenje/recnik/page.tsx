@@ -21,7 +21,9 @@ export default function GlossaryPage() {
           Учење
         </Link>
         <h1>Речник</h1>
-        <p>Кратка уредничка објашњења правних и грађанских појмова.</p>
+        <p className="heading-description">
+          Кратка уредничка објашњења правних и грађанских појмова.
+        </p>
       </header>
       <GlossaryBrowser topics={topics} sources={sources} />
     </main>
