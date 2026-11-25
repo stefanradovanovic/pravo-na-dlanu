@@ -14,6 +14,12 @@ import { CourtDirectory } from "./court-directory";
 import { InstitutionContactDetails } from "./institution-contact-details";
 import { InstitutionSearchInput } from "./institution-search-input";
 import { InstitutionSources } from "./institution-sources";
+import {
+  MinistryContacts,
+  MinistryOverview,
+  MinistrySources,
+  SourceAccessDate,
+} from "./ministry-profile";
 import { ProsecutionDirectory } from "./prosecution-directory";
 import { useInstitutionFragment } from "./use-institution-fragment";
 
@@ -21,27 +27,72 @@ function profileAnchor(id: string) {
   return `institucija-${id}`;
 }
 
+function ProfileIndexLinks({
+  profiles,
+  fragment,
+}: {
+  profiles: readonly InstitutionProfile[];
+  fragment: string | null;
+}) {
+  return profiles.map((profile) => {
+    const anchor = profileAnchor(profile.id);
+    return (
+      <li key={profile.id}>
+        <a
+          aria-current={fragment === anchor ? "location" : undefined}
+          className="text-link"
+          href={`#${anchor}`}
+        >
+          {profile.indexName ?? profile.name}
+        </a>
+      </li>
+    );
+  });
+}
+
 function ProfileCard({
   profile,
   children,
+  headingLevel = "h3",
 }: {
   profile: InstitutionProfile;
   children?: ReactNode;
+  headingLevel?: "h3" | "h4";
 }) {
-  const { contact } = profile;
+  const { contact, ministryDetails: details } = profile;
   const contactTitle = contact?.title ?? "Контакт";
   const contactAnchor = `${profileAnchor(profile.id)}-kontakt`;
+  const Heading = headingLevel;
+  const heading = (
+    <Heading id={profileAnchor(profile.id)} tabIndex={-1}>
+      {profile.name}
+    </Heading>
+  );
+  const description = (
+    <div className="institution-profile-description">
+      <p>{profile.summary}</p>
+      {profile.duties.length > 0 && (
+        <ul className="institution-duties" aria-label="Изабране надлежности">
+          {profile.duties.map((duty) => (
+            <li key={duty}>{duty}</li>
+          ))}
+        </ul>
+      )}
+    </div>
+  );
   return (
     <article className="institution-profile">
-      <h3 id={profileAnchor(profile.id)} tabIndex={-1}>
-        {profile.name}
-      </h3>
-      <p>{profile.summary}</p>
-      <ul className="institution-duties" aria-label="Изабране надлежности">
-        {profile.duties.map((duty) => (
-          <li key={duty}>{duty}</li>
-        ))}
-      </ul>
+      {details ? (
+        <MinistryOverview minister={details.minister} heading={heading}>
+          {description}
+        </MinistryOverview>
+      ) : (
+        <header className="institution-profile-overview">
+          {heading}
+          {description}
+        </header>
+      )}
+      {details && <MinistryContacts details={details} />}
       {contact && (
         <section
           className="institution-profile-contact"
@@ -61,6 +112,7 @@ function ProfileCard({
       )}
       <footer>
         <InstitutionSources sources={profile.sources} />
+        {details && <MinistrySources details={details} />}
       </footer>
       {children}
     </article>
@@ -82,12 +134,17 @@ export function InstitutionDirectory({
   const searching = visibleGroups !== groups;
   const activeGroup =
     groups.find(
-      ({ id, profiles }) =>
+      ({ id, profiles, subsection }) =>
         id === fragment ||
-        profiles.some((profile) => profileAnchor(profile.id) === fragment),
+        subsection?.id === fragment ||
+        profiles.some((profile) => profileAnchor(profile.id) === fragment) ||
+        subsection?.profiles.some(
+          (profile) => profileAnchor(profile.id) === fragment,
+        ),
     ) ?? groups[0];
   const count = visibleGroups.reduce(
-    (sum, group) => sum + group.profiles.length,
+    (sum, group) =>
+      sum + group.profiles.length + (group.subsection?.profiles.length ?? 0),
     0,
   );
 
@@ -105,7 +162,7 @@ export function InstitutionDirectory({
         <div role="search" aria-label="Претрага институција">
           <InstitutionSearchInput
             label="Пронађи институцију"
-            placeholder="Назив или надлежност"
+            placeholder="Назив, надлежност или министар"
             value={query}
             onValueChange={setQuery}
           />
@@ -115,64 +172,75 @@ export function InstitutionDirectory({
             className="institution-group-links"
             aria-label="Области прегледа"
           >
-            {visibleGroups.map(({ id, title, description, profiles }) => (
-              <details
-                className="institution-group-index institution-disclosure"
-                name="institution-directory-groups"
-                data-current={
-                  (!searching && fragment !== null && activeGroup?.id === id) ||
-                  undefined
-                }
-                key={id}
-              >
-                <summary
-                  aria-label={`Списак институција — ${title}`}
-                  aria-describedby={`opis-${id}`}
-                  className={buttonVariants({
-                    variant: "ghost",
-                    className: "institution-group-link",
-                  })}
+            {visibleGroups.map(
+              ({ id, title, description, profiles, subsection }) => (
+                <details
+                  className="institution-group-index institution-disclosure"
+                  name="institution-directory-groups"
+                  data-current={
+                    (!searching &&
+                      fragment !== null &&
+                      activeGroup?.id === id) ||
+                    undefined
+                  }
+                  key={id}
                 >
-                  <span>
-                    <strong>
-                      {id === "ministarstva" && !searching
-                        ? `${title} (${profiles.length})`
-                        : title}
-                    </strong>
-                    <span id={`opis-${id}`}>{description}</span>
-                  </span>
-                  <ChevronDown aria-hidden="true" />
-                </summary>
-                <ul>
-                  <li>
-                    <a
-                      aria-current={fragment === id ? "location" : undefined}
-                      aria-label={`Преглед области — ${title}`}
-                      className="text-link"
-                      href={`#${id}`}
-                    >
-                      Преглед области
-                    </a>
-                  </li>
-                  {profiles.map((profile) => {
-                    const anchor = profileAnchor(profile.id);
-                    return (
-                      <li key={profile.id}>
+                  <summary
+                    aria-label={`Списак институција — ${title}`}
+                    aria-describedby={`opis-${id}`}
+                    className={buttonVariants({
+                      variant: "ghost",
+                      className: "institution-group-link",
+                    })}
+                  >
+                    <span>
+                      <strong>
+                        {id === "ministarstva" && !searching
+                          ? `${title} (${profiles.length}${subsection ? ` + ${subsection.profiles.length}` : ""})`
+                          : title}
+                      </strong>
+                      <span id={`opis-${id}`}>{description}</span>
+                    </span>
+                    <ChevronDown aria-hidden="true" />
+                  </summary>
+                  <ul>
+                    <li>
+                      <a
+                        aria-current={fragment === id ? "location" : undefined}
+                        aria-label={`Преглед области — ${title}`}
+                        className="text-link"
+                        href={`#${id}`}
+                      >
+                        Преглед области
+                      </a>
+                    </li>
+                    <ProfileIndexLinks
+                      profiles={profiles}
+                      fragment={fragment}
+                    />
+                    {subsection && (
+                      <li className="institution-index-subsection">
                         <a
                           aria-current={
-                            fragment === anchor ? "location" : undefined
+                            fragment === subsection.id ? "location" : undefined
                           }
                           className="text-link"
-                          href={`#${anchor}`}
+                          href={`#${subsection.id}`}
                         >
-                          {profile.name}
+                          {subsection.title}
                         </a>
+                        <ul>
+                          <ProfileIndexLinks
+                            profiles={subsection.profiles}
+                            fragment={fragment}
+                          />
+                        </ul>
                       </li>
-                    );
-                  })}
-                </ul>
-              </details>
-            ))}
+                    )}
+                  </ul>
+                </details>
+              ),
+            )}
           </nav>
         )}
       </div>
@@ -198,19 +266,58 @@ export function InstitutionDirectory({
                 {group.source && (
                   <InstitutionSources sources={[group.source]} />
                 )}
+                {group.note && (
+                  <div className="institution-group-note">
+                    <p>{group.note.text}</p>
+                    <p>
+                      <a className="text-link" href={group.note.source.href}>
+                        {group.note.source.title}
+                      </a>
+                      {" · "}
+                      <SourceAccessDate accessedAt={group.note.accessedAt} />
+                    </p>
+                  </div>
+                )}
               </header>
-              <div className="institution-profiles">
-                {group.profiles.map((profile) => (
-                  <ProfileCard key={profile.id} profile={profile}>
-                    {profile.id === "sudovi" && (
-                      <CourtDirectory data={courts} />
+              {group.profiles.length > 0 && (
+                <div className="institution-profiles">
+                  {group.profiles.map((profile) => (
+                    <ProfileCard key={profile.id} profile={profile}>
+                      {profile.id === "sudovi" && (
+                        <CourtDirectory data={courts} />
+                      )}
+                      {profile.id === "javno-tuzilastvo" && (
+                        <ProsecutionDirectory data={prosecutions} />
+                      )}
+                    </ProfileCard>
+                  ))}
+                </div>
+              )}
+              {group.subsection && (
+                <section
+                  className="institution-subsection"
+                  aria-labelledby={group.subsection.id}
+                >
+                  <header>
+                    <h3 id={group.subsection.id} tabIndex={-1}>
+                      {group.subsection.title}
+                    </h3>
+                    <p>{group.subsection.description}.</p>
+                    {group.subsection.source && (
+                      <InstitutionSources sources={[group.subsection.source]} />
                     )}
-                    {profile.id === "javno-tuzilastvo" && (
-                      <ProsecutionDirectory data={prosecutions} />
-                    )}
-                  </ProfileCard>
-                ))}
-              </div>
+                  </header>
+                  <div className="institution-profiles">
+                    {group.subsection.profiles.map((profile) => (
+                      <ProfileCard
+                        key={profile.id}
+                        profile={profile}
+                        headingLevel="h4"
+                      />
+                    ))}
+                  </div>
+                </section>
+              )}
             </section>
           ))}
         </div>

@@ -75,7 +75,14 @@ test("find a ministry, read its duties and follow its legal source", async ({
     name: "Министарства",
     exact: true,
   });
-  await expect(ministryGroup.getByRole("article")).toHaveCount(25);
+  await expect(
+    ministryGroup.locator(":scope > .institution-profiles > article"),
+  ).toHaveCount(25);
+  await expect(
+    ministryGroup
+      .getByRole("region", { name: "Министри без портфеља", exact: true })
+      .getByRole("article"),
+  ).toHaveCount(5);
   await expect(
     page.getByRole("heading", { name: "Министарство за јавна улагања" }),
   ).toBeVisible();
@@ -84,6 +91,51 @@ test("find a ministry, read its duties and follow its legal source", async ({
     .click();
   await expect(page).toHaveURL(/\/propisi\/zakon-o-ministarstvima#clan-13$/);
   await expect(page.locator("#clan-13")).toBeInViewport();
+});
+
+test("find the two ministers and their official contacts and services", async ({
+  page,
+}) => {
+  await page.goto("/institucije#ministarstva");
+  const ministries = page.getByRole("region", {
+    name: "Министарства",
+    exact: true,
+  });
+  await expect(ministries.getByText(/ради у техничком мандату/)).toHaveCount(1);
+  await expect(
+    ministries.getByRole("link", { name: "Саопштење Владе" }),
+  ).toHaveAttribute("href", /srbija\.gov\.rs\/vest\/1011594/);
+
+  const search = page.getByRole("searchbox", { name: "Пронађи институцију" });
+  const profile = ministries.getByRole("article");
+  for (const query of ["Ивица Дачић", "Ivica Dačić", "ivica dacic"]) {
+    await search.fill(query);
+    await expect(profile.getByRole("heading", { level: 3 })).toHaveText(
+      "Министарство унутрашњих послова",
+    );
+  }
+  await expect(
+    profile.getByRole("link", { name: "+381 11 274-00-00" }),
+  ).toHaveAttribute("href", "tel:+381112740000");
+  await expect(
+    profile.getByRole("link", { name: /закажите термин/i }),
+  ).toHaveAttribute("href", /euprava\.gov\.rs\/usluge\/00005/);
+
+  await search.fill("dejan vuk stankovic");
+  await expect(profile.getByRole("heading", { level: 3 })).toHaveText(
+    "Министарство просвете",
+  );
+  await expect(
+    profile.getByRole("link", { name: /званична биографија/i }),
+  ).toHaveAttribute("href", /srbija\.gov\.rs\/biografija\/67117/);
+  await expect(
+    profile.getByRole("link", { name: "kabinet@prosveta.gov.rs" }),
+  ).toHaveAttribute("href", "mailto:kabinet@prosveta.gov.rs");
+  await expect(
+    profile.getByRole("link", { name: /поднесите захтев/i }),
+  ).toHaveAttribute("href", "https://euprava.gov.rs/usluga-episarnica");
+  await profile.locator("summary").press("Enter");
+  await expect(profile.getByRole("link", { name: "CC BY 3.0" })).toBeVisible();
 });
 
 test.describe("institutions without JavaScript", () => {
@@ -186,7 +238,7 @@ test.describe("institutions without JavaScript", () => {
     await expect(
       page
         .getByRole("region", { name: "Министарства", exact: true })
-        .getByRole("article"),
+        .locator(":scope > .institution-profiles > article"),
     ).toHaveCount(25);
     const groupNavigation = page.getByRole("navigation", {
       name: "Области прегледа",
@@ -199,6 +251,15 @@ test.describe("institutions without JavaScript", () => {
       .getByLabel("Списак институција — Министарства", { exact: true })
       .press("Enter");
     await expect(ministryOverview).toBeVisible();
+    const ministers = groupNavigation.locator("details[open]");
+    await expect(ministers.getByRole("link").last()).toHaveText(
+      "Татјана Мацура",
+    );
+    await ministers
+      .getByRole("link", { name: "Новица Тончев", exact: true })
+      .click();
+    await expect(page).toHaveURL(/#institucija-novica-toncev$/);
+    await expect(page.locator("#institucija-novica-toncev")).toBeInViewport();
     await groupNavigation
       .getByLabel("Списак институција — Локална самоуправа", { exact: true })
       .press("Enter");

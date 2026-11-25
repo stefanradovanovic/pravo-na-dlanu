@@ -72,7 +72,7 @@
   transform: rotate(180deg);
 }
 
-.institution-group-index ul {
+.institution-group-index > ul {
   max-block-size: min(20rem, 45dvh);
   overflow-y: auto;
   margin: var(--space-2) 0 var(--space-2) var(--space-3);
@@ -100,6 +100,19 @@
   font-weight: 600;
 }
 
+.institution-index-subsection {
+  margin-block-start: var(--space-2);
+  border-block-start: 1px solid var(--border);
+}
+
+.institution-index-subsection > a {
+  font-weight: 600;
+}
+
+.institution-index-subsection > ul {
+  margin-inline-start: var(--space-2);
+}
+
 .institution-directory:not([data-searching])
   .institution-groups:not(:has(:target))
   > .institution-group:not(:first-child),
@@ -110,7 +123,8 @@
 }
 
 .institution-search-status:not(:empty),
-.institution-group > header {
+.institution-group > header,
+.institution-subsection > header {
   margin-bottom: var(--space-4);
 }
 
@@ -127,13 +141,38 @@
     var(--leading-title) var(--type-editorial);
 }
 
-.institution-group > header > p {
+.institution-group > header > p,
+.institution-subsection > header > p {
   margin-block: var(--space-2);
   font-size: var(--text-reading);
 }
 
-.institution-group > header > .institution-sources {
+.institution-subsection > header > h3 {
+  font: 500 var(--text-title) / var(--leading-title) var(--type-editorial);
+}
+
+.institution-profiles + .institution-subsection {
+  margin-block-start: var(--space-8);
+}
+
+.institution-group > header > .institution-sources,
+.institution-subsection > header > .institution-sources {
   border-top: 0;
+}
+
+.institution-group-note {
+  display: grid;
+  gap: var(--space-1);
+  margin-block-start: var(--space-3);
+  border-radius: var(--radius);
+  padding: var(--space-3);
+  background: var(--surface-subtle);
+  font-size: var(--text-body);
+}
+
+.institution-group-note > p:last-child {
+  color: var(--muted-foreground);
+  font-size: var(--text-caption);
 }
 
 .institution-profiles {
@@ -191,16 +230,17 @@
 
 .institution-directory-sidebar,
 .institution-group h2,
-.institution-profile h3 {
+.institution-subsection > header > h3,
+.institution-profile > header > :is(h3, h4) {
   scroll-margin-top: calc(var(--header-height) + var(--space-4));
 }
 
-.institution-profile:has(> h3:target) {
+.institution-profile:has(> header > :is(h3, h4):target) {
   position: relative;
   isolation: isolate;
 }
 
-.institution-profile:has(> h3:target)::before {
+.institution-profile:has(> header > :is(h3, h4):target)::before {
   position: absolute;
   z-index: -1;
   inset: 0;
@@ -223,17 +263,24 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .institution-profile:has(> h3:target)::before {
+  .institution-profile:has(> header > :is(h3, h4):target)::before {
     /* Keep the timed highlight with no fade. */
     animation: institution-highlight-out 0s 3s backwards !important;
   }
 }
 
-.institution-profile h3 {
+.institution-profile > header > :is(h3, h4) {
   font: 600 var(--text-title) / var(--leading-title) var(--type-editorial);
 }
 
-.institution-profile > p {
+.institution-profile-description {
+  display: grid;
+  align-content: start;
+  gap: var(--space-3);
+  min-inline-size: 0;
+}
+
+.institution-profile-description > p {
   font-size: var(--text-body);
   line-height: var(--leading-body);
 }
@@ -265,7 +312,7 @@
     grid-template-columns: minmax(0, 1fr);
   }
 
-  .institution-profile h3 {
+  .institution-profile > header > :is(h3, h4) {
     font-size: var(--text-reading);
   }
 }
@@ -278,4 +325,141 @@
   display: flex;
   flex-wrap: wrap;
   column-gap: var(--space-4);
+}
+
+.institution-profile-overview,
+.ministry-overview {
+  display: grid;
+  align-items: start;
+  gap: var(--space-2) var(--space-4);
+}
+
+.ministry-overview:has(img) {
+  grid-template-columns:
+    min(
+      42%,
+      clamp(
+        calc(var(--space-16) + var(--space-8)),
+        30vw,
+        calc(2 * var(--space-16) + var(--space-8))
+      )
+    )
+    1px
+    minmax(0, 1fr);
+  grid-template-areas:
+    "minister divider heading"
+    "minister divider description";
+  grid-template-rows: auto 1fr;
+}
+
+.ministry-overview:has(img)::after {
+  grid-area: divider;
+  align-self: stretch;
+  background: var(--border);
+  content: "";
+}
+
+.ministry-overview:has(img) > :is(h3, h4) {
+  grid-area: heading;
+}
+
+.ministry-overview:has(img) > .institution-profile-description {
+  grid-area: description;
+}
+
+.ministry-leader:has(img) {
+  grid-area: minister;
+}
+
+.ministry-leader img {
+  display: block;
+  inline-size: 100%;
+  block-size: auto;
+  margin-block-end: var(--space-2);
+  border-radius: var(--radius);
+  background: var(--surface-subtle);
+  object-fit: cover;
+}
+
+.ministry-leader strong {
+  display: block;
+  font-size: var(--text-reading);
+  line-height: var(--leading-title);
+}
+
+.ministry-leader p {
+  margin-block-start: var(--space-1);
+  color: var(--muted-foreground);
+  font-size: var(--text-caption);
+}
+
+.ministry-contacts {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 14rem), 1fr));
+  align-items: start;
+  gap: var(--space-3) var(--space-6);
+  border-block-start: 1px solid var(--border);
+  padding-block-start: var(--space-4);
+  font-size: var(--text-body);
+}
+
+.ministry-contacts h4 {
+  margin-block-end: var(--space-2);
+  font-weight: 600;
+}
+
+.ministry-contacts dl,
+.ministry-contacts ul {
+  display: grid;
+  gap: var(--space-2);
+}
+
+.ministry-contacts dt,
+.ministry-contacts li > p,
+.ministry-source-details {
+  color: var(--muted-foreground);
+  font-size: var(--text-caption);
+}
+
+.ministry-contacts dd .text-link,
+.ministry-contacts li .text-link {
+  font-size: var(--text-body);
+}
+
+.ministry-contacts dl + a {
+  margin-block-start: var(--space-2);
+}
+
+.ministry-source-details {
+  margin-block-start: var(--space-2);
+}
+
+.ministry-source-details summary {
+  inline-size: fit-content;
+  min-block-size: var(--space-8);
+  margin-block-start: var(--space-1);
+  padding-block: var(--space-1);
+  color: var(--brand);
+  cursor: pointer;
+}
+
+.ministry-source-details details > .institution-sources {
+  border: 0;
+  padding-block-start: 0;
+}
+
+.ministry-source-details details > p {
+  margin-block-start: var(--space-2);
+}
+
+@media (pointer: coarse) {
+  .ministry-contacts .text-link,
+  .ministry-leader .text-link,
+  .ministry-source-details summary {
+    min-block-size: var(--control-height);
+  }
+
+  .ministry-source-details summary {
+    align-content: center;
+  }
 }
