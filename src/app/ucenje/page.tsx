@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
 import Link from "next/link";
+import { BookOpen } from "lucide-react";
 import { LearningWorkspace } from "@/components/learning/learning-workspace";
+import { buttonVariants } from "@/components/ui/button";
 import { getLearningCatalog } from "@/lib/learning-content";
 import { socialMetadata } from "@/lib/social-metadata";
 
@@ -9,7 +11,7 @@ export const metadata: Metadata = {
   ...socialMetadata("/ucenje"),
   title: "Учи и провери знање",
   description:
-    "Упознајте своја права кроз кратке квизове, измишљене животне ситуације и читање званичних прописа.",
+    "Потражите правни појам у Речнику или упознајте своја права кроз кратке вежбе и измишљене животне ситуације.",
 };
 export default function LearningPage() {
   const catalog = getLearningCatalog();
@@ -36,6 +38,26 @@ export default function LearningPage() {
           <li>04 · Извор</li>
         </ol>
       </div>
+      <section
+        className="learning-workspace learning-reference"
+        aria-labelledby="learning-dictionary"
+      >
+        <div className="learning-orientation">
+          <div>
+            <h2 id="learning-dictionary">Речник</h2>
+            <p>
+              Објашњења правних и грађанских појмова, са примерима и изворима.
+            </p>
+          </div>
+          <Link
+            className={buttonVariants()}
+            href="/ucenje/recnik"
+            prefetch={false}
+          >
+            <BookOpen aria-hidden="true" /> Отвори речник
+          </Link>
+        </div>
+      </section>
       <Suspense
         fallback={
           <div className="learning-workspace">
@@ -52,8 +74,7 @@ export default function LearningPage() {
             <Link href="/vodic" className="text-link">
               Водич за читање закона
             </Link>{" "}
-            и{" "}
-            {/* Standalone laws use full document navigation. */}
+            и {/* Standalone laws use full document navigation. */}
             {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
             <a href="/zakoni/ustav" className="text-link">
               цео текст Устава
