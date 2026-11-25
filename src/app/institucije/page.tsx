@@ -39,9 +39,15 @@ function InstitutionProcedures() {
                 <li key={step.name}>
                   <strong>{step.name}</strong>
                   <span>{step.action}</span>
+                  {step.detail && (
+                    <p className="institution-flow-detail">{step.detail}</p>
+                  )}
                 </li>
               ))}
             </ol>
+            {procedure.note && (
+              <p className="institution-flow-note">{procedure.note}</p>
+            )}
             <InstitutionSources sources={procedure.sources} />
           </article>
         ))}

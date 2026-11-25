@@ -193,3 +193,14 @@
 .institution-flow ol span {
   color: var(--editorial-foreground);
 }
+
+.institution-flow-detail {
+  margin-top: var(--space-1);
+  color: var(--muted-foreground);
+  font-size: var(--text-caption);
+}
+
+.institution-flow-note {
+  color: var(--muted-foreground);
+  font-size: var(--text-body);
+}
