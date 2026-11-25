@@ -1,11 +1,11 @@
 import { test, expect, type Page } from "@playwright/test";
 
 const destinations = [
-  { name: "Почетна", href: "/" },
-  { name: "Истражи право", href: "/#pretraga" },
-  { name: "Учи кроз примере", href: "/ucenje" },
-  { name: "Како читати закон", href: "/vodic" },
-  { name: "Устав Србије", href: "/propisi/ustav-republike-srbije" },
+  { name: "Почетак", href: "/" },
+  { name: "Институције", href: "/institucije" },
+  { name: "Претрага", href: "/#pretraga" },
+  { name: "Учење", href: "/ucenje" },
+  { name: "Водич", href: "/vodic" },
 ] as const;
 
 test.beforeEach(({ page }) => {
@@ -31,15 +31,10 @@ test("bottom navigation crosses app and standalone law pages with correct histor
 }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto("/");
-  await expectActive(page, "Почетна");
-  await expect(page.locator(".mobile-navigation a")).toHaveCount(5);
-  expect(
-    await page
-      .locator(".mobile-navigation a")
-      .evaluateAll((links) =>
-        links.map((link) => link.getAttribute("aria-label")),
-      ),
-  ).toEqual(destinations.map((destination) => destination.name));
+  await expectActive(page, "Почетак");
+  await expect(page.locator(".mobile-navigation a")).toHaveText(
+    destinations.map(({ name }) => name),
+  );
   for (const destination of destinations.slice(1)) {
     await page
       .locator(".mobile-navigation")
@@ -56,36 +51,41 @@ test("bottom navigation crosses app and standalone law pages with correct histor
       .toBe(destination.href);
     await expectActive(
       page,
-      destination.href === "/#pretraga" ? "Почетна" : destination.name,
+      destination.href === "/#pretraga" ? "Почетак" : destination.name,
     );
+    if (destination.href === "/institucije")
+      await expect(
+        page.getByRole("heading", { name: "Мапа институција Србије" }),
+      ).toBeVisible();
     if (destination.href === "/#pretraga")
       await expect(page.locator("#pretraga")).toBeInViewport();
   }
-  await expectActive(page, "Устав Србије");
+  await page.getByRole("link", { name: /Устав о објављивању прописа/ }).click();
+  await expectActive(page, "Претрага");
   await expect(page.locator("#clan-1")).toHaveCount(1);
   await expect(page.locator("#clan-206")).toHaveCount(1);
   await page.goBack();
-  await expectActive(page, "Како читати закон");
+  await expectActive(page, "Водич");
   await page.goBack();
-  await expectActive(page, "Учи кроз примере");
+  await expectActive(page, "Учење");
   await page.goForward();
-  await expectActive(page, "Како читати закон");
+  await expectActive(page, "Водич");
   await page.goForward();
-  await expectActive(page, "Устав Србије");
+  await expectActive(page, "Претрага");
   await page
     .locator(".mobile-navigation")
     .getByRole("link", {
-      name: "Почетна",
+      name: "Почетак",
       exact: true,
     })
     .click();
   await expect.poll(() => new URL(page.url()).pathname).toBe("/");
-  await expectActive(page, "Почетна");
+  await expectActive(page, "Почетак");
 
   await page.goto("/ucenje?tema=potrosaci");
-  await expectActive(page, "Учи кроз примере");
+  await expectActive(page, "Учење");
   await page.goto("/propisi/zakon-o-radu#clan-18");
-  await expectActive(page, "Истражи право");
+  await expectActive(page, "Претрага");
   await expect(page.locator("#clan-18")).toBeInViewport();
 });
 
@@ -114,6 +114,9 @@ test("mobile widths keep every navigation target reachable and leave room below 
         expect(box!.height).toBeGreaterThanOrEqual(44);
         expect(box!.x).toBeGreaterThanOrEqual(0);
         expect(box!.x + box!.width).toBeLessThanOrEqual(width + 1);
+        const label = await link.locator("span").boundingBox();
+        expect(label!.x).toBeGreaterThanOrEqual(box!.x);
+        expect(label!.x + label!.width).toBeLessThanOrEqual(box!.x + box!.width);
       }
       await page.evaluate(() =>
         window.scrollTo(0, document.documentElement.scrollHeight),
@@ -177,44 +180,38 @@ test("mobile navigation works without JavaScript and standalone laws retain thei
   const page = await context.newPage();
   try {
     await page.goto("/vodic");
-    await expectActive(page, "Како читати закон");
+    await expectActive(page, "Водич");
     await page
       .locator(".mobile-navigation")
       .getByRole("link", {
-        name: "Устав Србије",
+        name: "Институције",
         exact: true,
       })
       .click();
-    await expectActive(page, "Устав Србије");
+    await expectActive(page, "Институције");
+    await page.goto("/propisi/ustav-republike-srbije");
+    await expectActive(page, "Претрага");
     await expect(page.locator("#clan-206")).toHaveCount(1);
     await page
       .locator(".mobile-navigation")
       .getByRole("link", {
-        name: "Почетна",
-        exact: true,
-      })
-      .click();
-    await expectActive(page, "Почетна");
-    await page
-      .locator(".mobile-navigation")
-      .getByRole("link", {
-        name: "Истражи право",
+        name: "Претрага",
         exact: true,
       })
       .click();
     await expect(page).toHaveURL(/\/#pretraga$/);
     await expect(page.locator("#pretraga")).toBeInViewport();
-    await expectActive(page, "Почетна");
+    await expectActive(page, "Почетак");
     await page.goto("/propisi/zakon-o-radu");
-    await expectActive(page, "Истражи право");
+    await expectActive(page, "Претрага");
     await page
       .locator(".mobile-navigation")
       .getByRole("link", {
-        name: "Како читати закон",
+        name: "Водич",
         exact: true,
       })
       .click();
-    await expectActive(page, "Како читати закон");
+    await expectActive(page, "Водич");
     await expect(page.getByRole("heading", { level: 1 })).toContainText(
       "Како да читате закон",
     );
