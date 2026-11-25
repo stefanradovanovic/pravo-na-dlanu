@@ -1,23 +1,36 @@
 import type { InstitutionSource } from "./institution-map";
+import {
+  caretakerGovernment,
+  ministersWithoutPortfolio,
+  ministryDetails,
+  type MinistryDetails,
+} from "./ministry-directory";
 import { lawSlug } from "./registry-types";
 import { normalizeSearch } from "./search";
 
 export type InstitutionProfile = {
   id: string;
   name: string;
+  indexName?: string;
   summary: string;
   duties: readonly string[];
   sources: readonly InstitutionSource[];
   keywords?: string;
   mapId?: string;
+  ministryDetails?: MinistryDetails;
 };
 
-export type InstitutionGroup = {
+type InstitutionSection = {
   id: string;
   title: string;
   description: string;
   source?: InstitutionSource;
   profiles: readonly InstitutionProfile[];
+};
+
+export type InstitutionGroup = InstitutionSection & {
+  note?: { text: string; source: InstitutionSource; accessedAt: string };
+  subsection?: InstitutionSection;
 };
 
 function articleSource(
@@ -36,7 +49,7 @@ const ministryLaw = "Закон о министарствима";
 const localGovernmentLaw = "Закон о локалној самоуправи";
 
 function ministry(
-  id: string,
+  id: keyof typeof ministryDetails,
   name: string,
   article: number | string,
   summary: string,
@@ -50,6 +63,7 @@ function ministry(
     duties,
     sources: [articleSource(ministryLaw, article)],
     keywords,
+    ministryDetails: ministryDetails[id],
   };
 }
 
@@ -389,7 +403,26 @@ export const institutionGroups: readonly InstitutionGroup[] = [
     title: "Министарства",
     description: "Државна управа по областима",
     source: articleSource(ministryLaw, 2),
+    note: caretakerGovernment,
     profiles: ministries,
+    subsection: {
+      id: "ministri-bez-portfelja",
+      title: "Министри без портфеља",
+      description: "Посебна задужења чланова Владе Републике Србије",
+      source: articleSource("Закон о Влади", 10),
+      profiles: ministersWithoutPortfolio.map(
+        ({ id, name, summary, details }) => ({
+          id,
+          name,
+          indexName: details.minister.name,
+          summary,
+          duties: [],
+          sources: [articleSource("Закон о Влади", 14)],
+          keywords: "министар без портфеља министарка без портфеља",
+          ministryDetails: details,
+        }),
+      ),
+    },
   },
   {
     id: "pravosudje",
@@ -714,21 +747,40 @@ export function filterInstitutionGroups(
   const words = searchText(query).split(" ").filter(Boolean);
   if (!words.length) return groups;
 
+  function matches(text: string) {
+    const normalized = searchText(text);
+    return words.every((word) => normalized.includes(word));
+  }
+
+  function matchingProfiles(section: InstitutionSection) {
+    if (matches(section.title)) return section.profiles;
+    return section.profiles.filter(
+      ({ name, summary, duties, keywords, ministryDetails }) =>
+        matches(
+          [
+            name,
+            summary,
+            ...duties,
+            keywords,
+            ministryDetails?.minister.name,
+          ].join(" "),
+        ),
+    );
+  }
+
   return groups
     .map((group) => {
-      const title = searchText(group.title);
-      if (words.every((word) => title.includes(word))) return group;
+      if (matches(group.title)) return group;
+      const subsection = group.subsection;
+      const subsectionProfiles = subsection && matchingProfiles(subsection);
       return {
         ...group,
-        profiles: group.profiles.filter(
-          ({ name, summary, duties, keywords }) => {
-            const text = searchText(
-              [name, summary, ...duties, keywords].join(" "),
-            );
-            return words.every((word) => text.includes(word));
-          },
-        ),
+        profiles: matchingProfiles(group),
+        subsection:
+          subsection && subsectionProfiles?.length
+            ? { ...subsection, profiles: subsectionProfiles }
+            : undefined,
       };
     })
-    .filter((group) => group.profiles.length > 0);
+    .filter((group) => group.profiles.length > 0 || group.subsection);
 }

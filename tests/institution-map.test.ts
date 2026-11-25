@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import { existsSync } from "node:fs";
 import { test } from "node:test";
 import { articleHeadings } from "../src/lib/document-navigation";
 import { getCourtDirectory } from "../src/lib/court-directory";
@@ -9,6 +10,7 @@ import {
   ministries,
 } from "../src/lib/institution-directory";
 import { institutionMaps } from "../src/lib/institution-map";
+import { ministryDetails } from "../src/lib/ministry-directory";
 import { getLawDocument, getRegistry } from "../src/lib/registry";
 import { lawPath } from "../src/lib/registry-types";
 
@@ -50,6 +52,24 @@ test("the directory covers exactly the ministries listed in the corpus", () => {
     ministries.map((ministry) => ministry.name).sort(),
     names.sort(),
   );
+  assert.deepEqual(
+    Object.keys(ministryDetails).sort(),
+    ministries.map(({ id }) => id).sort(),
+  );
+  for (const { id, ministryDetails: details } of ministries) {
+    assert.ok(details, id);
+    const { contact, minister } = details;
+    assert.ok(contact.address, id);
+    assert.ok(contact.phone, id);
+    assert.ok(contact.email, id);
+    assert.match(contact.phone.number, /^\+381\d{8,9}$/, id);
+    assert.match(contact.email.address, /^[\w.+-]+@[a-z0-9.-]+\.[a-z]+$/i, id);
+    assert.match(contact.source.href, /^https:\/\//, id);
+    assert.match(minister.source.href, /^https:\/\//, id);
+    if (minister.portrait) {
+      assert.ok(existsSync(`public${minister.portrait.src}`), id);
+    }
+  }
 });
 
 test("the directory finds institutions across Serbian scripts and diacritics", () => {
@@ -75,6 +95,24 @@ test("the directory finds institutions across Serbian scripts and diacritics", (
   assert.equal(
     filterInstitutionGroups(institutionGroups, "   "),
     institutionGroups,
+  );
+  for (const phrase of [
+    "Ђорђе Милићевић",
+    "Đorđe Milićević",
+    "Djordje Milicevic",
+  ]) {
+    assert.deepEqual(
+      filterInstitutionGroups(institutionGroups, phrase).flatMap(
+        ({ profiles, subsection }) =>
+          [...profiles, ...(subsection?.profiles ?? [])].map(({ id }) => id),
+      ),
+      ["djordje-milicevic"],
+    );
+  }
+  assert.equal(
+    filterInstitutionGroups(institutionGroups, "ministar bez portfelja")[0]
+      ?.subsection?.profiles.length,
+    5,
   );
 });
 
@@ -134,9 +172,11 @@ test("each map and directory source opens a canonical document or one of its art
   }
   const mapIds = new Set(institutionMaps.map((map) => map.id));
   const profileIds = new Set<string>();
-  for (const group of institutionGroups) {
-    if (group.source) citations.add(group.source.href);
-    for (const profile of group.profiles) {
+  for (const section of institutionGroups.flatMap((group) =>
+    group.subsection ? [group, group.subsection] : [group],
+  )) {
+    if (section.source) citations.add(section.source.href);
+    for (const profile of section.profiles) {
       assert.ok(!profileIds.has(profile.id), profile.name);
       profileIds.add(profile.id);
       if (profile.mapId) assert.ok(mapIds.has(profile.mapId), profile.name);

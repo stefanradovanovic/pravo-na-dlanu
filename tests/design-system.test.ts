@@ -118,6 +118,20 @@ test("an agent can filter institutions through the directory search", async () =
       view.queryByRole("heading", { name: "Министарство здравља" }),
       null,
     );
+    await act(async () => {
+      const result = await agent.act({
+        steps: [{ ref: label, action: "setValue", args: ["Ivica Dacic"] }],
+      });
+      assert.ok(result.ok, result.error?.message);
+    });
+    const ministry = view.getByRole("article");
+    assert.match(ministry.textContent ?? "", /Ивица Дачић/);
+    assert.equal(
+      view
+        .getByRole("link", { name: "+381 11 274-00-00" })
+        .getAttribute("href"),
+      "tel:+381112740000",
+    );
   } finally {
     view.unmount();
   }
