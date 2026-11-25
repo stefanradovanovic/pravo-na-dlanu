@@ -33,7 +33,7 @@ test("homepage and mobile navigation expose learning; topic search accepts all S
 }) => {
   await page.goto("/");
   await page
-    .getByRole("link", { name: "Учи и провери знање", exact: true })
+    .getByRole("link", { name: "Учи кроз примере", exact: true })
     .click();
   await expect(page).toHaveURL(/\/ucenje$/);
   await expect(
