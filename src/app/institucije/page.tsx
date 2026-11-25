@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import { buttonVariants } from "@/components/ui/button";
 import { institutionGroups } from "@/lib/institution-directory";
 import { socialMetadata } from "@/lib/social-metadata";
 import { InstitutionDirectory } from "./institution-directory";
@@ -18,11 +17,6 @@ export default function InstitutionsPage() {
     <main id="main" className="institution-page">
       <header className="institution-intro">
         <h1>Мапа институција Србије</h1>
-        <nav aria-label="Садржај странице">
-          <a href="#pregled-institucija" className={buttonVariants()}>
-            Преглед институција
-          </a>
-        </nav>
       </header>
       <InstitutionDirectory groups={institutionGroups} />
     </main>

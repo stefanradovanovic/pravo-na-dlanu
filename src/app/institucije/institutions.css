@@ -13,11 +13,6 @@ html:has(.institution-page),
   padding: var(--space-8) clamp(1rem, 3vw, 2rem);
 }
 .institution-intro {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: var(--space-4);
   margin-bottom: var(--space-8);
 }
 .institution-intro h1 {

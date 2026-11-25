@@ -4,9 +4,9 @@ test("find a ministry, read its duties and follow its legal source", async ({
   page,
 }) => {
   await page.goto("/institucije");
-  await page
-    .getByRole("link", { name: "Преглед институција", exact: true })
-    .click();
+  await expect(
+    page.getByRole("link", { name: "Преглед институција", exact: true }),
+  ).toHaveCount(0);
   await expect(page.locator("#pregled-institucija")).toBeInViewport();
 
   const search = page.getByRole("searchbox", { name: "Пронађи институцију" });
