@@ -31,7 +31,8 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 
 ## Local previews
 
-- On Windows, start a preview from the current chat's worktree with `npm run dev -- --hostname 127.0.0.1 --port 3000`. Keep track of the process started for the chat and verify that the site responds before sharing its URL.
+- After each update in a worktree, reuse the current chat's preview if it is already running from that worktree. Otherwise, check whether port 3000 is free and use it when available. If another process occupies port 3000, leave it running and check the next ports in order until you find a free one.
+- On Windows, start the preview from the current chat's worktree with `npm run dev -- --hostname 127.0.0.1 --port <port>` and keep track of the process. Verify that the preview responds and include its URL in the update summary every time. If the preview cannot start or respond, report the blocker in the summary.
 - If the chat's preview is running when you open or merge a pull request, ask at the end of the turn whether to stop it. Ask once if you open and merge in the same turn. Keep the preview available while awaiting the answer.
 - If the user asks to close the preview, stop the process started for this chat and verify that its port is free. Run shared development servers separately from chat previews.
 
