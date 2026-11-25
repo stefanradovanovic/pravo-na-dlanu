@@ -22,12 +22,12 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 
 ## Git worktrees
 
-- When creating or first opening a worktree, use the GitHub CLI account specified by the user or saved for that worktree. If neither is available, ask whether to use `stefanradovanovic` or `klara-pelhe`. Save the login in `codex-github-account` inside the Git directory returned by `git rev-parse --absolute-git-dir`. Report the account with the worktree branch and path.
-- Before creating a worktree, run `git fetch origin` and wait for success. If the fetch fails, retry or report the failure before using a remote ref as the base.
-- Base new worktrees on `origin/master` by default. If the user names another remote branch, use its freshly fetched ref. Honor an explicit local branch, tag, or commit as the base.
-- To create a task branch from `master`, run `git worktree add --no-track -b codex/<task> <path> origin/master`. Verify the new worktree's `HEAD` against the intended base commit.
-- For `gh` operations, load the chosen account's token from `gh auth token --hostname github.com --user <login>` directly into `GH_TOKEN` for the command process. Keep the token out of output and files. In that process, verify the login with `gh api --hostname github.com user --jq .login`. If it fails or returns a different login, ask the user to sign in or choose another account before proceeding.
-- After confirming a pull request into `master` was merged, locate the `master` checkout with `git worktree list` and run `git pull --ff-only origin master` there. Verify that `master` and `origin/master` point to the same commit. If the update is blocked or the commits differ, report the cause and preserve local changes and commits.
+- Before creating a worktree, ask which GitHub CLI account to use (`stefanradovanovic` or `klara-pelhe`) unless the user has already specified one for that worktree. When first opening an existing worktree, use the user's choice or the account saved for that worktree. Ask if neither is available. Save the selected login in a local `codex-github-account` file inside the worktree's Git directory, resolved with `git rev-parse --absolute-git-dir`. Report the chosen account alongside the worktree branch and path.
+- Before creating a new worktree, run `git fetch origin` and wait for it to succeed. If the fetch fails, retry or report the failure before using a remote branch as the base.
+- Start new worktree branches from `origin/master` by default. If the user names a different base branch, use its freshly fetched remote ref. Honor an explicit local branch, tag, or commit as the base.
+- For a new task branch based on `master`, use `git worktree add --no-track -b codex/<task> <path> origin/master`. Verify that the new worktree's `HEAD` matches the intended base commit.
+- For `gh` operations in that worktree, capture the selected account's token from `gh auth token --hostname github.com --user <login>` directly into the command process's `GH_TOKEN` environment variable. Keep the token out of output and files. Verify the login in that process with `gh api --hostname github.com user --jq .login` before using it. If verification fails or the login differs from the selected account, ask the user to sign in or choose another account before running the operation.
+- After confirming a pull request into `master` was merged, find the checkout on `master` with `git worktree list` and run `git pull --ff-only origin master` there. Verify that `master` and `origin/master` point to the same commit. If the update is blocked or the commits still differ, report the cause and preserve local changes and commits.
 
 ## Local previews
 
