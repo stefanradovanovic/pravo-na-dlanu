@@ -78,7 +78,7 @@ test("find a ministry, read its duties and follow its legal source", async ({
   await ministryTitle.click();
   await expect(ministryLink).toBeInViewport();
   await expect(authorityGroup).toBeVisible();
-  await expect(assemblyLink).toBeVisible();
+  await expect(assemblyLink).toBeHidden();
   await expect(page).toHaveURL(initialUrl);
   await expect
     .poll(() => page.evaluate(() => window.scrollY))
@@ -86,7 +86,7 @@ test("find a ministry, read its duties and follow its legal source", async ({
 
   await ministryTitle.click();
   await expect(ministryLink).toBeHidden();
-  await expect(assemblyLink).toBeVisible();
+  await expect(assemblyLink).toBeHidden();
   await expect(page).toHaveURL(initialUrl);
   await expect
     .poll(() => page.evaluate(() => window.scrollY))
@@ -97,7 +97,7 @@ test("find a ministry, read its duties and follow its legal source", async ({
   await sidebar
     .getByRole("link", { name: "Преглед области — Министарства", exact: true })
     .click();
-  await expect(assemblyLink).toBeVisible();
+  await expect(assemblyLink).toBeHidden();
   const ministryGroup = page.getByRole("region", {
     name: "Министарства",
     exact: true,
@@ -128,9 +128,18 @@ test.describe("institutions without JavaScript", () => {
     const groupNavigation = page.getByRole("navigation", {
       name: "Области прегледа",
     });
+    const ministryOverview = groupNavigation.getByRole("link", {
+      name: "Преглед области — Министарства",
+      exact: true,
+    });
+    await groupNavigation
+      .getByLabel("Списак институција — Министарства", { exact: true })
+      .press("Enter");
+    await expect(ministryOverview).toBeVisible();
     await groupNavigation
       .getByLabel("Списак институција — Локална самоуправа", { exact: true })
       .press("Enter");
+    await expect(ministryOverview).toBeHidden();
     await groupNavigation
       .getByRole("link", { name: "Општинска управа", exact: true })
       .click();

@@ -95,6 +95,7 @@ export function InstitutionDirectory({
             {visibleGroups.map(({ id, title, description, profiles }) => (
               <details
                 className="institution-group-index"
+                name="institution-directory-groups"
                 data-current={
                   (!searching && fragment !== null && activeGroup?.id === id) ||
                   undefined

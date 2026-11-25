@@ -69,7 +69,6 @@
   )
   .institution-group-index:first-child
   > .institution-group-link {
-  border-inline-start: 3px solid var(--editorial-foreground);
   background: var(--editorial);
   color: var(--foreground);
 }
@@ -105,10 +104,16 @@
 .institution-group-index a {
   display: flex;
   align-items: center;
-  min-block-size: var(--control-height);
-  padding: var(--space-2);
+  min-block-size: var(--space-8);
+  padding: var(--space-1) var(--space-2);
   font-size: var(--text-body);
   overflow-wrap: anywhere;
+}
+
+@media (pointer: coarse) {
+  .institution-group-index a {
+    min-block-size: var(--control-height);
+  }
 }
 
 .institution-group-index a[aria-current="location"] {
@@ -183,7 +188,7 @@
 }
 
 .institution-profile:has(h3:target) {
-  border-color: var(--ring);
+  background: var(--surface-subtle);
 }
 
 .institution-profile h3 {
@@ -228,6 +233,7 @@
     top: calc(var(--header-height) + var(--space-4));
     max-block-size: calc(100dvh - var(--header-height) - var(--space-8));
     overflow-y: auto;
+    scrollbar-gutter: stable;
   }
 }
 

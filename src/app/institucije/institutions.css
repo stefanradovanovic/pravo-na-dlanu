@@ -1,3 +1,12 @@
+html:has(.institution-page),
+.institution-page .institution-directory-sidebar,
+.institution-page .institution-group-index > ul {
+  scrollbar-width: thin;
+  scrollbar-color:
+    color-mix(in srgb, var(--brand) 70%, var(--background))
+    transparent;
+}
+
 .institution-page {
   max-width: var(--layout-wide);
   margin-inline: auto;
