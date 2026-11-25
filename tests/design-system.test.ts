@@ -75,10 +75,63 @@ const { ReaderSettings } = await import("../src/components/reader-settings");
 const { ArticleNavigation } =
   await import("../src/components/article-navigation");
 const { BackToTop } = await import("../src/components/back-to-top");
+const { GlossaryBrowser } =
+  await import("../src/components/learning/glossary-browser");
 const agent = createAgent();
 after(() => {
   cleanup();
   dom.window.close();
+});
+
+test("an agent can search the glossary through its named input and reset the filter", async () => {
+  const references = [{ source: "ustav", label: "Устав, чл. 170" }];
+  const view = render(
+    h(GlossaryBrowser, {
+      topics: [
+        {
+          id: "sudovi",
+          title: "Судови",
+          entries: [
+            {
+              id: "zalba",
+              title: "Жалба",
+              definition: "Правно средство.",
+              references,
+            },
+            {
+              id: "sud",
+              title: "Суд",
+              definition: "Одлучује у предмету.",
+              references,
+            },
+          ],
+        },
+      ],
+      sources: { ustav: { url: "https://www.pravno-informacioni-sistem.rs/" } },
+    }),
+  );
+  try {
+    const search = agent
+      .snapshot()
+      .find((entry) => !entry.offPage && entry.label === "Претражи речник");
+    const searchLabel = search?.label;
+    assert.ok(searchLabel);
+    await act(async () => {
+      const result = await agent.act({
+        steps: [{ ref: searchLabel, action: "setValue", args: ["zalba"] }],
+      });
+      assert.ok(result.ok, result.error?.message);
+    });
+    assert.ok(view.getByRole("heading", { name: "Жалба" }));
+    assert.equal(view.queryByRole("heading", { name: /^Суд$/ }), null);
+    fireEvent.click(
+      view.getByRole("button", { name: "Прикажи све одреднице" }),
+    );
+    assert.equal(document.activeElement, view.getByRole("searchbox"));
+    assert.ok(view.getByRole("heading", { name: /^Суд$/ }));
+  } finally {
+    view.unmount();
+  }
 });
 
 test("the floating control becomes available after scrolling and restores focus when pressed by an agent", async (t) => {

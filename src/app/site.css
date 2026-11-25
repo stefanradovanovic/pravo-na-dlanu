@@ -130,6 +130,84 @@
   flex-shrink: 0;
   color: var(--muted-foreground);
 }
+.learning-workspace.learning-reference {
+  padding-block: 0;
+}
+.learning-reference .learning-orientation {
+  flex-wrap: wrap;
+  margin-top: 0;
+}
+.glossary-workspace {
+  max-width: calc(var(--measure-reading) + 2 * var(--space-12));
+  overflow-wrap: anywhere;
+}
+.glossary-filters {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-4);
+}
+.glossary-filters label {
+  display: block;
+  margin-block-end: var(--space-2);
+  font-weight: 600;
+}
+.glossary-results-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  min-height: var(--control-height);
+  margin-block: var(--space-2) var(--space-6);
+}
+.glossary-topic + .glossary-topic {
+  margin-block-start: var(--space-12);
+}
+.glossary-topic h2 {
+  margin-block-end: var(--space-4);
+}
+.glossary-entry {
+  border-block-start: 1px solid var(--border);
+  padding-block: var(--space-4);
+  scroll-margin-top: calc(var(--header-height) + var(--space-4));
+}
+.glossary-entry > p {
+  margin-block: var(--space-1) var(--space-2);
+}
+.glossary-context {
+  color: var(--muted-foreground);
+}
+.glossary-entry details {
+  font-size: var(--text-caption);
+  line-height: var(--leading-body);
+}
+.glossary-entry summary {
+  padding-block: var(--space-2);
+  color: var(--muted-foreground);
+}
+.glossary-entry details[open] > p,
+.glossary-sources {
+  margin-block-start: var(--space-2);
+}
+.glossary-example {
+  background: var(--editorial);
+  color: var(--editorial-foreground);
+  padding: var(--space-3) var(--space-4);
+}
+.glossary-sources {
+  display: grid;
+  gap: var(--space-3);
+}
+.glossary-sources small {
+  display: block;
+  color: var(--muted-foreground);
+  font-size: inherit;
+}
+@media (max-width: 640px) {
+  .glossary-filters {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
 .learning-topic-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));

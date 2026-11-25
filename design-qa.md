@@ -1,5 +1,11 @@
 # Reading Desk — design QA
 
+## Речник · 25. новембар 2026.
+
+- The learning page uses the existing orientation panel and primary action to open Речник. The glossary uses the shared search field and topic selector. Practical notes are visible with definitions. Examples and source details use native disclosures.
+- The live browser showed all 300 entries and returned one result for `javni izvrsitelj`. Reset restored the full list and focus to the search field.
+- Edge tests covered Cyrillic, accented and plain Latin search, topic filtering, no results, a long heading at 320 px, PIS links and access to all entries with JavaScript disabled.
+
 Review date: 2026-11-14. Branch: `codex/design-system-rebuild`.
 Scope: the selected third concept, shared UI SDK component facade, catalog, reader, learning controls, and living design-system reference.
 

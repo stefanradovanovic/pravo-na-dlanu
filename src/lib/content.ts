@@ -49,6 +49,18 @@ const articleSchema = z.object({
     }),
   ),
 });
+
+export function readLearningContent(
+  root = path.join(process.cwd(), "content"),
+) {
+  const content: unknown = JSON.parse(
+    fs.readFileSync(path.join(root, "learning.json"), "utf8"),
+  );
+  return Array.isArray(content)
+    ? { articles: content, glossary: undefined }
+    : z.object({ articles: z.unknown(), glossary: z.unknown() }).parse(content);
+}
+
 export function getLibrary(
   root = path.join(process.cwd(), "content"),
 ): Library {
@@ -57,9 +69,7 @@ export function getLibrary(
     .parse(JSON.parse(fs.readFileSync(path.join(root, "laws.json"), "utf8")));
   const articles = z
     .array(articleSchema)
-    .parse(
-      JSON.parse(fs.readFileSync(path.join(root, "learning.json"), "utf8")),
-    )
+    .parse(readLearningContent(root).articles)
     .sort((a, b) => a.number - b.number);
   if (new Set(laws.map((l) => l.id)).size !== laws.length)
     throw new Error("Duplicate law ID");
