@@ -64,11 +64,11 @@
   font-weight: 400;
 }
 
-.institution-group-index > summary::-webkit-details-marker {
+.institution-disclosure > summary::-webkit-details-marker {
   display: none;
 }
 
-.institution-group-index[open] > summary svg {
+.institution-disclosure[open] > summary svg {
   transform: rotate(180deg);
 }
 
@@ -159,8 +159,38 @@
   scroll-margin-top: calc(var(--header-height) + var(--space-4));
 }
 
-.institution-profile:has(h3:target) {
+.institution-profile:has(> h3:target) {
+  position: relative;
+  isolation: isolate;
+}
+
+.institution-profile:has(> h3:target)::before {
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  border-radius: inherit;
   background: var(--surface-subtle);
+  opacity: 0;
+  pointer-events: none;
+  content: "";
+  animation: institution-highlight-out var(--motion-duration-panel)
+    var(--motion-ease-out) 3s backwards;
+}
+
+@keyframes institution-highlight-out {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .institution-profile:has(> h3:target)::before {
+    /* Keep the timed highlight with no fade. */
+    animation: institution-highlight-out 0s 3s backwards !important;
+  }
 }
 
 .institution-profile h3 {

@@ -4,6 +4,7 @@ import { JSDOM } from "jsdom";
 import { createElement as h, act } from "react";
 import { articleHeadings } from "../src/lib/document-navigation";
 import { articleNavigationEntries } from "../src/lib/article-navigation-entries";
+import { getCourtDirectory } from "../src/lib/court-directory";
 import { SearchParamsContext } from "next/dist/shared/lib/hooks-client-context.shared-runtime";
 import { getLearningCatalog } from "../src/lib/learning-content";
 
@@ -81,6 +82,8 @@ const { GlossaryBrowser } =
   await import("../src/components/learning/glossary-browser");
 const { InstitutionDirectory } =
   await import("../src/app/institucije/institution-directory");
+const { CourtDirectory } =
+  await import("../src/app/institucije/court-directory");
 const { institutionGroups } = await import("../src/lib/institution-directory");
 const { LearningWorkspace } =
   await import("../src/components/learning/learning-workspace");
@@ -91,7 +94,12 @@ after(() => {
 });
 
 test("an agent can filter institutions through the directory search", async () => {
-  const view = render(h(InstitutionDirectory, { groups: institutionGroups }));
+  const view = render(
+    h(InstitutionDirectory, {
+      groups: institutionGroups,
+      courts: getCourtDirectory(),
+    }),
+  );
   const label = "Пронађи институцију";
   try {
     assert.ok(
@@ -110,6 +118,44 @@ test("an agent can filter institutions through the directory search", async () =
       view.queryByRole("heading", { name: "Министарство здравља" }),
       null,
     );
+  } finally {
+    view.unmount();
+  }
+});
+
+test("an agent can search court names and territories through the named input", async () => {
+  const view = render(
+    h(CourtDirectory, { data: getCourtDirectory("2026-11-25") }),
+  );
+  const label = "Пронађи суд";
+  try {
+    assert.ok(
+      agent.snapshot().some((entry) => !entry.offPage && entry.label === label),
+    );
+    for (const query of [
+      "основни суд чачак",
+      "Osnovni sud Čačak",
+      "osnovni sud cacak",
+    ]) {
+      await act(async () => {
+        const result = await agent.act({
+          steps: [{ ref: label, action: "setValue", args: [query] }],
+        });
+        assert.ok(result.ok, result.error?.message);
+      });
+      assert.ok(view.getByText("Основни суд у Чачку", { exact: true }));
+      assert.equal(
+        view.queryByText("Основни суд у Нишу", { exact: true }),
+        null,
+      );
+    }
+    await act(async () => {
+      const result = await agent.act({
+        steps: [{ ref: label, action: "setValue", args: ["upravni sud nis"] }],
+      });
+      assert.ok(result.ok, result.error?.message);
+    });
+    assert.ok(view.getByText("Одељење у Нишу", { exact: true }));
   } finally {
     view.unmount();
   }
