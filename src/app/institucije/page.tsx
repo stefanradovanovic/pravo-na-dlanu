@@ -61,7 +61,7 @@ export default function InstitutionsPage() {
     <main id="main" className="institution-page">
       <header className="institution-intro">
         <h1>Мапа институција</h1>
-        <p>Ко о чему одлучује у Србији?</p>
+        <p className="heading-description">Ко о чему одлучује у Србији?</p>
         <nav aria-label="Садржај странице">
           <a href="#pregled-institucija" className={buttonVariants()}>
             Преглед институција

@@ -194,7 +194,9 @@ export function RegistryExplorer({ registry }: { registry: Registry }) {
         <div className="catalog-intro-copy">
           <div className="eyebrow">БИБЛИОТЕКА ПРОПИСА</div>
           <h1>Упознајте своја права.</h1>
-          <p>Пронађите пропис, прочитајте цео текст и проверите извор.</p>
+          <p className="heading-description">
+            Пронађите пропис, прочитајте цео текст и проверите извор.
+          </p>
           <nav className="home-document-links" aria-label="Издвојени прописи">
             {featuredDocuments.map(({ title, label }) => {
               const law = corpus.find((record) => record.title === title);
@@ -324,7 +326,9 @@ export function RegistryExplorer({ registry }: { registry: Registry }) {
             <div>
               <span className="eyebrow">ОД СИТУАЦИЈЕ ДО ПРАВИЛА</span>
               <h2 id="citizen-start-title">Не морате да знате назив закона.</h2>
-              <p>Изаберите тему, упознајте правило и проверите га у извору.</p>
+              <p className="heading-description">
+                Изаберите тему, упознајте правило и проверите га у извору.
+              </p>
             </div>
           </div>
           <div className="citizen-topic-list">
@@ -421,7 +425,7 @@ export function RegistryExplorer({ registry }: { registry: Registry }) {
                       ? "Прописи Републике Србије"
                       : categoryLabel(category)}
                 </h2>
-                <p>
+                <p className="heading-description">
                   {searching
                     ? `${matches.length} докумената · ${mode === "full" ? "претрага фразе у тексту" : "претрага назива прописа"}`
                     : "Изаберите област и истражите прописе који јој припадају."}

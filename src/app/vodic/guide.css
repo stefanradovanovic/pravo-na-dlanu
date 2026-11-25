@@ -15,7 +15,7 @@
 .guide-intro h1 {
   font: 400 clamp(32px, 4.1vw, 52px)/1.14 var(--type-editorial);
   letter-spacing: -1.2px;
-  margin: 22px 0;
+  margin-block-start: 22px;
 }
 .guide-intro h1 span {
   color: var(--muted-foreground);
@@ -25,7 +25,6 @@
 }
 .guide-intro > p {
   max-width: 650px;
-  color: var(--muted-foreground);
   font-size: 17px;
 }
 .guide-intro-actions {

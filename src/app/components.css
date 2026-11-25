@@ -1,3 +1,8 @@
+.heading-description {
+  margin-block-start: var(--space-2);
+  color: var(--muted-foreground);
+}
+
 @layer components {
   .ui-button,
   .ui-select-trigger {
