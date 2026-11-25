@@ -1,14 +1,16 @@
 "use client";
 
-import { useState } from "react";
-import { ChevronDown, Search } from "lucide-react";
+import { useState, type ReactNode } from "react";
+import { ChevronDown } from "lucide-react";
 import { buttonVariants } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import type { CourtDirectoryData } from "@/lib/court-directory";
 import {
   filterInstitutionGroups,
   type InstitutionGroup,
   type InstitutionProfile,
 } from "@/lib/institution-directory";
+import { CourtDirectory } from "./court-directory";
+import { InstitutionSearchInput } from "./institution-search-input";
 import { InstitutionSources } from "./institution-sources";
 import { useInstitutionFragment } from "./use-institution-fragment";
 
@@ -16,7 +18,13 @@ function profileAnchor(id: string) {
   return `institucija-${id}`;
 }
 
-function ProfileCard({ profile }: { profile: InstitutionProfile }) {
+function ProfileCard({
+  profile,
+  children,
+}: {
+  profile: InstitutionProfile;
+  children?: ReactNode;
+}) {
   return (
     <article className="institution-profile">
       <h3 id={profileAnchor(profile.id)} tabIndex={-1}>
@@ -31,14 +39,17 @@ function ProfileCard({ profile }: { profile: InstitutionProfile }) {
       <footer>
         <InstitutionSources sources={profile.sources} />
       </footer>
+      {children}
     </article>
   );
 }
 
 export function InstitutionDirectory({
   groups,
+  courts,
 }: {
   groups: readonly InstitutionGroup[];
+  courts: CourtDirectoryData;
 }) {
   const [query, setQuery] = useState("");
   const fragment = useInstitutionFragment();
@@ -67,20 +78,12 @@ export function InstitutionDirectory({
         tabIndex={-1}
       >
         <div role="search" aria-label="Претрага институција">
-          <div className="relative">
-            <Search
-              className="pointer-events-none absolute start-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground"
-              aria-hidden="true"
-            />
-            <Input
-              aria-label="Пронађи институцију"
-              className="ps-9"
-              type="search"
-              value={query}
-              onValueChange={setQuery}
-              placeholder="Назив или надлежност"
-            />
-          </div>
+          <InstitutionSearchInput
+            label="Пронађи институцију"
+            placeholder="Назив или надлежност"
+            value={query}
+            onValueChange={setQuery}
+          />
         </div>
         {visibleGroups.length > 0 && (
           <nav
@@ -89,7 +92,7 @@ export function InstitutionDirectory({
           >
             {visibleGroups.map(({ id, title, description, profiles }) => (
               <details
-                className="institution-group-index"
+                className="institution-group-index institution-disclosure"
                 name="institution-directory-groups"
                 data-current={
                   (!searching && fragment !== null && activeGroup?.id === id) ||
@@ -173,7 +176,11 @@ export function InstitutionDirectory({
               </header>
               <div className="institution-profiles">
                 {group.profiles.map((profile) => (
-                  <ProfileCard key={profile.id} profile={profile} />
+                  <ProfileCard key={profile.id} profile={profile}>
+                    {profile.id === "sudovi" && (
+                      <CourtDirectory data={courts} />
+                    )}
+                  </ProfileCard>
                 ))}
               </div>
             </section>

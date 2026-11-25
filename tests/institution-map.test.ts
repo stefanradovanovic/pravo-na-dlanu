@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 import { articleHeadings } from "../src/lib/document-navigation";
+import { getCourtDirectory } from "../src/lib/court-directory";
 import {
   filterInstitutionGroups,
   institutionGroups,
@@ -77,6 +78,47 @@ test("the directory finds institutions across Serbian scripts and diacritics", (
   );
 });
 
+test("the court directory counts courts separately from departments and applies the 2027 changes on their start date", () => {
+  const before = getCourtDirectory("2027-02-28");
+  const after = getCourtDirectory("2027-03-01");
+  assert.deepEqual(
+    before.groups.map((group) => group.courts.length),
+    [66, 25, 4, 1, 16, 1, 44, 1, 1],
+  );
+  assert.equal(
+    before.groups.flatMap((group) => group.departments ?? []).length,
+    6,
+  );
+  assert.ok(before.transition);
+  assert.equal(after.transition, undefined);
+
+  const court = (data: typeof before, name: string) =>
+    data.groups
+      .flatMap(({ courts }) => courts)
+      .find((court) => court.name === name);
+  assert.match(
+    court(before, "Трећи основни суд у Београду")?.area ?? "",
+    /Земун.*Сурчин/,
+  );
+  assert.equal(court(before, "Четврти основни суд у Београду"), undefined);
+  assert.match(
+    court(after, "Четврти основни суд у Београду")?.area ?? "",
+    /Земун и Сурчин/,
+  );
+  assert.match(
+    court(after, "Трећи основни суд у Београду")?.area ?? "",
+    /Нови Београд$/,
+  );
+  assert.doesNotMatch(
+    court(before, "Основни суд у Пожеги")?.area ?? "",
+    /судском јединицом/,
+  );
+  assert.match(
+    court(after, "Основни суд у Пожеги")?.area ?? "",
+    /судском јединицом у Косјерићу/,
+  );
+});
+
 test("each map and directory source opens a canonical document or one of its articles", () => {
   const records = new Map(
     getRegistry().records.map((record) => [lawPath(record), record]),
@@ -105,6 +147,12 @@ test("each map and directory source opens a canonical document or one of its art
   for (const procedure of institutionProcedures) {
     for (const source of procedure.sources) citations.add(source.href);
   }
+  const courts = getCourtDirectory("2026-11-25");
+  for (const group of courts.groups) {
+    for (const source of group.sources) citations.add(source.href);
+  }
+  if (courts.transition) citations.add(courts.transition.href);
+  for (const source of courts.territorialScope) citations.add(source.href);
   const anchors = new Map<string, Set<string>>();
   for (const citation of citations) {
     const [pathname, fragment] = citation.split("#");
