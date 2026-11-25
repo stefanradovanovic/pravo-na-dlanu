@@ -24,6 +24,14 @@ import { useExplorerLocation } from "./explorer-location";
 import { documentUrl, explorerUrl } from "@/lib/explorer-url";
 import { SearchSnippet } from "./search-snippet";
 import { learningTopics } from "@/lib/learning";
+
+const constitutionTitle = "Устав Републике Србије";
+const featuredDocuments = [
+  { title: constitutionTitle, label: "Устав" },
+  { title: "Пословник Народне скупштине" },
+  { title: "Кривични законик" },
+];
+
 const RegistryMap = dynamic(
   () => import("./registry-map").then((m) => m.RegistryMap),
   {
@@ -79,7 +87,10 @@ export function RegistryExplorer({ registry }: { registry: Registry }) {
   }>({ query: "", hits: [] });
   const { records, report } = registry;
   const corpus = records;
-  const constitution = corpus.find((r) => r.title === "Устав Републике Србије");
+  const constitution = corpus.find((r) => r.title === constitutionTitle);
+  const constitutionPath = constitution
+    ? lawPath(constitution)
+    : "/zakoni/ustav";
   const categories = useMemo(
     () =>
       [...new Set(corpus.flatMap((r) => r.categories))].map((name) => ({
@@ -148,6 +159,8 @@ export function RegistryExplorer({ registry }: { registry: Registry }) {
     mode,
     page: currentPage,
   });
+  const constitutionHref = documentUrl(constitutionPath, returnTo);
+  const shortcutClassName = buttonVariants({ variant: "ghost", size: "sm" });
   const suggestionQuery = normalizeSearch(draft);
   const suggestions = useMemo(
     () =>
@@ -182,26 +195,21 @@ export function RegistryExplorer({ registry }: { registry: Registry }) {
           <div className="eyebrow">БИБЛИОТЕКА ПРОПИСА</div>
           <h1>Упознајте своја права.</h1>
           <p>Пронађите пропис, прочитајте цео текст и проверите извор.</p>
-          <div className="home-learning-link">
-            <Link
-              href="/ucenje"
-              className={buttonVariants({ variant: "ghost", size: "sm" })}
-            >
-              <BookOpen /> Учи и провери знање <ArrowUpRight />
-            </Link>
-            <Link
-              href="/institucije"
-              className={buttonVariants({ variant: "ghost", size: "sm" })}
-            >
-              Мапе институција <ArrowUpRight />
-            </Link>
-            <Link
-              href="/vodic"
-              className={buttonVariants({ variant: "ghost", size: "sm" })}
-            >
-              Како читати закон <ArrowUpRight />
-            </Link>
-          </div>
+          <nav className="home-document-links" aria-label="Издвојени прописи">
+            {featuredDocuments.map(({ title, label }) => {
+              const law = corpus.find((record) => record.title === title);
+              if (!law) return null;
+              return (
+                <a
+                  key={law.id}
+                  href={documentUrl(lawPath(law), returnTo)}
+                  className={shortcutClassName}
+                >
+                  {label ?? law.title} <ArrowUpRight aria-hidden="true" />
+                </a>
+              );
+            })}
+          </nav>
         </div>
         <Tabs
           className="catalog-search"
@@ -344,6 +352,15 @@ export function RegistryExplorer({ registry }: { registry: Registry }) {
           >
             <Network size={16} /> Истражи право
           </Link>
+          <Link
+            className={buttonVariants({
+              variant: "ghost",
+              className: "side-link",
+            })}
+            href="/institucije"
+          >
+            Мапе институција <ArrowUpRight aria-hidden="true" />
+          </Link>
           <div className="sidebar-divider" />
           <p className="sidebar-label">ПРАВНЕ ОБЛАСТИ</p>
           <Button
@@ -378,12 +395,7 @@ export function RegistryExplorer({ registry }: { registry: Registry }) {
             <Scale size={25} />
             <h3>Све почиње Уставом.</h3>
             <p>Прочитајте цео Устав Републике Србије.</p>
-            <a
-              href={documentUrl(
-                constitution ? lawPath(constitution) : "/zakoni/ustav",
-                returnTo,
-              )}
-            >
+            <a href={constitutionHref}>
               Отвори документ <ArrowUpRight size={14} />
             </a>
           </div>

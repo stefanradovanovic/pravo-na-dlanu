@@ -1,5 +1,27 @@
 import { test, expect } from "@playwright/test";
 
+test("featured documents open their readers from the homepage", async ({
+  page,
+}) => {
+  await page.goto("/");
+  const shortcuts = page.getByRole("navigation", { name: "Издвојени прописи" });
+  await expect(shortcuts.getByRole("link")).toHaveText([
+    "Устав",
+    "Пословник Народне скупштине",
+    "Кривични законик",
+  ]);
+  for (const [label, title] of [
+    ["Устав", "Устав Републике Србије"],
+    ["Пословник Народне скупштине", "Пословник Народне скупштине"],
+    ["Кривични законик", "Кривични законик"],
+  ]) {
+    await shortcuts.getByRole("link", { name: label, exact: true }).click();
+    await expect(page.getByRole("heading", { level: 1 })).toHaveText(title);
+    await expect(page.locator("#tekst-zakona")).toBeVisible();
+    await page.goBack();
+  }
+});
+
 test("catalog suggestions open the selected law and preserve the search", async ({
   page,
 }) => {

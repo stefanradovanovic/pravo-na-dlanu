@@ -652,9 +652,6 @@ html {
   .page-intro > p {
     font-size: 1rem;
   }
-  .home-learning-link {
-    margin-top: 1rem;
-  }
   .reader-sidebar {
     padding-inline: 1.25rem;
   }
@@ -810,8 +807,9 @@ html {
   margin-top: 1rem;
   max-width: 50ch;
 }
-.catalog-intro .home-learning-link {
-  justify-content: flex-start;
+.home-document-links {
+  display: flex;
+  flex-wrap: wrap;
   gap: 0.25rem;
   margin: 1.25rem 0 0 -0.75rem;
 }
@@ -872,7 +870,7 @@ html {
   .catalog-intro-copy > p {
     max-width: none;
   }
-  .catalog-intro .home-learning-link {
+  .home-document-links {
     margin-top: 0.75rem;
   }
   .catalog-search {
