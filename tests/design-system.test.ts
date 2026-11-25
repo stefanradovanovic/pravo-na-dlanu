@@ -77,10 +77,38 @@ const { ArticleNavigation } =
 const { BackToTop } = await import("../src/components/back-to-top");
 const { GlossaryBrowser } =
   await import("../src/components/learning/glossary-browser");
+const { InstitutionDirectory } =
+  await import("../src/app/institucije/institution-directory");
+const { institutionGroups } = await import("../src/lib/institution-directory");
 const agent = createAgent();
 after(() => {
   cleanup();
   dom.window.close();
+});
+
+test("an agent can filter institutions through the directory search", async () => {
+  const view = render(h(InstitutionDirectory, { groups: institutionGroups }));
+  const label = "Пронађи институцију";
+  try {
+    assert.ok(
+      agent.snapshot().some((entry) => !entry.offPage && entry.label === label),
+    );
+    await act(async () => {
+      const result = await agent.act({
+        steps: [{ ref: label, action: "setValue", args: ["pasos"] }],
+      });
+      assert.ok(result.ok, result.error?.message);
+    });
+    assert.ok(
+      view.getByRole("heading", { name: "Министарство унутрашњих послова" }),
+    );
+    assert.equal(
+      view.queryByRole("heading", { name: "Министарство здравља" }),
+      null,
+    );
+  } finally {
+    view.unmount();
+  }
 });
 
 test("an agent can search the glossary through its named input and reset the filter", async () => {
