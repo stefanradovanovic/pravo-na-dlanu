@@ -60,8 +60,7 @@ export default function InstitutionsPage() {
   return (
     <main id="main" className="institution-page">
       <header className="institution-intro">
-        <h1>Мапа институција</h1>
-        <p className="heading-description">Ко о чему одлучује у Србији?</p>
+        <h1>Мапа институција Србије</h1>
         <nav aria-label="Садржај странице">
           <a href="#pregled-institucija" className={buttonVariants()}>
             Преглед институција
@@ -74,13 +73,20 @@ export default function InstitutionsPage() {
           </a>
         </nav>
       </header>
-      <InstitutionExplorer maps={institutionMaps} />
-      <p className="institution-note">
-        Мапа је уредничко објашњење изабраних надлежности. Услове и изузетке
-        прочитајте у изворима уз сваку везу.
-      </p>
-      <InstitutionProcedures />
       <InstitutionDirectory groups={institutionGroups} />
+      <section className="institution-maps" aria-labelledby="veze-institucija">
+        <header className="institution-section-heading">
+          <h2 id="veze-institucija" tabIndex={-1}>
+            Везе између институција
+          </h2>
+          <p className="heading-description">
+            Мапа је уредничко објашњење изабраних надлежности. Услове и изузетке
+            прочитајте у изворима уз сваку везу.
+          </p>
+        </header>
+        <InstitutionExplorer maps={institutionMaps} />
+      </section>
+      <InstitutionProcedures />
     </main>
   );
 }

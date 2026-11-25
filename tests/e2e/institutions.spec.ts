@@ -47,6 +47,62 @@ test("find a ministry, read its duties and follow its legal source", async ({
     ministry.getByRole("list", { name: "Изабране надлежности" }),
   ).toContainText("Обавља послове у вези са личним исправама");
   await search.clear();
+  const sidebar = page.getByRole("navigation", { name: "Области прегледа" });
+  const authorityGroup = page.getByRole("region", {
+    name: "Државна власт",
+    exact: true,
+  });
+  const assemblyLink = sidebar.getByRole("link", {
+    name: "Народна скупштина",
+    exact: true,
+  });
+  await sidebar
+    .getByLabel("Списак институција — Државна власт", { exact: true })
+    .click();
+  await expect(assemblyLink).toBeVisible();
+
+  const ministryTitle = sidebar.getByLabel(
+    "Списак институција — Министарства",
+    {
+      exact: true,
+    },
+  );
+  const ministryLink = sidebar.getByRole("link", {
+    name: "Министарство унутрашњих послова",
+    exact: true,
+  });
+  await ministryTitle.scrollIntoViewIfNeeded();
+  const initialScroll = await page.evaluate(() => window.scrollY);
+  const initialUrl = page.url();
+
+  await ministryTitle.click();
+  await expect(ministryLink).toBeInViewport();
+  await expect(authorityGroup).toBeVisible();
+  await expect(assemblyLink).toBeVisible();
+  await expect(page).toHaveURL(initialUrl);
+  await expect
+    .poll(() => page.evaluate(() => window.scrollY))
+    .toBe(initialScroll);
+
+  await ministryTitle.click();
+  await expect(ministryLink).toBeHidden();
+  await expect(assemblyLink).toBeVisible();
+  await expect(page).toHaveURL(initialUrl);
+  await expect
+    .poll(() => page.evaluate(() => window.scrollY))
+    .toBe(initialScroll);
+
+  await ministryTitle.press("Enter");
+  await expect(ministryLink).toBeInViewport();
+  await sidebar
+    .getByRole("link", { name: "Преглед области — Министарства", exact: true })
+    .click();
+  await expect(assemblyLink).toBeVisible();
+  const ministryGroup = page.getByRole("region", {
+    name: "Министарства",
+    exact: true,
+  });
+  await expect(ministryGroup.getByRole("article")).toHaveCount(25);
   await expect(
     page.getByRole("heading", { name: "Министарство за јавна улагања" }),
   ).toBeVisible();
@@ -55,6 +111,40 @@ test("find a ministry, read its duties and follow its legal source", async ({
     .click();
   await expect(page).toHaveURL(/\/propisi\/zakon-o-ministarstvima#clan-13$/);
   await expect(page.locator("#clan-13")).toBeInViewport();
+});
+
+test.describe("institutions without JavaScript", () => {
+  test.use({ javaScriptEnabled: false });
+
+  test("expand a sector, open a profile and follow a source", async ({
+    page,
+  }) => {
+    await page.goto("/institucije#ministarstva");
+    await expect(
+      page
+        .getByRole("region", { name: "Министарства", exact: true })
+        .getByRole("article"),
+    ).toHaveCount(25);
+    const groupNavigation = page.getByRole("navigation", {
+      name: "Области прегледа",
+    });
+    await groupNavigation
+      .getByLabel("Списак институција — Локална самоуправа", { exact: true })
+      .press("Enter");
+    await groupNavigation
+      .getByRole("link", { name: "Општинска управа", exact: true })
+      .click();
+    await expect(page).toHaveURL(/#institucija-opstinska-uprava$/);
+    await expect(
+      page.locator("#institucija-opstinska-uprava"),
+    ).toBeInViewport();
+    const localGroup = page.getByRole("region", { name: "Локална самоуправа" });
+    await expect(localGroup.getByRole("article")).toHaveCount(4);
+    await localGroup
+      .getByRole("link", { name: "Закон о локалној самоуправи, члан 52." })
+      .click();
+    await expect(page.locator("#clan-52")).toBeInViewport();
+  });
 });
 
 for (const {

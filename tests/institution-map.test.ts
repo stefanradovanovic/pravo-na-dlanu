@@ -67,6 +67,11 @@ test("the directory finds institutions across Serbian scripts and diacritics", (
   }
   assert.deepEqual(filterInstitutionGroups(institutionGroups, "zzzx"), []);
   assert.equal(
+    filterInstitutionGroups(institutionGroups, "lokalna samouprava")[0]
+      ?.profiles.length,
+    4,
+  );
+  assert.equal(
     filterInstitutionGroups(institutionGroups, "   "),
     institutionGroups,
   );
