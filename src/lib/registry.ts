@@ -36,6 +36,8 @@ export function findLearningLaw(slug: string): RegistryRecord | undefined {
       "Закон о слободном приступу информацијама од јавног значаја",
     "zabrana-diskriminacije": "Закон о забрани дискриминације",
     "zastita-potrosaca": "Закон о заштити потрошача",
+    "zakon-o-opstem-upravnom-postupku": "Закон о општем управном поступку",
+    "porodicni-zakon": "Породични закон",
   };
   return getRegistry().records.find((r) => r.title === titles[slug]);
 }

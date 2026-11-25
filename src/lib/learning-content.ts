@@ -14,21 +14,24 @@ import {
 export function getLearningCatalog(): LearningCatalog {
   const catalog: LearningCatalog = { questions: [], lessons: [] };
   const ids = new Set<string>();
+  const sources = new Map(
+    learningTopics.map((topic) => {
+      const law = findLearningLaw(topic.lawId);
+      const document = law && getLawDocument(law.id);
+      const headings = new Set(
+        document ? articleHeadings(document.markdown).map((h) => h.id) : [],
+      );
+      const lawId: string = topic.lawId;
+      return [lawId, { topic, law, headings }] as const;
+    }),
+  );
   for (const article of getLibrary().articles) {
     const practice = article.practice;
     if (!practice) continue;
-    const topic = learningTopics.find((t) => t.lawId === article.lawId);
-    const law = findLearningLaw(article.lawId);
-    const document = law && getLawDocument(law.id);
-    if (
-      !topic ||
-      !law ||
-      !document ||
-      !articleHeadings(document.markdown).some(
-        (h) => h.id === `clan-${article.number}`,
-      )
-    )
+    const entry = sources.get(article.lawId);
+    if (!entry?.law || !entry.headings.has(`clan-${article.number}`))
       throw new Error(`Invalid learning source: ${article.id}`);
+    const { topic, law } = entry;
     const needsReview = learningSourceChanged(practice, law);
     const source: LearningSource = {
       title: law.title,
@@ -49,16 +52,25 @@ export function getLearningCatalog(): LearningCatalog {
       source,
       needsReview,
     });
-    for (const { whatIf, ...base } of practice.questions) {
+    for (const { whatIf, sourceCheckedAt, ...base } of practice.questions) {
+      const questionSource = sourceCheckedAt
+        ? { ...source, checkedAt: sourceCheckedAt }
+        : source;
       const entries: LearningQuestion[] = [
-        { ...base, topicId: topic.id, source, needsReview, revision: "" },
+        {
+          ...base,
+          topicId: topic.id,
+          source: questionSource,
+          needsReview,
+          revision: "",
+        },
       ];
       if (whatIf)
         entries.push({
           ...whatIf,
           kind: "what-if",
           topicId: topic.id,
-          source,
+          source: questionSource,
           needsReview,
           parentId: base.id,
           originalScenario: base.scenario,

@@ -47,7 +47,11 @@ export function QuestionCard({
         <span className="eyebrow">
           ПИТАЊЕ {index + 1} ОД {count}
         </span>
-        <Badge variant="outline">Измишљен пример</Badge>
+        <Badge variant="outline">
+          {question.kind === "case-study"
+            ? "Измишљена студија случаја"
+            : "Измишљен пример"}
+        </Badge>
       </div>
       <progress
         className="learning-progress"

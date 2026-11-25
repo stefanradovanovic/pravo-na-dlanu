@@ -66,15 +66,63 @@ export const learningTopics = [
       "Разликујте право на приступ и законска ограничења.",
     ],
   },
+  {
+    id: "ravnopravnost",
+    title: "Равноправност и дискриминација",
+    description:
+      "Неједнако поступање, приступ услугама и заштита пред Повереником и судом.",
+    lawId: "zabrana-diskriminacije",
+    keywords:
+      "равноправност дискриминација једнакост лично својство приступачност одмазда притужба повереник",
+    outcomes: [
+      "Разликујте непосредну и посредну дискриминацију.",
+      "Препознајте када су разликовање и прилагођавање оправдани.",
+      "Сазнајте шта можете тражити од Повереника или суда.",
+    ],
+  },
+  {
+    id: "upravni-postupak",
+    title: "Управни поступак и жалбе",
+    description: "Од првог захтева и увида у списе до решења, рокова и жалбе.",
+    lawId: "zakon-o-opstem-upravnom-postupku",
+    keywords:
+      "управни поступак шалтер општина захтев поднесак рок решење жалба ћутање управе увид списи",
+    outcomes: [
+      "Сазнајте како се поднесак предаје и допуњује.",
+      "Проверите како се рачуна рок и шта треба да садржи решење.",
+      "Разликујте жалбу против решења и жалбу због ћутања органа.",
+    ],
+  },
+  {
+    id: "porodica",
+    title: "Породица и права детета",
+    description: "Мишљење детета, одлуке родитеља, школовање и издржавање.",
+    lawId: "porodicni-zakon",
+    keywords:
+      "породица дете деца родитељ родитељско право школа издржавање алиментација пребивалиште старатељство",
+    outcomes: [
+      "Препознајте када дете може да изрази мишљење и самостално одлучи.",
+      "Упоредите заједничко и самостално вршење родитељског права.",
+      "Пронађите правила о издржавању малолетног и пунолетног детета.",
+    ],
+  },
 ] as const;
 export type LearningTopicId = (typeof learningTopics)[number]["id"];
-export type LearningMode = "practice" | "what-if" | "research" | "review";
+export type BasicLearningMode = "practice" | "what-if" | "research";
+export type LearningMode = BasicLearningMode | "expert" | "review";
 export const modeLabels: Record<LearningMode, string> = {
   practice: "Ситуације из живота",
   "what-if": "Шта ако…?",
   research: "Пронађи правило",
+  expert: "Напредни ниво · Студије случаја",
   review: "Понови и утврди",
 };
+export const modeQuestionKinds = {
+  practice: "scenario",
+  "what-if": "what-if",
+  research: "research",
+  expert: "case-study",
+} as const;
 export type LearningSource = {
   title: string;
   article: number;
@@ -87,7 +135,7 @@ export type LearningSource = {
   coverage: string;
 };
 export type LearningQuestion = Omit<QuestionContent, "kind"> & {
-  kind: "scenario" | "research" | "what-if";
+  kind: (typeof modeQuestionKinds)[keyof typeof modeQuestionKinds];
   topicId: LearningTopicId;
   revision: string;
   needsReview: boolean;
@@ -179,7 +227,8 @@ export function restoreProgress(
     const s = value.session;
     if (
       !isObject(s) ||
-      !["practice", "what-if", "research", "review"].includes(String(s.mode)) ||
+      typeof s.mode !== "string" ||
+      !Object.hasOwn(modeLabels, s.mode) ||
       !(
         s.topicId === "all" || learningTopics.some((t) => t.id === s.topicId)
       ) ||
@@ -206,6 +255,9 @@ export function restoreProgress(
           q &&
           q.revision === revisions[i] &&
           (s.topicId === "all" || q.topicId === s.topicId) &&
+          (s.mode === "expert"
+            ? q.kind === "case-study"
+            : s.mode === "review" || q.kind !== "case-study") &&
           (i < cursor
             ? q.choices.some((c) => c.id === answers[id])
             : answers[id] === undefined ||
@@ -272,9 +324,7 @@ export function createSession(
     selected = ordered(
       mode === "review"
         ? reviewQuestions(pool, progress, now)
-        : pool.filter(
-            (q) => q.kind === (mode === "research" ? "research" : "scenario"),
-          ),
+        : pool.filter((q) => q.kind === modeQuestionKinds[mode]),
     ).slice(0, 5);
   }
   return selected.length

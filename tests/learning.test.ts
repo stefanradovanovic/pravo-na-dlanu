@@ -29,14 +29,17 @@ function start(): LearningProgress {
 }
 
 test("question bank has canonical source references, all formats and unique IDs", () => {
-  assert.ok(catalog.questions.length >= 58);
   assert.equal(
     new Set(catalog.questions.map((q) => q.id)).size,
     catalog.questions.length,
   );
   for (const t of learningTopics) {
     const questions = catalog.questions.filter((q) => q.topicId === t.id);
-    assert.ok(questions.length >= 10);
+    assert.ok(questions.length >= 25, t.id);
+    assert.ok(
+      questions.filter((q) => q.kind === "case-study").length >= 10,
+      t.id,
+    );
     assert.ok(questions.some((q) => q.kind === "research"));
     assert.ok(questions.some((q) => q.kind === "what-if"));
     assert.ok(new Set(questions.map((q) => q.correctChoiceId)).size > 1);
@@ -46,6 +49,51 @@ test("question bank has canonical source references, all formats and unique IDs"
       assert.ok(q.source.version && q.source.checkedAt && q.source.coverage);
       if (q.parentId) assert.ok(questions.some((p) => p.id === q.parentId));
     }
+  }
+});
+
+test("expert rounds stay in the selected topic, resume, and reach new cases", () => {
+  for (const topic of learningTopics) {
+    let progress = emptyProgress();
+    const initial = createSession(
+      catalog.questions,
+      progress,
+      "expert",
+      topic.id,
+      now,
+    );
+    assert.ok(initial);
+    assert.equal(initial.questionIds.length, 5);
+    progress.session = initial;
+    for (const id of initial.questionIds) {
+      const question = catalog.questions.find((item) => item.id === id)!;
+      assert.equal(question.kind, "case-study");
+      assert.equal(question.topicId, topic.id);
+      progress = advanceSession(
+        submitAnswer(progress, question, question.correctChoiceId, now),
+      );
+    }
+    assert.deepEqual(
+      restoreProgress(JSON.stringify(progress), catalog.questions),
+      progress,
+    );
+    const next = createSession(
+      catalog.questions,
+      progress,
+      "expert",
+      topic.id,
+      now,
+    );
+    assert.ok(next);
+    assert.ok(
+      next.questionIds.every((id) => !initial.questionIds.includes(id)),
+    );
+
+    const tampered = { ...progress, session: { ...initial, mode: "practice" } };
+    assert.equal(
+      restoreProgress(JSON.stringify(tampered), catalog.questions).session,
+      null,
+    );
   }
 });
 

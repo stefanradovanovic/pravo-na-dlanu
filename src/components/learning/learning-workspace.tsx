@@ -8,6 +8,8 @@ import {
   BookOpen,
   BriefcaseBusiness,
   Check,
+  Equal,
+  FileText,
   Flag,
   Landmark,
   RotateCcw,
@@ -16,6 +18,7 @@ import {
   Scale,
   ShoppingBag,
   Shuffle,
+  UsersRound,
 } from "lucide-react";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -43,8 +46,10 @@ import {
   createSession,
   learningTopics,
   modeLabels,
+  modeQuestionKinds,
   reviewQuestions,
   submitAnswer,
+  type BasicLearningMode,
   type LearningCatalog,
   type LearningMode,
   type LearningProgress,
@@ -61,10 +66,13 @@ const topicIcons = {
   rad: BriefcaseBusiness,
   privatnost: ShieldCheck,
   informacije: Landmark,
+  ravnopravnost: Equal,
+  "upravni-postupak": FileText,
+  porodica: UsersRound,
 };
 const modeDescriptions = {
   practice:
-    "Пет кратких питања. Изаберите одговор и откријте зашто правило важи.",
+    "До пет кратких питања. Изаберите одговор и откријте зашто правило важи.",
   "what-if":
     "Две приче, по две верзије. Једна промењена чињеница може да промени закључак.",
   research: "Отворите збирку и пронађите правило које објашњава ситуацију.",
@@ -73,12 +81,14 @@ const modeDescriptions = {
 function SessionResults({
   progress,
   questions,
+  onContinue,
   onRetry,
   onClose,
   onTopic,
 }: {
   progress: LearningProgress;
   questions: LearningQuestion[];
+  onContinue: () => void;
   onRetry: () => void;
   onClose: () => void;
   onTopic: (topic: LearningTopicId) => void;
@@ -94,11 +104,16 @@ function SessionResults({
   const correct = attempted.filter(
     (q) => session.answers[q.id] === q.correctChoiceId,
   );
+  const nextTopicMode = session.mode === "expert" ? "expert" : "practice";
   const nextTopic = learningTopics.find(
     (t) =>
       t.id !== session.topicId &&
       questions.some(
-        (q) => q.topicId === t.id && !q.needsReview && !progress.answers[q.id],
+        (q) =>
+          q.topicId === t.id &&
+          q.kind === modeQuestionKinds[nextTopicMode] &&
+          !q.needsReview &&
+          !progress.answers[q.id],
       ),
   );
   return (
@@ -173,6 +188,16 @@ function SessionResults({
             <RotateCcw /> Понови питања која су била тешка
           </Button>
         )}
+        {session.mode !== "review" && (
+          <Button
+            variant={
+              correct.length === attempted.length ? "default" : "outline"
+            }
+            onClick={onContinue}
+          >
+            Следећа рунда <ArrowRight />
+          </Button>
+        )}
         <Button variant="outline" onClick={onClose}>
           Назад на теме
         </Button>
@@ -196,7 +221,8 @@ export function LearningWorkspace({ catalog }: { catalog: LearningCatalog }) {
   const topic = learningTopics.find((t) => t.id === params.get("tema"));
   const [panel, setPanel] = useState("topics");
   const [query, setQuery] = useState("");
-  const [mode, setMode] = useState<Exclude<LearningMode, "review">>("practice");
+  const [level, setLevel] = useState<"basic" | "expert">("basic");
+  const [basicMode, setBasicMode] = useState<BasicLearningMode>("practice");
   const [sessionOpen, setSessionOpen] = useState(false);
   const [resetOpen, setResetOpen] = useState(false);
   const [now, setNow] = useState(Date.now);
@@ -232,9 +258,11 @@ export function LearningWorkspace({ catalog }: { catalog: LearningCatalog }) {
     ? available.filter((q) => q.topicId === topic.id)
     : available;
   const topicLessons = lessons.filter((lesson) => lesson.topicId === topic?.id);
+  const mode = level === "expert" ? "expert" : basicMode;
   const modeAvailable = relevant.some(
-    (q) => q.kind === (mode === "practice" ? "scenario" : mode),
+    (q) => q.kind === modeQuestionKinds[mode],
   );
+  const expertCount = relevant.filter((q) => q.kind === "case-study").length;
   const filteredTopics = learningTopics.filter((t) =>
     normalizeSearch(
       `${t.title} ${t.description} ${t.keywords} ${lessons
@@ -312,8 +340,11 @@ export function LearningWorkspace({ catalog }: { catalog: LearningCatalog }) {
             <SessionResults
               progress={progress}
               questions={questions}
+              onContinue={() => start(session.mode, session.topicId)}
               onClose={closeSession}
-              onTopic={(id) => start("practice", id)}
+              onTopic={(id) =>
+                start(session.mode === "expert" ? "expert" : "practice", id)
+              }
               onRetry={() =>
                 start(
                   "review",
@@ -340,7 +371,13 @@ export function LearningWorkspace({ catalog }: { catalog: LearningCatalog }) {
                   {session.questionIds.length} питања
                 </p>
               </div>
-              <Button onClick={() => setSessionOpen(true)}>
+              <Button
+                onClick={() => {
+                  if (session.mode !== "review")
+                    setLevel(session.mode === "expert" ? "expert" : "basic");
+                  setSessionOpen(true);
+                }}
+              >
                 Настави сесију <ArrowRight />
               </Button>
             </div>
@@ -542,25 +579,60 @@ export function LearningWorkspace({ catalog }: { catalog: LearningCatalog }) {
                   <Badge variant="outline">Без временског ограничења</Badge>
                 </div>
                 <Tabs
-                  value={mode}
-                  onValueChange={(v) => setMode(v as typeof mode)}
+                  value={level}
+                  onValueChange={(value) => {
+                    if (value === "basic" || value === "expert")
+                      setLevel(value);
+                  }}
                 >
-                  <TabsList aria-label="Начин вежбања">
-                    <TabsTrigger value="practice">
-                      <BookOpen /> Ситуације
-                    </TabsTrigger>
-                    <TabsTrigger value="what-if">
-                      <Shuffle /> Шта ако…?
-                    </TabsTrigger>
-                    <TabsTrigger value="research">
-                      <Search /> Пронађи правило
-                    </TabsTrigger>
+                  <TabsList aria-label="Ниво вежбања">
+                    <TabsTrigger value="basic">Основни ниво</TabsTrigger>
+                    <TabsTrigger value="expert">Напредни ниво</TabsTrigger>
                   </TabsList>
-                  {(["practice", "what-if", "research"] as const).map((m) => (
-                    <TabsContent value={m} key={m}>
-                      <p>{modeDescriptions[m]}</p>
-                    </TabsContent>
-                  ))}
+                  <TabsContent value="basic">
+                    <p className="learning-caption">
+                      {relevant.length - expertCount} питања на основном нивоу
+                    </p>
+                    <Tabs
+                      value={basicMode}
+                      onValueChange={(value) => {
+                        if (
+                          value === "practice" ||
+                          value === "what-if" ||
+                          value === "research"
+                        )
+                          setBasicMode(value);
+                      }}
+                    >
+                      <TabsList aria-label="Начин вежбања" variant="line">
+                        <TabsTrigger value="practice">
+                          <BookOpen /> Ситуације
+                        </TabsTrigger>
+                        <TabsTrigger value="what-if">
+                          <Shuffle /> Шта ако…?
+                        </TabsTrigger>
+                        <TabsTrigger value="research">
+                          <Search /> Пронађи правило
+                        </TabsTrigger>
+                      </TabsList>
+                      {(["practice", "what-if", "research"] as const).map(
+                        (m) => (
+                          <TabsContent value={m} key={m}>
+                            <p>{modeDescriptions[m]}</p>
+                          </TabsContent>
+                        ),
+                      )}
+                    </Tabs>
+                  </TabsContent>
+                  <TabsContent value="expert">
+                    <p className="learning-caption">
+                      {expertCount} студија случаја
+                    </p>
+                    <p>
+                      До пет измишљених случајева по рунди. Процените које су
+                      чињенице важне, да ли постоји изузетак и шта следи.
+                    </p>
+                  </TabsContent>
                 </Tabs>
                 <div className="learning-actions">
                   <Button
@@ -568,7 +640,10 @@ export function LearningWorkspace({ catalog }: { catalog: LearningCatalog }) {
                     disabled={!ready || !modeAvailable}
                     onClick={() => start(mode, topic?.id ?? "all")}
                   >
-                    Почни вежбу <ArrowRight />
+                    {mode === "expert"
+                      ? "Почни студије случаја"
+                      : "Почни вежбу"}{" "}
+                    <ArrowRight />
                   </Button>
                   {due.length > 0 && (
                     <Button
