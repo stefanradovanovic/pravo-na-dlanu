@@ -4,6 +4,8 @@ import { JSDOM } from "jsdom";
 import { createElement as h, act } from "react";
 import { articleHeadings } from "../src/lib/document-navigation";
 import { articleNavigationEntries } from "../src/lib/article-navigation-entries";
+import { SearchParamsContext } from "next/dist/shared/lib/hooks-client-context.shared-runtime";
+import { getLearningCatalog } from "../src/lib/learning-content";
 
 const dom = new JSDOM("<!doctype html><html lang='sr'><body></body></html>", {
   url: "http://localhost/",
@@ -80,6 +82,8 @@ const { GlossaryBrowser } =
 const { InstitutionDirectory } =
   await import("../src/app/institucije/institution-directory");
 const { institutionGroups } = await import("../src/lib/institution-directory");
+const { LearningWorkspace } =
+  await import("../src/components/learning/learning-workspace");
 const agent = createAgent();
 after(() => {
   cleanup();
@@ -159,6 +163,42 @@ test("an agent can search the glossary through its named input and reset the fil
     assert.ok(view.getByRole("heading", { name: /^Суд$/ }));
   } finally {
     view.unmount();
+  }
+});
+
+test("an agent can choose the expert level and start a case study", async () => {
+  const view = render(
+    h(
+      SearchParamsContext.Provider,
+      { value: new URLSearchParams({ tema: "rad" }) },
+      h(LearningWorkspace, { catalog: getLearningCatalog() }),
+    ),
+  );
+  try {
+    const levels = agent
+      .snapshot()
+      .find((entry) => !entry.offPage && entry.label === "Ниво вежбања");
+    assert.ok(levels);
+    await act(async () => {
+      const result = await agent.act({
+        steps: [
+          { ref: levels.ref, action: "setValue", args: ["Напредни ниво"] },
+        ],
+      });
+      assert.ok(result.ok, result.error?.message);
+    });
+    const start = "Почни студије случаја";
+    assert.ok(view.getByRole("button", { name: start }));
+    await act(async () => {
+      const result = await agent.act({
+        steps: [{ ref: start, action: "press" }],
+      });
+      assert.ok(result.ok, result.error?.message);
+    });
+    assert.ok(view.getByText("Измишљена студија случаја"));
+  } finally {
+    view.unmount();
+    window.localStorage.clear();
   }
 });
 

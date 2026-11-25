@@ -70,5 +70,29 @@
     "sourceVersion": "Закон о заштити потрошача: 35/2026-3",
     "accessedAt": "2026-11-05",
     "coverage": "learning"
+  },
+  {
+    "id": "zakon-o-opstem-upravnom-postupku",
+    "title": "Закон о општем управном поступку",
+    "shortTitle": "Општи управни поступак",
+    "description": "Од првог захтева и увида у списе до решења, рокова и жалбе.",
+    "topics": ["informacije"],
+    "sourceUrl": "https://www.pravno-informacioni-sistem.rs/viewAct/3544aef0-85fd-4733-8214-e8bb95edf4af",
+    "sourceName": "Правно-информациони систем Републике Србије",
+    "sourceVersion": "Закон о општем управном поступку: 18/2016-10, 95/2018-441 (Аутентично тумачење), 2/2023-44 (УС)",
+    "accessedAt": "2026-11-25",
+    "coverage": "learning"
+  },
+  {
+    "id": "porodicni-zakon",
+    "title": "Породични закон",
+    "shortTitle": "Породични закон",
+    "description": "Мишљење детета, одлуке родитеља, школовање и издржавање.",
+    "topics": ["ravnopravnost"],
+    "sourceUrl": "https://www.pravno-informacioni-sistem.rs/viewAct/78346cae-e351-4fa4-9244-af7d09d39413",
+    "sourceName": "Правно-информациони систем Републике Србије",
+    "sourceVersion": "Породични закон: 18/2005-26, 72/2011-73 (др. закон), 6/2015-6, 109/2025-252 (др. закон)",
+    "accessedAt": "2026-11-25",
+    "coverage": "learning"
   }
 ]

@@ -223,6 +223,109 @@ test("bad saved data and unavailable storage leave quizzes usable", async ({
   );
 });
 
+test("expert studies can be selected by keyboard, resumed, and continued", async ({
+  page,
+}) => {
+  if (test.info().project.name === "mobile")
+    await page.setViewportSize({ width: 320, height: 844 });
+  await page.goto("/ucenje?tema=privatnost#vezba");
+  const levels = page.getByRole("tablist", { name: "Ниво вежбања" });
+  const basic = levels.getByRole("tab", { name: "Основни ниво" });
+  const expert = levels.getByRole("tab", { name: "Напредни ниво" });
+  await expect(basic).toHaveAttribute("aria-selected", "true");
+  await basic.focus();
+  await page.keyboard.press("ArrowRight");
+  await expect(expert).toBeFocused();
+  await page.keyboard.press("Enter");
+  await expect(expert).toHaveAttribute("aria-selected", "true");
+  await expect(
+    page.getByRole("tablist", { name: "Начин вежбања" }),
+  ).toBeHidden();
+  await expect(page.getByText(/\d+ студија случаја/)).toBeVisible();
+  await page.locator("#vezba").screenshot({
+    path: test.info().outputPath("learning-expert-setup.png"),
+  });
+  const start = page.getByRole("button", { name: "Почни студије случаја" });
+  await start.click();
+  await expect(page.getByText("Измишљена студија случаја")).toBeVisible();
+  const first = await answer(page);
+  expect(first.kind).toBe("case-study");
+  await expect(
+    page.getByRole("link", { name: `Прочитај члан ${first.source.article}` }),
+  ).toHaveAttribute("href", first.source.href);
+  await page.screenshot({
+    path: test.info().outputPath("learning-expert-feedback.png"),
+  });
+  await page.reload();
+  await expect(page.locator(".learning-resume")).toContainText("Напредни ниво");
+  await page.getByRole("button", { name: "Настави сесију" }).click();
+  await expect(page.locator("#question-title")).toHaveText(first.title);
+  const answered = [first.id];
+  for (let i = 1; i < 5; i++) {
+    await page.getByRole("button", { name: "Следеће питање" }).click();
+    const question = await answer(page);
+    expect(question.kind).toBe("case-study");
+    expect(question.topicId).toBe("privatnost");
+    answered.push(question.id);
+  }
+  await page.getByRole("button", { name: "Погледај резултат" }).click();
+  await expect(page.locator(".learning-score")).toHaveText("5 / 5");
+  await page.getByRole("button", { name: "Следећа рунда" }).click();
+  expect(answered).not.toContain((await answer(page)).id);
+  expect(
+    await page.evaluate(
+      () => document.documentElement.scrollWidth <= innerWidth,
+    ),
+  ).toBe(true);
+});
+
+test("the three additional topics are discoverable and link answers to their own laws", async ({
+  page,
+}) => {
+  const newTopics = [
+    {
+      topicId: "ravnopravnost",
+      search: "diskriminacija",
+      law: "zakon-o-zabrani-diskriminacije",
+    },
+    {
+      topicId: "upravni-postupak",
+      search: "upravni postupak",
+      law: "zakon-o-opstem-upravnom-postupku",
+    },
+    { topicId: "porodica", search: "izdrzavanje", law: "porodicni-zakon" },
+  ] as const;
+  for (const { topicId, search, law } of newTopics) {
+    await page.goto("/ucenje");
+    await page
+      .getByRole("textbox", { name: "Претрага тема за учење" })
+      .fill(search);
+    const topic = learningTopics.find((item) => item.id === topicId)!;
+    const card = page.locator(".learning-topic-card").filter({
+      has: page.getByRole("heading", { name: topic.title, exact: true }),
+    });
+    const count = questions.filter((q) => q.topicId === topicId).length;
+    await expect(card).toContainText(count + " питања");
+    await card.getByRole("link", { name: "Изабери тему" }).click();
+    await expect(page).toHaveURL("/ucenje?tema=" + topicId);
+    await expect(page.getByRole("tab", { name: "Шта ако…?" })).toBeVisible();
+    await expect(
+      page.getByRole("tab", { name: "Пронађи правило" }),
+    ).toBeVisible();
+    await page.getByRole("tab", { name: "Напредни ниво" }).click();
+    await page.getByRole("button", { name: "Почни студије случаја" }).click();
+    const question = await answer(page);
+    expect(question.kind).toBe("case-study");
+    expect(question.topicId).toBe(topicId);
+    expect(question.source.lawHref).toBe("/propisi/" + law);
+    await expect(
+      page.getByRole("link", {
+        name: "Прочитај члан " + question.source.article,
+      }),
+    ).toHaveAttribute("href", question.source.href);
+  }
+});
+
 test("law readers lead into the matching learning path", async ({ page }) => {
   await page.goto("/propisi/zakon-o-radu");
   const examples = page.getByRole("button", { name: /Примери из живота/ });

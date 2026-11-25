@@ -1,12 +1,13 @@
 import { z } from "zod";
 
+const sourceDate = z.string().regex(/^\d{4}-\d{2}-\d{2}$/);
 const question = z
   .object({
     id: z.string().regex(/^[a-z0-9-]+$/),
     title: z.string().min(1),
     scenario: z.string().min(1),
     prompt: z.string().min(1),
-    kind: z.enum(["scenario", "research"]),
+    kind: z.enum(["scenario", "research", "case-study"]),
     hint: z.string().optional(),
     choices: z
       .array(
@@ -30,12 +31,20 @@ const question = z
 export const practiceSchema = z.object({
   sourceVersion: z.string().min(1),
   sourceSha256: z.string().regex(/^[a-f0-9]{64}$/),
-  sourceCheckedAt: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
+  sourceCheckedAt: sourceDate,
   questions: z
     .array(
-      question.safeExtend({
-        whatIf: question.safeExtend({ change: z.string().min(1) }).optional(),
-      }),
+      question
+        .safeExtend({
+          sourceCheckedAt: sourceDate.optional(),
+          whatIf: question.safeExtend({ change: z.string().min(1) }).optional(),
+        })
+        .refine(
+          (q) =>
+            !q.whatIf ||
+            (q.kind !== "case-study" && q.whatIf.kind !== "case-study"),
+          "Case studies cannot be part of basic what-if pairs",
+        ),
     )
     .min(1),
 });
