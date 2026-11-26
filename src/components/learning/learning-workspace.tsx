@@ -409,9 +409,6 @@ export function LearningWorkspace({ catalog }: { catalog: LearningCatalog }) {
                     >
                       Пређи на вежбу <ArrowRight />
                     </a>
-                    <Link href="/vodic" className="text-link">
-                      Помоћ за читање закона
-                    </Link>
                   </div>
                   <div className="learning-outcomes">
                     <h3>Шта ћете научити</h3>
@@ -462,27 +459,6 @@ export function LearningWorkspace({ catalog }: { catalog: LearningCatalog }) {
                 </section>
               ) : (
                 <>
-                  <section
-                    className="learning-orientation"
-                    aria-labelledby="learning-orientation-title"
-                  >
-                    <div>
-                      <span className="eyebrow">ПРВИ ПУТ СТЕ ОВДЕ?</span>
-                      <h2 id="learning-orientation-title">
-                        Од читања до разумевања.
-                      </h2>
-                      <p>
-                        Научите како да пронађете члан и проверите извор. Затим
-                        изаберите тему и испробајте кратку вежбу.
-                      </p>
-                    </div>
-                    <Link
-                      href="/vodic"
-                      className={buttonVariants({ variant: "outline" })}
-                    >
-                      Водич за читање закона <ArrowRight />
-                    </Link>
-                  </section>
                   <div className="learning-section-heading">
                     <div>
                       <h2>Која тема вас занима?</h2>

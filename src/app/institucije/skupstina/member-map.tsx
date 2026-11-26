@@ -9,12 +9,12 @@ import {
   useState,
   type CSSProperties,
 } from "react";
+import "./member-map.css";
 
 export type Member = {
   id: string;
   name: string;
   group: string;
-  source: string;
   photoUrl?: string;
   occupation?: string;
   residence?: string;
@@ -333,12 +333,16 @@ export function MemberMap({
   visible,
   selectedId,
   onSelect,
+  headingLevel: Heading = "h2",
+  showHallPlan = true,
 }: {
   members: Member[];
   groups: Groups;
   visible: Member[];
   selectedId: string;
   onSelect: (id: string) => void;
+  headingLevel?: "h2" | "h3";
+  showHallPlan?: boolean;
 }) {
   const [hoveredId, setHoveredId] = useState("");
   const [focusedId, setFocusedId] = useState("");
@@ -463,7 +467,7 @@ export function MemberMap({
       }}
     >
       <header>
-        <h2 id="mapa-sastava">Распоред у Великој сали</h2>
+        <Heading id="mapa-sastava">Распоред у Великој сали</Heading>
         <p>Распоред седења је приближан, без гаранције тачности.</p>
       </header>
       <div className="member-map-body">
@@ -537,14 +541,16 @@ export function MemberMap({
               </li>
             ))}
           </ul>
-          <div className="member-map-detail">
-            <a
-              className="text-link"
-              href="https://www.parlament.gov.rs/upload/archive/files/eng/pdf/Informator/informator_eng.pdf#page=46"
-            >
-              План Велике сале (стр. 46)
-            </a>
-          </div>
+          {showHallPlan && (
+            <div className="member-map-detail">
+              <a
+                className="text-link"
+                href="https://www.parlament.gov.rs/upload/archive/files/eng/pdf/Informator/informator_eng.pdf#page=46"
+              >
+                План Велике сале (стр. 46)
+              </a>
+            </div>
+          )}
         </div>
       </div>
     </section>

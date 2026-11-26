@@ -104,6 +104,26 @@ test("sticky header suggestions open a law from the standalone reader", async ({
   await expect(page.locator("#tekst-zakona")).toBeVisible();
 });
 
+test("typing into the sticky header search preserves document scroll", async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 1280, height: 850 });
+  await page.goto("/");
+  await page.locator(".registry-canvas").waitFor();
+  const search = page.getByRole("combobox", { name: "Претрага из заглавља" });
+  await page.evaluate(() => document.fonts.ready);
+  await page.evaluate(() => window.scrollTo({ top: 680, behavior: "instant" }));
+  const field = (await search.boundingBox())!;
+  await page.mouse.click(field.x + field.width / 2, field.y + field.height / 2);
+  expect(await page.evaluate(() => window.scrollY)).toBe(680);
+
+  await page.keyboard.type("zakon o radu");
+  await expect(
+    page.getByRole("option", { name: "Закон о раду", exact: true }),
+  ).toBeVisible();
+  expect(await page.evaluate(() => window.scrollY)).toBe(680);
+});
+
 test("the wider header search keeps abbreviated titles in its suggestions", async ({
   page,
 }) => {

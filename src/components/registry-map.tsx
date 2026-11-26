@@ -1,4 +1,5 @@
 "use client";
+import Link from "next/link";
 import {
   useEffect,
   useMemo,
@@ -516,7 +517,12 @@ function RegistryMapContent({
           <i />{" "}
           {category === "all" ? "Изаберите област." : "Изаберите документ."}
         </span>
-        {category === "all" && <span>{categories.length} области</span>}
+        <div className="map-footer-meta">
+          {overview && <span>{categories.length} области</span>}
+          <Link href="/o-projektu" className="text-link">
+            Извор
+          </Link>
+        </div>
       </div>
     </div>
   );

@@ -1,4 +1,4 @@
-import { BookOpen, Compass, House, Landmark, Search } from "lucide-react";
+import { BookOpen, House, Landmark, Search, UsersRound } from "lucide-react";
 
 export const searchNavigationHref = "/#pretraga";
 
@@ -17,16 +17,16 @@ export const siteNavigation = [
   },
   { href: searchNavigationHref, label: "Претрага", icon: Search },
   {
+    href: "/institucije/skupstina",
+    label: "Скупштина",
+    icon: UsersRound,
+    desktop: { label: "Скупштина", accessibleLabel: "Скупштина" },
+  },
+  {
     href: "/ucenje",
     label: "Учење",
     icon: BookOpen,
     desktop: { label: "Учење", accessibleLabel: "Учи кроз примере" },
-  },
-  {
-    href: "/vodic",
-    label: "Водич",
-    icon: Compass,
-    desktop: { label: "Водич", accessibleLabel: "Како читати закон" },
   },
 ] as const;
 
@@ -34,7 +34,9 @@ export function getCurrentNavigationHref(pathname: string) {
   const path = pathname.replace(/\/+$/, "") || "/";
   if (/^\/(propisi|zakoni)(\/|$)/.test(path)) return searchNavigationHref;
 
-  return siteNavigation.find(
-    ({ href }) => path === href || (href !== "/" && path.startsWith(`${href}/`)),
-  )?.href;
+  const matches = siteNavigation.filter(
+    ({ href }) =>
+      path === href || (href !== "/" && path.startsWith(`${href}/`)),
+  );
+  return matches.sort((a, b) => b.href.length - a.href.length)[0]?.href;
 }

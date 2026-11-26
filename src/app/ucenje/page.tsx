@@ -71,8 +71,8 @@ export default function LearningPage() {
         <div className="learning-workspace">
           <p>
             За интерактивне вежбе потребан је JavaScript.{" "}
-            <Link href="/vodic" className="text-link">
-              Водич за читање закона
+            <Link href="/ucenje/recnik" className="text-link">
+              Речник
             </Link>{" "}
             и {/* Standalone laws use full document navigation. */}
             {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}

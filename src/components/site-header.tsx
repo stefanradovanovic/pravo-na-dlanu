@@ -44,22 +44,24 @@ export function SiteHeader() {
             </Link>
           ))}
       </nav>
-      <div id="site-header-search" className="contents">
-        <HeaderSearch />
-      </div>
-      <Link
-        className={buttonVariants({
-          variant: "ghost",
-          size: "icon",
-          className: "header-search-mobile",
-        })}
-        href={searchNavigationHref}
-        aria-label="Претражи прописе"
-      >
-        <Search size={21} aria-hidden="true" />
-      </Link>
-      <div id="site-theme-toggle" className="contents">
-        <ThemeToggle />
+      <div className="site-header-actions">
+        <div id="site-header-search" className="contents">
+          <HeaderSearch />
+        </div>
+        <Link
+          className={buttonVariants({
+            variant: "ghost",
+            size: "icon",
+            className: "header-search-mobile",
+          })}
+          href={searchNavigationHref}
+          aria-label="Претражи прописе"
+        >
+          <Search size={21} aria-hidden="true" />
+        </Link>
+        <div id="site-theme-toggle" className="contents">
+          <ThemeToggle />
+        </div>
       </div>
     </header>
   );

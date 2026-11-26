@@ -4,8 +4,8 @@ const destinations = [
   { name: "Почетак", href: "/" },
   { name: "Институције", href: "/institucije" },
   { name: "Претрага", href: "/#pretraga" },
+  { name: "Скупштина", href: "/institucije/skupstina" },
   { name: "Учење", href: "/ucenje" },
-  { name: "Водич", href: "/vodic" },
 ] as const;
 
 test.beforeEach(({ page }) => {
@@ -60,16 +60,16 @@ test("bottom navigation crosses app and standalone law pages with correct histor
     if (destination.href === "/#pretraga")
       await expect(page.locator("#pretraga")).toBeInViewport();
   }
-  await page.getByRole("link", { name: /Устав о објављивању прописа/ }).click();
+  await page.goto("/propisi/ustav-republike-srbije");
   await expectActive(page, "Претрага");
   await expect(page.locator("#clan-1")).toHaveCount(1);
   await expect(page.locator("#clan-206")).toHaveCount(1);
   await page.goBack();
-  await expectActive(page, "Водич");
-  await page.goBack();
   await expectActive(page, "Учење");
+  await page.goBack();
+  await expectActive(page, "Скупштина");
   await page.goForward();
-  await expectActive(page, "Водич");
+  await expectActive(page, "Учење");
   await page.goForward();
   await expectActive(page, "Претрага");
   await page
@@ -94,7 +94,7 @@ test("mobile widths keep every navigation target reachable and leave room below 
 }) => {
   for (const width of [320, 390, 800]) {
     await page.setViewportSize({ width, height: 844 });
-    for (const route of ["/vodic", "/propisi/zakon-o-radu"]) {
+    for (const route of ["/institucije/skupstina", "/propisi/zakon-o-radu"]) {
       await page.goto(route);
       const navigation = page.locator(".mobile-navigation");
       await expect(navigation).toBeVisible();
@@ -116,7 +116,9 @@ test("mobile widths keep every navigation target reachable and leave room below 
         expect(box!.x + box!.width).toBeLessThanOrEqual(width + 1);
         const label = await link.locator("span").boundingBox();
         expect(label!.x).toBeGreaterThanOrEqual(box!.x);
-        expect(label!.x + label!.width).toBeLessThanOrEqual(box!.x + box!.width);
+        expect(label!.x + label!.width).toBeLessThanOrEqual(
+          box!.x + box!.width,
+        );
       }
       await page.evaluate(() =>
         window.scrollTo(0, document.documentElement.scrollHeight),
@@ -153,12 +155,28 @@ test("desktop keeps header navigation while the mobile bar is hidden for desktop
 }) => {
   for (const width of [801, 1280]) {
     await page.setViewportSize({ width, height: 900 });
-    await page.goto("/vodic");
+    await page.goto("/institucije");
     await expect(page.locator(".mobile-navigation")).toBeHidden();
-    await expect(page.locator(".site-header nav")).toBeVisible();
+    const navigation = page.locator(".site-header nav");
+    await expect(navigation).toBeVisible();
+    await expect(navigation.locator("a")).toHaveText([
+      "Прописи",
+      "Институције",
+      "Скупштина",
+      "Учење",
+    ]);
     await expect(
       page.getByRole("navigation", { name: "Главна навигација", exact: true }),
     ).toHaveCount(1);
+    const assembly = navigation.getByRole("link", { name: "Скупштина" });
+    await assembly.click();
+    await expect(page).toHaveURL(/\/institucije\/skupstina\/?$/);
+    await expect(assembly).toHaveAttribute("aria-current", "page");
+    await page.getByRole("link", { name: "Одбори", exact: true }).click();
+    await expect(page).toHaveURL(/\/institucije\/skupstina\/odbori\/?$/);
+    await expect(navigation.locator('a[aria-current="page"]')).toHaveText(
+      "Скупштина",
+    );
   }
   await page.setViewportSize({ width: 390, height: 844 });
   await expect(page.locator(".mobile-navigation")).toBeVisible();
@@ -179,8 +197,8 @@ test("mobile navigation works without JavaScript and standalone laws retain thei
   });
   const page = await context.newPage();
   try {
-    await page.goto("/vodic");
-    await expectActive(page, "Водич");
+    await page.goto("/institucije/skupstina/odbori");
+    await expectActive(page, "Скупштина");
     await page
       .locator(".mobile-navigation")
       .getByRole("link", {
@@ -207,13 +225,13 @@ test("mobile navigation works without JavaScript and standalone laws retain thei
     await page
       .locator(".mobile-navigation")
       .getByRole("link", {
-        name: "Водич",
+        name: "Скупштина",
         exact: true,
       })
       .click();
-    await expectActive(page, "Водич");
+    await expectActive(page, "Скупштина");
     await expect(page.getByRole("heading", { level: 1 })).toContainText(
-      "Како да читате закон",
+      "Народни посланици",
     );
   } finally {
     await context.close();
