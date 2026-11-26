@@ -1,12 +1,23 @@
 "use client";
 
-import { useEffect, useMemo, useState, type CSSProperties } from "react";
+import { UserRound } from "lucide-react";
+import {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  type CSSProperties,
+} from "react";
 
 export type Member = {
   id: string;
   name: string;
   group: string;
   source: string;
+  photoUrl?: string;
+  occupation?: string;
+  residence?: string;
 };
 export type Groups = Record<string, { name: string }>;
 
@@ -25,6 +36,7 @@ const sideBenches = [
 
 // Tighten row spacing around the middle bench without changing its seat count.
 const rowSpacing = 0.8;
+const chamber = { left: -442, top: -149, width: 884, height: 558 };
 type SeatPosition = { x: number; y: number; rotation: number };
 
 function benchRow(block: number, row: number) {
@@ -111,6 +123,18 @@ const oppositionGallerySource = {
   url: "https://www.blic.rs/vesti/politika/raspored-poslanika-u-skupstini-srbije-ko-sedi-u-prvim-redovima/hkv8xsz",
   label: "Фотографије распореда",
 };
+const november24FrontBenchesSource = {
+  url: "https://www.youtube.com/watch?v=zm-BK3kiWUo&t=3407s",
+  label: "Место на снимку",
+};
+const november24SideBenchesSource = {
+  url: "https://www.youtube.com/watch?v=zm-BK3kiWUo&t=3759s",
+  label: "Место на снимку",
+};
+const nedeljkovicSpeechSource = {
+  url: "https://skupstina.live/sednica/s15-01-d4/govor/73",
+  label: "Место на снимку",
+};
 const unoccupiedOppositionSeats = new Set([
   sectors[6].rows[0][1],
   sectors[6].rows[1][1],
@@ -150,9 +174,17 @@ const observedSeats: [
     },
   ], // Феђа Димовић
   ["1463", 4, 3, 2, oathPhotoSource], // Дејан Шошкић
+  // Both are in the front row. Their order is inferred from the rear view.
+  ["324", 5, 1, 1, november24FrontBenchesSource], // Балинт Пастор
+  ["1295", 5, 1, 3, november24FrontBenchesSource], // Усаме Зукорлић
+  ["1002", 6, 1, 1, november24FrontBenchesSource], // Александар Шешељ
+  ["1611", 6, 1, 2, nedeljkovicSpeechSource], // Марина Недељковић
+  ["598", 6, 1, 3, november24FrontBenchesSource], // Маријан Ристичевић
+  ["118", 6, 2, 5, nedeljkovicSpeechSource], // Вјерица Радета
   ["1029", 7, 1, 1, oppositionPhotoSource], // Миленко Јованов
   ["30", 7, 1, 3, oppositionPhotoSource], // Александар Вучић
-  ["1034", 7, 2, 1, oppositionPhotoSource], // Невена Ђурић Никитовић
+  // Ђурић Никитовић occupied this desk on 17 November. The later frame shows Гујон.
+  ["1326", 7, 2, 1, november24FrontBenchesSource], // Арно Гујон
   ["1190", 7, 2, 3, oppositionPhotoSource], // Ана Брнабић
   ["1016", 7, 2, 4, oppositionPhotoSource], // Милош Вучевић
   ["1618", 7, 3, 1, oppositionPhotoSource], // Владимир Балаћ
@@ -160,6 +192,8 @@ const observedSeats: [
   ["1023", 7, 3, 3, oppositionPhotoSource], // Оља Петровић
   ["1594", 7, 3, 4, oppositionPhotoSource], // Лука Лалошевић
   ["1586", 7, 3, 5, oppositionPhotoSource], // Милош Павловић
+  // The 24 November broadcast also shows Кубуровић and Мацура here at 50:32:
+  // https://www.youtube.com/watch?v=zm-BK3kiWUo&t=3032s
   ["1600", 7, 4, 3, oppositionPhotoSource], // Нина Кубуровић
   ["1205", 7, 4, 4, oppositionPhotoSource], // Никола Бокан
   ["1619", 7, 4, 5, oppositionPhotoSource], // Ања Ранковић
@@ -174,6 +208,12 @@ const observedSeats: [
   ["1583", 7, 6, 3, oppositionGallerySource], // Милан Стојичић
   ["1610", 7, 6, 5, oppositionGallerySource], // Кристина Васиљковић
   ["1621", 7, 6, 6, oppositionGallerySource], // Предраг Момчиловић
+  ["302", 8, 1, 1, november24SideBenchesSource], // Марина Рагуш
+  ["757", 8, 1, 4, november24SideBenchesSource], // Владимир Ђукановић
+  ["1324", 8, 1, 6, november24SideBenchesSource], // Никола Селаковић
+  ["1579", 8, 2, 2, november24SideBenchesSource], // Бранислав Лечић
+  ["1058", 8, 2, 3, november24SideBenchesSource], // Угљеша Мрдић
+  ["270", 8, 2, 4, november24SideBenchesSource], // Лидија Вукићевић
 ];
 
 const seatObservations = new Map(
@@ -192,7 +232,7 @@ const seatObservations = new Map(
 // Officers elected on 19 November 2026. The display order is schematic.
 const dais = Array.from({ length: 11 }, (_, i) => ({
   x: (i - 5) * 20,
-  y: -107,
+  y: -131,
   rotation: 0,
 }));
 const speakerId = "1487";
@@ -215,7 +255,7 @@ const minorityMembers = new Set([
   "324",
   "1418",
 ]);
-function seatingArea(member: Member) {
+export function seatingArea(member: Member) {
   return minorityMembers.has(member.id) ? "minority" : member.group;
 }
 
@@ -266,32 +306,65 @@ function placeMembers(members: Member[]) {
   }).sort((a, b) => b.count - a.count);
 }
 
+function MemberPortrait({ member }: { member: Member }) {
+  const [loaded, setLoaded] = useState(false);
+  return (
+    <div className="member-map-portrait">
+      {!loaded && <UserRound aria-hidden="true" />}
+      {member.photoUrl && (
+        // eslint-disable-next-line @next/next/no-img-element -- Serve the Assembly's small portrait thumbnails as static assets.
+        <img
+          src={`/assembly/portraits/${member.id}.jpg`}
+          alt=""
+          width={150}
+          height={209}
+          decoding="async"
+          hidden={!loaded}
+          onLoad={() => setLoaded(true)}
+        />
+      )}
+    </div>
+  );
+}
+
 export function MemberMap({
   members,
   groups,
   visible,
+  selectedId,
+  onSelect,
 }: {
   members: Member[];
   groups: Groups;
   visible: Member[];
+  selectedId: string;
+  onSelect: (id: string) => void;
 }) {
   const [hoveredId, setHoveredId] = useState("");
   const [focusedId, setFocusedId] = useState("");
-  const [selectedId, setSelectedId] = useState("");
+  const matching = new Set(visible.map((member) => member.id));
+  const selected = visible.find((member) => member.id === selectedId);
+  const selectionRef = useRef<HTMLDivElement>(null);
+
+  const clearSelection = useCallback(() => {
+    onSelect("");
+    setFocusedId("");
+    setHoveredId("");
+  }, [onSelect]);
+
   useEffect(() => {
-    if (!selectedId) return;
+    if (!selected) return;
     function clearOnOutsideClick(event: MouseEvent) {
-      const seat =
-        event.target instanceof Element && event.target.closest(".member-seat");
-      if (seat && seat.querySelector("input:enabled")) return;
-      setSelectedId("");
-      setFocusedId("");
-      setHoveredId("");
+      if (!(event.target instanceof Element)) return;
+      if (selectionRef.current?.contains(event.target)) return;
+      if (event.target.closest(".member-seat")?.querySelector("input:enabled"))
+        return;
+      clearSelection();
     }
     document.addEventListener("click", clearOnOutsideClick, true);
     return () =>
       document.removeEventListener("click", clearOnOutsideClick, true);
-  }, [selectedId]);
+  }, [selected, clearSelection]);
   const areas = useMemo(() => placeMembers(members), [members]);
   const assignedSeats = useMemo(
     () =>
@@ -307,11 +380,12 @@ export function MemberMap({
   function emptySeats(row: SeatPosition[]) {
     return row.filter(({ x, y }) => !assignedSeats.has(x + "," + y));
   }
-  const matching = new Set(visible.map((member) => member.id));
-  const selected = visible.find((member) => member.id === selectedId);
-  const seatSource = selected && seatObservations.get(selected.id)?.source;
-  const previewId = [hoveredId, focusedId, selected?.id].find(
-    (id) => id && matching.has(id),
+  const city = selected?.residence?.split(",", 1)[0].trim();
+  const description = selected
+    ? [selected.occupation, city].filter(Boolean).join(" · ")
+    : "";
+  const previewId = [hoveredId, focusedId].find(
+    (id) => id && id !== selected?.id && matching.has(id),
   );
   const names: Record<string, string> = {
     ...Object.fromEntries(
@@ -342,8 +416,8 @@ export function MemberMap({
             "--seat-color": colors[area] ?? "var(--chart-4)",
             ...(position && {
               "--seat-rotation": `${position.rotation.toFixed(3)}deg`,
-              left: `${(((position.x + 442) / 884) * 100).toFixed(3)}%`,
-              top: `${(((position.y + 125) / 534) * 100).toFixed(3)}%`,
+              left: `${(((position.x - chamber.left) / chamber.width) * 100).toFixed(3)}%`,
+              top: `${(((position.y - chamber.top) / chamber.height) * 100).toFixed(3)}%`,
             }),
           } as CSSProperties
         }
@@ -358,7 +432,7 @@ export function MemberMap({
           value={member.id}
           disabled={!matching.has(member.id)}
           checked={selected?.id === member.id}
-          onChange={() => setSelectedId(member.id)}
+          onChange={() => onSelect(member.id)}
         />
         <span aria-hidden="true" />
         {previewId === member.id && (
@@ -380,67 +454,73 @@ export function MemberMap({
       className="member-map"
       aria-labelledby="mapa-sastava"
       id="mapa-poslanika"
+      tabIndex={-1}
+      onKeyDown={(event) => {
+        if (event.key === "Escape" && selected) {
+          event.preventDefault();
+          clearSelection();
+        }
+      }}
     >
       <header>
         <h2 id="mapa-sastava">Распоред у Великој сали</h2>
-        <p>
-          Поглед ка председавајућем. Изаберите обојено седиште да видите
-          посланика. Део места је утврђен према фотографијама и снимцима
-          конститутивне седнице у новембру 2026. Остали положаји су шематски.
-          Обриси означавају места без придруженог имена.
-        </p>
+        <p>Распоред седења је приближан, без гаранције тачности.</p>
       </header>
       <div className="member-map-body">
-        <div className="member-map-floor">
-          <svg
-            className="member-hemicycle"
-            viewBox="-442 -125 884 534"
-            role="img"
-            aria-labelledby="chamber-title"
-          >
-            <title id="chamber-title">
-              {`Осам сектора Велике сале. Из публике гледано, „${names["174"]}“ је десно, ` +
-                "мањинске листе лево уз средишњи пролаз, а група Александар Вучић даље лево."}
-            </title>
-            <SeatRow seats={emptySeats(dais)} />
-            {sectors.map(({ number, rows }) => (
-              <g key={number} data-sector={number}>
-                {rows.map((row, index) => (
-                  <SeatRow key={index} seats={emptySeats(row)} />
-                ))}
-              </g>
-            ))}
-          </svg>
-          {areas.flatMap(({ area, dots }) =>
-            dots.map(
-              ({ member, position }) =>
-                position && memberSeat(member, area, position),
-            ),
-          )}
-        </div>
-        <div className="member-map-key">
-          <div className="member-map-selection" aria-live="polite">
-            {selected ? (
-              <>
-                <strong>{selected.name}</strong>
-                {office(selected.id) && <> · {office(selected.id)}</>} ·{" "}
-                {groups[selected.group].name} ·{" "}
-                <a className="text-link" href={selected.source}>
-                  Профил посланика
-                </a>
-                {seatSource && (
-                  <>
-                    {" · "}
-                    <a className="text-link" href={seatSource.url}>
-                      {seatSource.label}
-                    </a>
-                  </>
-                )}
-              </>
-            ) : (
-              "Изаберите посланика на мапи."
+        <div className="member-map-chamber">
+          <div className="member-map-floor">
+            <svg
+              className="member-hemicycle"
+              viewBox={`${chamber.left} ${chamber.top} ${chamber.width} ${chamber.height}`}
+              role="img"
+              aria-labelledby="chamber-title"
+            >
+              <title id="chamber-title">
+                {`Осам сектора Велике сале. Из публике гледано, „${names["174"]}“ је десно, ` +
+                  "мањинске листе лево уз средишњи пролаз, а група Александар Вучић даље лево."}
+              </title>
+              <SeatRow seats={emptySeats(dais)} />
+              {sectors.map(({ number, rows }) => (
+                <g key={number} data-sector={number}>
+                  {rows.map((row, index) => (
+                    <SeatRow key={index} seats={emptySeats(row)} />
+                  ))}
+                </g>
+              ))}
+            </svg>
+            {areas.flatMap(({ area, dots }) =>
+              dots.map(
+                ({ member, position }) =>
+                  position && memberSeat(member, area, position),
+              ),
             )}
           </div>
+          <div
+            className="member-map-selection"
+            ref={selectionRef}
+            aria-live="polite"
+            aria-atomic="true"
+          >
+            {selected && (
+              <section
+                className="member-map-profile leading-snug"
+                aria-labelledby="member-map-profile-name"
+              >
+                <MemberPortrait key={selected.id} member={selected} />
+                <div className="member-map-profile-copy">
+                  <strong id="member-map-profile-name">{selected.name}</strong>
+                  {description && <p>{description}</p>}
+                  <p>
+                    {[office(selected.id), groups[selected.group].name]
+                      .filter(Boolean)
+                      .join(" · ")}
+                  </p>
+                </div>
+              </section>
+            )}
+          </div>
+        </div>
+        <div className="member-map-key">
           <ul aria-label="Број посланика по групама">
             {areas.map(({ area, count, dots }) => (
               <li key={area}>
