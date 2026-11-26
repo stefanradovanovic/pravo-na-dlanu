@@ -14,13 +14,13 @@ export type Groups = Record<string, { name: string }>;
 // follow page 46 of the Assembly's floor plan, rotated toward the dais.
 const radii = [170, 205, 242, 279, 315, 352, 388];
 const sideBenches = [
-  [207, 10, -82, 6],
-  [242, 15, -98, 7],
-  [277, 20, -98, 7],
-  [312, 25, -98, 7],
-  [347, 32, -98, 8],
-  [383, 38, -98, 8],
-  [422, -42, -98, 4],
+  [10, -82, 6],
+  [15, -98, 7],
+  [20, -98, 7],
+  [25, -98, 7],
+  [32, -98, 8],
+  [38, -98, 8],
+  [-42, -98, 4],
 ];
 
 // Tighten row spacing around the middle bench without changing its seat count.
@@ -28,16 +28,17 @@ const rowSpacing = 0.8;
 type SeatPosition = { x: number; y: number; rotation: number };
 
 function benchRow(block: number, row: number) {
+  const planRadius = radii[row];
+  const radius = radii[3] + (planRadius - radii[3]) * rowSpacing;
   if (block === 1) {
-    const [x, start, end, count] = sideBenches[row];
+    const [start, end, count] = sideBenches[row];
     return Array.from({ length: count }, (_, index) => ({
-      x: sideBenches[3][0] + (x - sideBenches[3][0]) * rowSpacing,
+      x: radius,
       rotation: -90,
       y: start + ((end - start) * index) / (count - 1),
     }));
   }
-  const planRadius = radii[row];
-  const radius = radii[3] + (planRadius - radii[3]) * rowSpacing;
+
   const radians = Math.PI / 180;
   const start =
     block === 4 ? Math.asin(14 / radius) : (block === 3 ? 28 : 56) * radians;
@@ -235,7 +236,7 @@ export function MemberMap({
         onBlur={() => setFocusedId("")}
         style={
           {
-            "--seat-color": colors[area] ?? "var(--muted-foreground)",
+            "--seat-color": colors[area] ?? "var(--chart-4)",
             ...(position && {
               "--seat-rotation": `${position.rotation.toFixed(3)}deg`,
               left: `${(((position.x + 442) / 884) * 100).toFixed(3)}%`,

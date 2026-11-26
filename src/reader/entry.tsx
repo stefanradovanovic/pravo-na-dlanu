@@ -3,6 +3,7 @@ import { hydrateRoot } from "react-dom/client";
 import { ReaderControl, type ReaderControlProps } from "./controls";
 import { BackToTop } from "@/components/back-to-top";
 import { HeaderSearch } from "@/components/header-search";
+import { ThemeToggle } from "@/components/theme-toggle";
 import { redactAnalyticsUrl } from "@/lib/analytics";
 
 if (process.env.VERCEL === "1") {
@@ -20,6 +21,11 @@ if (headerSearch) {
   hydrateRoot(headerSearch, <HeaderSearch />, {
     identifierPrefix: headerSearch.id,
   });
+}
+
+const themeToggle = document.getElementById("site-theme-toggle");
+if (themeToggle) {
+  hydrateRoot(themeToggle, <ThemeToggle />, { identifierPrefix: themeToggle.id });
 }
 
 for (const container of document.querySelectorAll<HTMLElement>(

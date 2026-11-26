@@ -79,6 +79,8 @@ const { ReaderSettings } = await import("../src/components/reader-settings");
 const { ArticleNavigation } =
   await import("../src/components/article-navigation");
 const { BackToTop } = await import("../src/components/back-to-top");
+const { ThemeToggle } = await import("../src/components/theme-toggle");
+const { themeStorageKey } = await import("../src/lib/theme");
 const { GlossaryBrowser } =
   await import("../src/components/learning/glossary-browser");
 const { InstitutionDirectory } =
@@ -92,6 +94,31 @@ const agent = createAgent();
 after(() => {
   cleanup();
   dom.window.close();
+});
+
+test("an agent can change the theme through the named toggle", async () => {
+  const view = render(h(ThemeToggle));
+  const label = "Тамна тема";
+  try {
+    const toggle = view.getByRole("button", { name: label });
+    assert.equal(toggle.getAttribute("aria-pressed"), "true");
+    assert.ok(
+      agent.snapshot().some((entry) => !entry.offPage && entry.label === label),
+    );
+    await act(async () => {
+      const result = await agent.act({
+        steps: [{ ref: label, action: "press" }],
+      });
+      assert.ok(result.ok, result.error?.message);
+    });
+    assert.equal(document.documentElement.dataset.theme, "light");
+    assert.equal(window.localStorage.getItem(themeStorageKey), "light");
+    assert.equal(toggle.getAttribute("aria-pressed"), "false");
+  } finally {
+    view.unmount();
+    delete document.documentElement.dataset.theme;
+    window.localStorage.removeItem(themeStorageKey);
+  }
 });
 
 test("an agent can filter institutions through the directory search", async () => {

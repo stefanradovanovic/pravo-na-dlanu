@@ -19,6 +19,7 @@ import { lawPath } from "../src/lib/registry-types";
 import { siteName, siteOrigin } from "../src/lib/social-metadata";
 import { MobileNavigationLinks } from "../src/components/mobile-navigation-links";
 import { HeaderSearch } from "../src/components/header-search";
+import { ThemeToggle } from "../src/components/theme-toggle";
 
 const root = path.resolve("out");
 const records = getRegistry().records;
@@ -32,7 +33,14 @@ const $ = load(
 );
 assert.equal($("main#main").length, 1, "Missing standalone reader shell");
 assert.ok($('link[rel="stylesheet"]').length, "Missing shared stylesheets");
-$("script, link[as=script], link[rel=modulepreload]").remove();
+assert.equal(
+  $("head script#site-theme-init").length,
+  1,
+  "Missing theme initializer",
+);
+$(
+  "script:not(#site-theme-init), link[as=script], link[rel=modulepreload]",
+).remove();
 $("title").text("LAW_PAGE_TITLE_PLACEHOLDER");
 $('link[rel="canonical"]').attr("href", "LAW_PAGE_PATH_PLACEHOLDER");
 $('meta[property="og:title"], meta[name="twitter:title"]').attr(
@@ -55,6 +63,11 @@ const headerSearch = $("#site-header-search");
 assert.equal(headerSearch.length, 1, "Missing header search shell");
 headerSearch.html(
   renderToString(<HeaderSearch />, { identifierPrefix: "site-header-search" }),
+);
+const themeToggle = $("#site-theme-toggle");
+assert.equal(themeToggle.length, 1, "Missing theme toggle shell");
+themeToggle.html(
+  renderToString(<ThemeToggle />, { identifierPrefix: "site-theme-toggle" }),
 );
 
 async function resetGeneratedDirectory(name: string) {

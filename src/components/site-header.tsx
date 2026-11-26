@@ -4,6 +4,7 @@ import { usePathname } from "next/navigation";
 import { Scale, Search } from "lucide-react";
 import { buttonVariants } from "@/components/ui/button";
 import { HeaderSearch } from "./header-search";
+import { ThemeToggle } from "./theme-toggle";
 import {
   getCurrentNavigationHref,
   searchNavigationHref,
@@ -57,6 +58,9 @@ export function SiteHeader() {
       >
         <Search size={21} aria-hidden="true" />
       </Link>
+      <div id="site-theme-toggle" className="contents">
+        <ThemeToggle />
+      </div>
     </header>
   );
 }

@@ -80,3 +80,53 @@ test("select an Assembly seat and clear it by clicking away with a single search
   await expect(seat).not.toBeChecked();
   expect(hydrationErrors).toEqual([]);
 });
+
+test("the Assembly seats and legend use the palette for the active theme", async ({
+  page,
+}) => {
+  const lightColors = [
+    "rgb(189, 73, 60)",
+    "rgb(45, 110, 172)",
+    "rgb(95, 144, 63)",
+  ];
+  const darkColors = [
+    "rgb(225, 96, 83)",
+    "rgb(82, 154, 232)",
+    "rgb(125, 182, 78)",
+  ];
+  const ungroupedColor = "rgb(104, 107, 96)";
+
+  await page.emulateMedia({ colorScheme: "light" });
+  await page.goto("/institucije/skupstina");
+  const map = page.locator("#mapa-poslanika");
+  const seats = map.locator(".member-seat input:enabled + span");
+  const seatColors = () =>
+    seats.evaluateAll((chairs) =>
+      [
+        ...new Set(
+          chairs.map((chair) => getComputedStyle(chair).backgroundColor),
+        ),
+      ].sort(),
+    );
+  const legendColors = () =>
+    map
+      .locator(".member-map-key li i")
+      .evaluateAll((markers) =>
+        markers.map((marker) => getComputedStyle(marker).backgroundColor),
+      );
+
+  await expect(map).toHaveCSS("background-color", "rgb(255, 254, 250)");
+  await expect(map).toHaveCSS("color", "rgb(40, 40, 36)");
+  expect(await seatColors()).toEqual([...lightColors, ungroupedColor].sort());
+  expect(await legendColors()).toEqual(lightColors);
+
+  await page.getByRole("button", { name: "Тамна тема" }).click();
+  await expect(page.locator("body")).toHaveCSS(
+    "background-color",
+    "rgb(13, 13, 13)",
+  );
+  await expect(map).toHaveCSS("background-color", "rgb(23, 23, 23)");
+  await expect(map).toHaveCSS("color", "rgb(242, 242, 242)");
+  expect(await seatColors()).toEqual([...darkColors, ungroupedColor].sort());
+  expect(await legendColors()).toEqual(darkColors);
+});
