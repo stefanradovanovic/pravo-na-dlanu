@@ -21,10 +21,8 @@ export async function generateMetadata({
   const record = getRegistry().records.find(
     (r) => r.id === id || r.slug === id,
   );
-  const canonical = record ? lawPath(record) : undefined;
   return {
-    ...socialMetadata(canonical),
-    alternates: canonical ? { canonical } : undefined,
+    ...socialMetadata(record ? lawPath(record) : undefined),
     title: record?.title ?? "Документ није пронађен",
   };
 }
