@@ -136,13 +136,13 @@ test("show an official portrait and profile at a filtered Assembly seat", async 
     expect(card.x + card.width / 2).toBeCloseTo(floor.x + floor.width / 2, 0);
     expect(photo.x + photo.width / 2).toBeCloseTo(card.x + card.width / 2, 0);
     expect(photo.width).toBe(128);
-    expect(name.x + name.width / 2).toBeCloseTo(card.x + card.width / 2, 0);
     await expect(profile).toHaveCSS("border-top-width", "0px");
   }
   expect(photo.y + photo.height).toBeLessThan(name.y);
+  expect(name.x + name.width / 2).toBeCloseTo(photo.x + photo.width / 2, 0);
   await expect(profile.getByText("доцент · Сопот")).toHaveCSS(
     "text-align",
-    floor.width >= 768 ? "start" : "center",
+    "center",
   );
 
   await profile.getByText("доцент · Сопот").click();

@@ -203,7 +203,7 @@
 }
 .member-map-profile {
   display: grid;
-  justify-items: start;
+  justify-items: center;
   gap: var(--space-3);
   padding: var(--space-3);
   background: var(--card);
@@ -211,7 +211,7 @@
   border: 1px solid var(--border);
   border-radius: var(--radius);
   font-size: var(--text-caption);
-  text-align: start;
+  text-align: center;
 }
 .member-map-portrait {
   display: grid;
@@ -247,8 +247,6 @@
     margin-inline: auto;
   }
   .member-map-profile {
-    justify-items: center;
-    text-align: center;
     border: 0;
   }
   .member-map-portrait {
