@@ -51,7 +51,7 @@ test("switch institution profiles by keyboard and retrace them", async ({
   await expect(page.locator("#institucija-sudovi")).toBeVisible();
 });
 
-test("select an Assembly seat and clear it by clicking away with a single search result", async ({
+test("show an official portrait and profile at a filtered Assembly seat", async ({
   page,
 }) => {
   const hydrationErrors: string[] = [];
@@ -66,19 +66,204 @@ test("select an Assembly seat and clear it by clicking away with a single search
   const map = page.locator("#mapa-poslanika");
   const seat = map.getByRole("radio", { name: /Чупић Александар/ });
   const chair = seat.locator("..");
+  const profile = map.getByRole("region", { name: "Чупић Александар" });
   await chair.hover();
   await expect(chair.locator("small")).toContainText(
     "Председник Народне скупштине",
   );
   await chair.click();
   await expect(seat).toBeChecked();
+  await expect(profile).toContainText("Председник Народне скупштине");
+  await expect(profile).toContainText("доцент · Сопот");
+  const portrait = profile.locator("img");
+  await expect(portrait).toHaveAttribute("src", "/assembly/portraits/1487.jpg");
+  await expect(portrait).toBeVisible();
+  expect(
+    await portrait.evaluate((img) =>
+      img instanceof HTMLImageElement ? img.naturalWidth : 0,
+    ),
+  ).toBeGreaterThan(0);
+  await expect(profile.getByRole("link")).toHaveCount(0);
+  await expect(profile.getByRole("button")).toHaveCount(0);
+  const floor = (await map.locator(".member-map-floor").boundingBox())!;
+  const selection = map.locator(".member-map-selection");
+  expect(await selection.evaluate((panel) => panel.scrollHeight)).toBe(
+    await selection.evaluate((panel) => panel.clientHeight),
+  );
+  const card = (await selection.boundingBox())!;
+  const photo = (await portrait.boundingBox())!;
+  const name = (await profile
+    .getByText("Чупић Александар", { exact: true })
+    .boundingBox())!;
+  if (floor.width >= 768) {
+    expect(card.x + card.width / 2).toBeCloseTo(floor.x + floor.width / 2, 0);
+    expect(card.y).toBeGreaterThan(floor.y);
+    expect(card.y + card.height).toBeLessThan(floor.y + floor.height * 0.55);
+    expect(card.height).toBeGreaterThan(card.width);
+    expect(photo.y + photo.height).toBeLessThan(name.y);
+  } else {
+    expect(card.y).toBeGreaterThanOrEqual(floor.y + floor.height);
+    expect(photo.x + photo.width).toBeLessThan(name.x);
+  }
+
+  await profile.getByText("доцент · Сопот").click();
+  await expect(seat).toBeChecked();
+  await seat.press("Escape");
+  await expect(profile).toHaveCount(0);
+  await expect(seat).toBeFocused();
+  await seat.press("Space");
+  await expect(profile).toBeVisible();
   await map.getByRole("heading").click();
   await expect(seat).not.toBeChecked();
-  await expect(map.locator(".member-map-selection strong")).toHaveCount(0);
+  await expect(profile).toHaveCount(0);
   await chair.click();
   await page.getByPlaceholder("Претражите посланике").click();
   await expect(seat).not.toBeChecked();
+
+  await page.getByPlaceholder("Претражите посланике").fill("dejan bodiroga");
+  await map
+    .getByRole("radio", { name: "Бодирога Дејан" })
+    .locator("..")
+    .click();
+  const observedProfile = map.getByRole("region", { name: "Бодирога Дејан" });
+  await expect(observedProfile).toContainText("спортиста · Београд");
+  await expect(observedProfile).not.toContainText("Стари град");
+  await expect(observedProfile.getByRole("link")).toHaveCount(0);
+
+  if (floor.width >= 768) {
+    await page.getByPlaceholder("Претражите посланике").clear();
+    await map.getByRole("radio", { name: "Бакић Јово" }).locator("..").click();
+    const nearbySeat = map
+      .getByRole("radio", { name: "Гашић Југослав" })
+      .locator("..");
+    await nearbySeat.hover();
+    await expect(nearbySeat.locator("small")).toHaveText("Гашић Југослав");
+    const cardLayer = await selection.evaluate((panel) =>
+      Number(getComputedStyle(panel).zIndex),
+    );
+    const labelLayer = await nearbySeat.evaluate((label) =>
+      Number(getComputedStyle(label).zIndex),
+    );
+    expect(labelLayer).toBeGreaterThan(cardLayer);
+  }
   expect(hydrationErrors).toEqual([]);
+});
+
+test("group the Assembly roster and open portraits from its links", async ({
+  page,
+}, testInfo) => {
+  await page.goto("/institucije/skupstina");
+  const roster = page.locator(".assembly-roster");
+  const sns = roster.getByRole("region", {
+    name: "Александар Вучић - Србија побеђује",
+  });
+  const minorities = roster.getByRole("region", {
+    name: "Посланици са мањинских листа",
+  });
+  const students = roster.getByRole("region", {
+    name: "Студентска листа – Студенти побеђују",
+  });
+  await expect(sns.getByRole("listitem")).toHaveCount(102);
+  await expect(minorities.getByRole("listitem")).toHaveCount(7);
+  await expect(students.getByRole("listitem")).toHaveCount(140);
+  await expect(
+    roster
+      .getByRole("region", { name: "Без посланичке групе" })
+      .getByRole("listitem"),
+  ).toHaveCount(1);
+
+  const [left, middle, right] = await Promise.all([
+    sns.boundingBox(),
+    minorities.boundingBox(),
+    students.boundingBox(),
+  ]);
+  if (testInfo.project.name === "desktop") {
+    expect(left!.x + left!.width).toBeLessThan(middle!.x);
+    expect(middle!.x + middle!.width).toBeLessThan(right!.x);
+  } else {
+    expect(left!.y + left!.height).toBeLessThan(middle!.y);
+    expect(middle!.y + middle!.height).toBeLessThan(right!.y);
+  }
+
+  await page.getByPlaceholder("Претражите посланике").fill("usame zukorlic");
+  await expect(roster.getByRole("listitem")).toHaveCount(1);
+  const link = minorities.locator("#poslanik-1295").getByRole("link");
+  await expect(link).toHaveAttribute("href", "#mapa-poslanika");
+  await link.click();
+  await expect(page).toHaveURL(/#mapa-poslanika$/);
+  const map = page.locator("#mapa-poslanika");
+  await expect(
+    map.getByRole("radio", { name: "Зукорлић Усаме" }),
+  ).toBeChecked();
+  await expect(
+    map.getByRole("region", { name: "Зукорлић Усаме" }).locator("img"),
+  ).toBeInViewport();
+
+  await page.getByPlaceholder("Претражите посланике").fill("jovo bakic");
+  await students.getByRole("link", { name: "Бакић Јово" }).press("Enter");
+  await expect(map.getByRole("radio", { name: "Бакић Јово" })).toBeChecked();
+  await expect(
+    map.getByRole("region", { name: "Бакић Јово" }).locator("img"),
+  ).toBeInViewport();
+});
+
+test("highlight hovered and selected seats while respecting reduced motion", async ({
+  page,
+}) => {
+  await page.emulateMedia({ reducedMotion: "no-preference" });
+  await page.goto("/institucije/skupstina#mapa-poslanika");
+  const seat = page.getByRole("radio", { name: "Бакић Јово" });
+  const chair = seat.locator("..");
+  const dot = chair.locator("span");
+  const fill = () =>
+    dot.evaluate((element) => getComputedStyle(element).backgroundColor);
+  const initialColor = await fill();
+  let hoverColor: string | undefined;
+
+  if (
+    await page.evaluate(
+      () => matchMedia("(hover: hover) and (pointer: fine)").matches,
+    )
+  ) {
+    await chair.hover();
+    await expect.poll(fill).not.toBe(initialColor);
+    await expect(dot).toHaveCSS("translate", "0px -1px");
+    hoverColor = await fill();
+  }
+  await chair.click();
+  await expect(seat).toBeChecked();
+  await expect.poll(fill).not.toBe(initialColor);
+  await expect(dot).toHaveCSS("translate", "0px -2px");
+  await expect(dot).toHaveCSS("outline-style", "none");
+  const selectedStyle = await dot.evaluate((element) => {
+    const highlight = getComputedStyle(element);
+    return {
+      fill: highlight.backgroundColor,
+      outlineStyle: highlight.outlineStyle,
+      shadow: highlight.boxShadow,
+    };
+  });
+  if (hoverColor) expect(selectedStyle.fill).toBe(hoverColor);
+  const yellowHue = Number(
+    selectedStyle.fill.match(/^oklch\([^ ]+ [^ ]+ ([\d.]+)/)?.[1],
+  );
+  expect(yellowHue).toBeGreaterThan(99);
+  expect(yellowHue).toBeLessThan(118);
+  expect(selectedStyle.outlineStyle).toBe("none");
+  expect(selectedStyle.shadow).toBe("none");
+  await page.mouse.move(0, 0);
+  await expect(dot).toHaveCSS("background-color", selectedStyle.fill);
+
+  await seat.press("Escape");
+  await seat.press("Space");
+  await expect(seat).toBeChecked();
+  await expect(dot).toHaveCSS("translate", "none");
+  await expect(dot).toHaveCSS("outline-style", "solid");
+
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  await chair.click();
+  await expect(dot).toHaveCSS("translate", "none");
+  await expect(dot).toHaveCSS("background-color", selectedStyle.fill);
 });
 
 test("the Assembly seats and legend use the palette for the active theme", async ({

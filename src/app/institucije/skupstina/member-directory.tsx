@@ -11,9 +11,40 @@ import {
 } from "@/components/ui/select";
 import { InstitutionSearchInput } from "../institution-search-input";
 
-import { MemberMap, type Member, type Groups } from "./member-map";
+import { MemberMap, seatingArea, type Member, type Groups } from "./member-map";
 const searchName = (value: string) =>
   normalizeSearch(value).replaceAll("dj", "d");
+
+function MemberList({
+  label,
+  members,
+  onSelect,
+}: {
+  label: string;
+  members: Member[];
+  onSelect: (id: string) => void;
+}) {
+  if (!members.length) return null;
+
+  return (
+    <section aria-label={label}>
+      <h2>{label}</h2>
+      <ul className="assembly-list">
+        {members.map((member) => (
+          <li id={`poslanik-${member.id}`} key={member.id} tabIndex={-1}>
+            <a
+              className="text-link"
+              href="#mapa-poslanika"
+              onClick={() => onSelect(member.id)}
+            >
+              {member.name}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </section>
+  );
+}
 
 export function MemberDirectory({
   members,
@@ -24,6 +55,7 @@ export function MemberDirectory({
 }) {
   const [query, setQuery] = useState("");
   const [group, setGroup] = useState("all");
+  const [selectedId, setSelectedId] = useState("");
   const words = searchName(query).split(" ").filter(Boolean);
   const options = [
     { value: "all", label: "Све групе" },
@@ -37,6 +69,8 @@ export function MemberDirectory({
       (group === "all" || member.group === group) &&
       words.every((word) => searchName(member.name).includes(word)),
   );
+  const membersInArea = (area: string) =>
+    visible.filter((member) => seatingArea(member) === area);
   return (
     <>
       <div className="assembly-filters">
@@ -74,17 +108,41 @@ export function MemberDirectory({
           ? `Приказано: ${visible.length} од ${members.length}`
           : "Нема посланика за изабрану претрагу."}
       </p>
-      <MemberMap members={members} groups={groups} visible={visible} />
-      <ul className="assembly-list">
-        {visible.map((member) => (
-          <li id={`poslanik-${member.id}`} key={member.id} tabIndex={-1}>
-            <a className="text-link" href={member.source}>
-              {member.name}
-            </a>
-            <span>{groups[member.group].name}</span>
-          </li>
-        ))}
-      </ul>
+      <MemberMap
+        members={members}
+        groups={groups}
+        visible={visible}
+        selectedId={selectedId}
+        onSelect={setSelectedId}
+      />
+      <div className="assembly-roster">
+        <div>
+          <MemberList
+            label={groups["175"].name}
+            members={membersInArea("175")}
+            onSelect={setSelectedId}
+          />
+        </div>
+        <div>
+          <MemberList
+            label="Посланици са мањинских листа"
+            members={membersInArea("minority")}
+            onSelect={setSelectedId}
+          />
+          <MemberList
+            label={groups["173"].name}
+            members={membersInArea("173")}
+            onSelect={setSelectedId}
+          />
+        </div>
+        <div>
+          <MemberList
+            label={groups["174"].name}
+            members={membersInArea("174")}
+            onSelect={setSelectedId}
+          />
+        </div>
+      </div>
     </>
   );
 }
