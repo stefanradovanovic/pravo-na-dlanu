@@ -2,12 +2,12 @@ import type { Metadata } from "next";
 import type { CSSProperties } from "react";
 import { BookOpen, Lightbulb, Scale } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-import { socialMetadata } from "@/lib/social-metadata";
+import { siteMetadata } from "@/lib/social-metadata";
 import { ComponentExamples } from "./components";
 import "./system.css";
 
 export const metadata: Metadata = {
-  ...socialMetadata("/dizajn-sistem"),
+  ...siteMetadata("/dizajn-sistem"),
   title: "Дизајн систем",
   description:
     "Боје, типографија, компоненте и правила приказа за Право на длану.",

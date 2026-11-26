@@ -2,7 +2,14 @@ import data from "../../../../content/assembly-directory.json";
 import { AssemblyShell } from "./assembly-shell";
 import { MemberDirectory } from "./member-directory";
 
-export const metadata = { title: "Народни посланици" };
+import { siteMetadata } from "@/lib/social-metadata";
+
+export const metadata = {
+  ...siteMetadata("/institucije/skupstina"),
+  title: "Народни посланици",
+  description:
+    "Именик народних посланика Србије са посланичким групама, мапом седења у Великој сали и везама ка изворима Народне скупштине.",
+};
 
 export default function MembersPage() {
   return (

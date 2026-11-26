@@ -1,11 +1,13 @@
 import Link from "next/link";
 import { ArrowLeft, ArrowUpRight } from "lucide-react";
 import { getRegistry } from "@/lib/registry";
-import { socialMetadata } from "@/lib/social-metadata";
+import { siteMetadata } from "@/lib/social-metadata";
 
 export const metadata = {
-  ...socialMetadata("/o-projektu"),
+  ...siteMetadata("/o-projektu"),
   title: "Обухват, извори и актуелност",
+  description:
+    "Шта збирка обухвата, како преузимамо прописе из ПИС-а и како приказујемо верзије, изворе, факсимиле и примере за учење.",
 };
 export default function AboutPage() {
   const { report, records } = getRegistry();

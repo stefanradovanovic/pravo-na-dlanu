@@ -1,20 +1,26 @@
 import type { Metadata } from "next";
 
-export const siteOrigin = new URL("https://pravo-na-dlanu.vercel.app");
+export const siteOrigin = new URL("https://pravonadlanu.com");
 export const siteName = "Право на длану";
 
-export function socialMetadata(
+export function siteUrl(pathname: string) {
+  return new URL(pathname, siteOrigin).href;
+}
+
+export function siteMetadata(
   pathname?: string,
-): Pick<Metadata, "openGraph" | "twitter"> {
+): Pick<Metadata, "alternates" | "openGraph" | "twitter"> {
+  const url = pathname ? siteUrl(pathname) : undefined;
   return {
+    alternates: url ? { canonical: url } : undefined,
     openGraph: {
       type: "website",
       siteName,
       locale: "sr_RS",
-      url: pathname ? new URL(pathname, siteOrigin) : undefined,
+      url,
       images: [
         {
-          url: new URL("/share-open-palm.jpg", siteOrigin),
+          url: siteUrl("/share-open-palm.jpg"),
           type: "image/jpeg",
           width: 1200,
           height: 630,

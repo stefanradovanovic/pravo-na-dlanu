@@ -4,10 +4,10 @@ import assembly from "../../content/assembly-directory.json";
 import { getRegistry } from "@/lib/registry";
 import { RegistryExplorer } from "@/components/registry-explorer";
 import { buttonVariants } from "@/components/ui/button";
-import { socialMetadata } from "@/lib/social-metadata";
+import { siteMetadata } from "@/lib/social-metadata";
 import { AssemblyMapPreview } from "./assembly-map-preview";
 
-export const metadata = socialMetadata("/");
+export const metadata = siteMetadata("/");
 
 export default function Home() {
   const registry = getRegistry();
