@@ -17,6 +17,13 @@ export type InstitutionProfile = {
   sources: readonly InstitutionSource[];
   keywords?: string;
   mapId?: string;
+  leadership?: {
+    heading: string;
+    description: string;
+    links: InstitutionSource[];
+    sources: InstitutionSource[];
+    accessedAt: string;
+  };
   ministryDetails?: MinistryDetails;
   contact?: {
     title?: string;
@@ -362,6 +369,12 @@ export const ministries = [
   ),
 ];
 
+const speakerSource = {
+  title: "Председник Народне скупштине",
+  href: "https://www.parlament.gov.rs/народна-скупштина/организација-и-стручна-служба/председник-народне-скупштине.287.html",
+};
+const deputyMinistries = ["finansije", "unutrasnji-poslovi"] as const;
+
 export const institutionGroups: readonly InstitutionGroup[] = [
   {
     id: "drzavna-vlast",
@@ -380,7 +393,17 @@ export const institutionGroups: readonly InstitutionGroup[] = [
         ],
         sources: [constitution(98), constitution(99), constitution(130)],
         mapId: "narodna-skupstina",
-        keywords: "парламент",
+        keywords: "парламент народни посланици одбори",
+        leadership: {
+          heading: "Петнаести сазив",
+          description: "Председник Народне скупштине је Александар Чупић.",
+          links: [
+            { title: "Народни посланици", href: "/institucije/skupstina" },
+            { title: "Одбори", href: "/institucije/skupstina/odbori" },
+          ],
+          sources: [speakerSource],
+          accessedAt: "2026-11-26",
+        },
       },
       {
         id: "predsednik-republike",
@@ -392,8 +415,27 @@ export const institutionGroups: readonly InstitutionGroup[] = [
           "Проглашава закон указом или га враћа Скупштини на поновно одлучивање",
           "Поставља и опозива амбасадоре на предлог Владе",
         ],
-        sources: [constitution(112), constitution(113), constitution(114)],
+        sources: [
+          constitution(112),
+          constitution(113),
+          constitution(114),
+          constitution(120),
+        ],
         mapId: "vlast",
+        leadership: {
+          heading: "Ко обавља дужност",
+          description:
+            "Александар Чупић, председник Народне скупштине, привремено замењује председника Републике у складу са чланом 120. Устава.",
+          links: [],
+          sources: [
+            speakerSource,
+            {
+              title: "Престанак мандата председника Републике",
+              href: "https://www.predsednik.rs/predsednik/na-celu-srbije",
+            },
+          ],
+          accessedAt: "2026-11-26",
+        },
       },
       {
         id: "vlada",
@@ -409,6 +451,29 @@ export const institutionGroups: readonly InstitutionGroup[] = [
         sources: [constitution(122), constitution(123), constitution(125)],
         mapId: "vlada",
         keywords: "премијер",
+        leadership: {
+          heading: "Руководство Владе",
+          description:
+            "Ђуро Мацут је председник Владе. Влада ради у техничком мандату.",
+          links: [
+            ...deputyMinistries.map((id) => ({
+              title:
+                ministryDetails[id].minister.name +
+                " · " +
+                ministryDetails[id].minister.title,
+              href: "#institucija-" + id,
+            })),
+            { title: "Сва министарства", href: "#ministarstva" },
+            { title: "Министри без портфеља", href: "#ministri-bez-portfelja" },
+          ],
+          sources: [
+            {
+              title: "Саопштење Владе од 24. новембра",
+              href: "https://www.srbija.gov.rs/vest/1012023/macut-uputio-saucesce-povodom-smrti-mitropolita-backog-irineja.php",
+            },
+          ],
+          accessedAt: "2026-11-26",
+        },
       },
     ],
   },
@@ -800,13 +865,14 @@ export function filterInstitutionGroups(
   function matchingProfiles(section: InstitutionSection) {
     if (matches(section.title)) return section.profiles;
     return section.profiles.filter(
-      ({ name, summary, duties, keywords, ministryDetails }) =>
+      ({ name, summary, duties, keywords, ministryDetails, leadership }) =>
         matches(
           [
             name,
             summary,
             ...duties,
             keywords,
+            leadership?.description,
             ministryDetails?.minister.name,
           ].join(" "),
         ),

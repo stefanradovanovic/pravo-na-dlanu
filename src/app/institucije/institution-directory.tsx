@@ -53,10 +53,12 @@ function ProfileIndexLinks({
 function ProfileCard({
   profile,
   children,
+  onNavigate,
   headingLevel = "h3",
 }: {
   profile: InstitutionProfile;
   children?: ReactNode;
+  onNavigate?: () => void;
   headingLevel?: "h3" | "h4";
 }) {
   const { contact, ministryDetails: details } = profile;
@@ -91,6 +93,26 @@ function ProfileCard({
           {heading}
           {description}
         </header>
+      )}
+      {profile.leadership && (
+        <section className="institution-profile-contact">
+          <h4>{profile.leadership.heading}</h4>
+          <p>{profile.leadership.description}</p>
+          {profile.leadership.links.map((link) => (
+            <a
+              key={link.href}
+              className="text-link"
+              href={link.href}
+              onClick={link.href.startsWith("#") ? onNavigate : undefined}
+            >
+              {link.title}
+            </a>
+          ))}
+          <InstitutionSources sources={profile.leadership.sources} />
+          <small>
+            <SourceAccessDate accessedAt={profile.leadership.accessedAt} />
+          </small>
+        </section>
       )}
       {details && <MinistryContacts details={details} />}
       {contact && (
@@ -282,7 +304,11 @@ export function InstitutionDirectory({
               {group.profiles.length > 0 && (
                 <div className="institution-profiles">
                   {group.profiles.map((profile) => (
-                    <ProfileCard key={profile.id} profile={profile}>
+                    <ProfileCard
+                      key={profile.id}
+                      profile={profile}
+                      onNavigate={() => setQuery("")}
+                    >
                       {profile.id === "sudovi" && (
                         <CourtDirectory data={courts} />
                       )}
