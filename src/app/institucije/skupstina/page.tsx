@@ -1,8 +1,12 @@
 import data from "../../../../content/assembly-directory.json";
+import { socialMetadata } from "@/lib/social-metadata";
 import { AssemblyShell } from "./assembly-shell";
 import { MemberDirectory } from "./member-directory";
 
-export const metadata = { title: "Народни посланици" };
+export const metadata = {
+  ...socialMetadata("/institucije/skupstina"),
+  title: "Народни посланици",
+};
 
 export default function MembersPage() {
   return (

@@ -39,15 +39,16 @@ test("law text and metadata are complete without JavaScript", async ({
   await expect(
     page.locator('.article-navigation a[href="#clan-3"]'),
   ).toContainText("Владавина права");
+  const canonical = "https://pravonadlanu.com/propisi/ustav-republike-srbije";
   await expect(page.locator('link[rel="canonical"]')).toHaveAttribute(
     "href",
-    "/propisi/ustav-republike-srbije",
+    canonical,
   );
   await expect(page.locator('head meta[property="og:url"]')).toHaveAttribute(
     "content",
-    "https://pravo-na-dlanu.vercel.app/propisi/ustav-republike-srbije",
+    canonical,
   );
-  const shareImage = "https://pravo-na-dlanu.vercel.app/share-open-palm.jpg";
+  const shareImage = "https://pravonadlanu.com/share-open-palm.jpg";
   await expect(page.locator('head meta[property="og:image"]')).toHaveAttribute(
     "content",
     shareImage,

@@ -1,9 +1,13 @@
 import { assemblyRulesSource } from "@/lib/assembly-map";
+import { socialMetadata } from "@/lib/social-metadata";
 import data from "../../../../../content/assembly-directory.json";
 import { AssemblyShell } from "../assembly-shell";
 import { buttonVariants } from "@/components/ui/button";
 
-export const metadata = { title: "Одбори" };
+export const metadata = {
+  ...socialMetadata("/institucije/skupstina/odbori"),
+  title: "Одбори",
+};
 const members = new Map(data.members.map((member) => [member.id, member.name]));
 
 export default function CommitteesPage() {
