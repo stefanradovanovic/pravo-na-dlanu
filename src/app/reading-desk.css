@@ -5,8 +5,24 @@ html {
 .site-header,
 .catalog-intro,
 .workspace,
-.site-footer {
+.site-footer,
+.full-document,
+.institution-page,
+.page-intro,
+.learning-workspace,
+.reading-guide-page,
+.about-page,
+.ds-page {
   padding-inline: max(var(--space-8), calc((100% - var(--layout-wide)) / 2));
+
+  @media (max-width: 1200px) {
+    padding-inline: var(--space-6);
+  }
+
+  @media (max-width: 800px) {
+    padding-inline: max(var(--space-4), env(safe-area-inset-left, 0px))
+      max(var(--space-4), env(safe-area-inset-right, 0px));
+  }
 }
 .site-header {
   position: sticky;
@@ -132,8 +148,8 @@ html {
 .full-document {
   display: grid;
   grid-template-columns: var(--reader-sidebar-width) minmax(0, 1fr);
-  max-width: 100%;
-  padding: 0;
+  max-width: none;
+  padding-block: 0;
   margin: 0;
   align-items: stretch;
 }
@@ -153,7 +169,8 @@ html {
   min-width: 0;
   max-width: 72rem;
   width: 100%;
-  padding: 1.5rem clamp(2rem, 3vw, 3rem) 4rem;
+  padding-block: 1.5rem 4rem;
+  padding-inline-start: clamp(2rem, 3vw, 3rem);
 }
 .full-document .reader-heading {
   max-width: 58rem;
@@ -508,15 +525,6 @@ html {
   .site-header {
     gap: var(--space-4);
   }
-  .site-header,
-  .catalog-intro,
-  .workspace,
-  .site-footer {
-    padding-inline: var(--space-6);
-  }
-  .reader-main {
-    padding-inline: 2rem;
-  }
   .document-breadcrumb {
     display: none;
   }
@@ -588,7 +596,7 @@ html {
   .reader-main {
     max-width: 55rem;
     margin: auto;
-    padding: 1.5rem 2rem 3rem;
+    padding: 1.5rem 0 3rem;
   }
   .full-document .reader-heading {
     margin-top: 1.5rem;
@@ -604,13 +612,6 @@ html {
   .site-header {
     gap: var(--space-4);
     flex-wrap: nowrap;
-  }
-  .site-header,
-  .catalog-intro,
-  .workspace,
-  .site-footer {
-    padding-inline: max(var(--space-4), env(safe-area-inset-left, 0px))
-      max(var(--space-4), env(safe-area-inset-right, 0px));
   }
   .site-header .brand {
     font-size: 1.125rem;
@@ -634,7 +635,7 @@ html {
     color: var(--primary);
   }
   .page-intro {
-    padding: 2rem 1.25rem;
+    padding-block: 2rem;
   }
   .page-intro h1 {
     font-size: 2rem;
@@ -646,7 +647,7 @@ html {
     padding-inline: 1.25rem;
   }
   .reader-main {
-    padding: 1rem 1.25rem 2.5rem;
+    padding-block: 1rem 2.5rem;
   }
   .document-toolbar {
     flex-direction: row;
@@ -734,6 +735,7 @@ html {
 @media print {
   .full-document {
     display: block;
+    padding: 0;
   }
   .reader-sidebar,
   .back-to-top,

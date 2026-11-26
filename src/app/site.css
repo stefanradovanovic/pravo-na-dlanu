@@ -66,9 +66,7 @@
   color: var(--muted-foreground);
 }
 .learning-workspace {
-  max-width: var(--layout-wide);
-  margin: auto;
-  padding: var(--space-6) var(--space-8) var(--space-16);
+  padding-block: var(--space-6) var(--space-16);
 }
 .learning-workspace h2 {
   font-family: var(--type-editorial);
@@ -113,7 +111,6 @@
   margin-top: 0;
 }
 .glossary-workspace {
-  max-width: calc(var(--measure-reading) + 2 * var(--space-12));
   overflow-wrap: anywhere;
 }
 .glossary-filters {
@@ -570,7 +567,7 @@
 }
 @media (max-width: 600px) {
   .learning-workspace {
-    padding: 18px 18px 42px;
+    padding-block: 18px 42px;
   }
   .learning-question,
   .learning-results,
@@ -714,7 +711,7 @@ a {
   top: 10px;
 }
 .page-intro {
-  padding: var(--space-12) var(--space-6) var(--space-8);
+  padding-block: var(--space-12) var(--space-8);
   text-align: center;
   background: radial-gradient(ellipse at top, var(--accent) 0, transparent 66%);
 }
@@ -1548,9 +1545,10 @@ a {
   text-underline-offset: 3px;
 }
 .about-page {
-  max-width: 850px;
-  margin: auto;
-  padding: 30px 30px 80px;
+  padding-block: 30px 80px;
+}
+.about-page > :is(p, section, .coverage-stats) {
+  max-width: var(--measure-reading);
 }
 .about-page h1 {
   font-family: var(--type-editorial);
@@ -1780,9 +1778,6 @@ a {
   .brand small {
     letter-spacing: 0;
   }
-  .page-intro {
-    padding-inline: 18px;
-  }
   .page-intro h1 {
     font-size: 1.8125rem;
     letter-spacing: -1px;
@@ -1907,9 +1902,6 @@ a {
   }
   .reader-layout {
     margin-top: 25px;
-  }
-  .about-page {
-    padding-inline: 20px;
   }
   .about-page h1 {
     font-size: 2rem;

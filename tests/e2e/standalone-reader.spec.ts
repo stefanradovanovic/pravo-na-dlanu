@@ -1,5 +1,26 @@
 import { test, expect } from "@playwright/test";
 
+test("the law reader aligns with the shared page margins", async ({
+  page,
+  isMobile,
+}) => {
+  if (!isMobile) await page.setViewportSize({ width: 1920, height: 900 });
+  await page.goto("/propisi/ustav-republike-srbije");
+
+  const headerEdges = await page.locator(".site-header").evaluate((header) => {
+    const { left, right } = header.getBoundingClientRect();
+    const { paddingLeft, paddingRight } = getComputedStyle(header);
+    return {
+      left: left + parseFloat(paddingLeft),
+      right: right - parseFloat(paddingRight),
+    };
+  });
+  const sidebar = await page.locator(".reader-sidebar").boundingBox();
+  const reader = await page.locator(".reader-main").boundingBox();
+  expect(sidebar!.x).toBeCloseTo(headerEdges.left);
+  expect(reader!.x + reader!.width).toBeCloseTo(headerEdges.right);
+});
+
 test("law text and metadata are complete without JavaScript", async ({
   browser,
   baseURL,

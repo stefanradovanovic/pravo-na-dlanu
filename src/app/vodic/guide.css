@@ -1,7 +1,5 @@
 .reading-guide-page {
-  max-width: 1160px;
-  margin: auto;
-  padding: 0 28px var(--space-16);
+  padding-block-end: var(--space-16);
 }
 .guide-intro {
   max-width: 760px;
@@ -208,7 +206,7 @@
 }
 @media (max-width: 760px) {
   .reading-guide-page {
-    padding: 0 20px 40px;
+    padding-block-end: 40px;
   }
   .guide-intro {
     padding: 36px 0;

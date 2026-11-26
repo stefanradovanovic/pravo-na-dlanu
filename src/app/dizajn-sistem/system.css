@@ -1,8 +1,6 @@
 /* Scoped to the design-system reference; the project CSS loader uses global stylesheets. */
 .ds-page {
-  max-width: var(--layout-wide);
-  margin: auto;
-  padding: var(--space-12) var(--space-8) var(--space-16);
+  padding-block: var(--space-12) var(--space-16);
 }
 
 .ds-hero {
@@ -439,7 +437,7 @@
 }
 @media (max-width: 800px) {
   .ds-page {
-    padding: var(--space-8) var(--space-6) var(--space-12);
+    padding-block: var(--space-8) var(--space-12);
   }
   .ds-layout {
     grid-template-columns: 1fr;
@@ -461,9 +459,6 @@
   }
 }
 @media (max-width: 520px) {
-  .ds-page {
-    padding-inline: var(--space-4);
-  }
   .ds-hero {
     padding-bottom: var(--space-8);
   }

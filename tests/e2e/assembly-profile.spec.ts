@@ -50,3 +50,33 @@ test("switch institution profiles by keyboard and retrace them", async ({
   await page.goForward();
   await expect(page.locator("#institucija-sudovi")).toBeVisible();
 });
+
+test("select an Assembly seat and clear it by clicking away with a single search result", async ({
+  page,
+}) => {
+  const hydrationErrors: string[] = [];
+  page.on("console", (message) => {
+    if (message.type() === "error" && /hydrat/i.test(message.text())) {
+      hydrationErrors.push(message.text());
+    }
+  });
+  page.on("pageerror", (error) => hydrationErrors.push(error.message));
+  await page.goto("/institucije/skupstina#mapa-poslanika");
+  await page.getByPlaceholder("Претражите посланике").fill("aleksandar cupic");
+  const map = page.locator("#mapa-poslanika");
+  const seat = map.getByRole("radio", { name: /Чупић Александар/ });
+  const chair = seat.locator("..");
+  await chair.hover();
+  await expect(chair.locator("small")).toContainText(
+    "Председник Народне скупштине",
+  );
+  await chair.click();
+  await expect(seat).toBeChecked();
+  await map.getByRole("heading").click();
+  await expect(seat).not.toBeChecked();
+  await expect(map.locator(".member-map-selection strong")).toHaveCount(0);
+  await chair.click();
+  await page.getByPlaceholder("Претражите посланике").click();
+  await expect(seat).not.toBeChecked();
+  expect(hydrationErrors).toEqual([]);
+});
