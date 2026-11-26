@@ -11,9 +11,7 @@ import {
 } from "@/components/ui/select";
 import { InstitutionSearchInput } from "../institution-search-input";
 
-type Member = { id: string; name: string; group: string; source: string };
-type Groups = Record<string, { name: string }>;
-
+import { MemberMap, type Member, type Groups } from "./member-map";
 const searchName = (value: string) =>
   normalizeSearch(value).replaceAll("dj", "d");
 
@@ -76,6 +74,7 @@ export function MemberDirectory({
           ? `Приказано: ${visible.length} од ${members.length}`
           : "Нема посланика за изабрану претрагу."}
       </p>
+      <MemberMap members={members} groups={groups} visible={visible} />
       <ul className="assembly-list">
         {visible.map((member) => (
           <li id={`poslanik-${member.id}`} key={member.id} tabIndex={-1}>
