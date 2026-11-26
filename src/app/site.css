@@ -1941,7 +1941,7 @@ a {
   min-height: 100px;
   text-align: left;
   white-space: normal;
-  width: 260px !important;
+  width: 100% !important;
   padding: var(--space-4) !important;
 }
 .registry-node strong {
@@ -1966,7 +1966,20 @@ a {
   min-width: 0;
 }
 .registry-canvas {
-  height: 600px;
+  height: max(600px, var(--registry-fit-height, 0px));
+}
+.registry-canvas .react-flow__edge-path {
+  stroke: color-mix(in srgb, var(--brand) 45%, var(--surface-map));
+  stroke-width: 1;
+}
+.registry-canvas .react-flow__edge.is-highlighted .react-flow__edge-path {
+  stroke: var(--brand);
+  stroke-width: 1.5;
+}
+@media (pointer: coarse) {
+  .map-shell:not(.is-fullscreen) .registry-canvas .react-flow__pane {
+    touch-action: pan-y pinch-zoom;
+  }
 }
 .map-shell.is-fullscreen {
   width: 100vw;
@@ -2096,7 +2109,7 @@ a {
 }
 @media (max-width: 800px) {
   .registry-canvas {
-    height: 530px;
+    height: max(530px, var(--registry-fit-height, 0px));
   }
   .source-banner {
     flex-wrap: wrap;

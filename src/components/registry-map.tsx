@@ -1,5 +1,11 @@
 "use client";
-import { useEffect, useMemo, useRef, useState } from "react";
+import {
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  useSyncExternalStore,
+} from "react";
 import {
   ReactFlow,
   ReactFlowProvider,
@@ -7,8 +13,8 @@ import {
   Handle,
   Position,
   BaseEdge,
+  getViewportForBounds,
   useReactFlow,
-  useNodesInitialized,
   useStore,
   type EdgeProps,
   type NodeProps,
@@ -37,17 +43,45 @@ import { documentUrl } from "@/lib/explorer-url";
 import "@xyflow/react/dist/style.css";
 type Data = {
   label: string;
-  caption: string;
+  caption?: string;
   kind: "root" | "category" | "law";
   target: string;
   sourcePosition?: Position;
   targetPosition?: Position;
   activate?: () => void;
+  onHoverChange?: (id: string | null) => void;
+  onFocusChange?: (id: string | null) => void;
 };
 type MapNode = Node<Data>;
+type MapEdge = Edge<{ railX: number }>;
+const nodeWidth = 260;
 const columnStep = 320;
+const gutterCenterOffset = (columnStep - nodeWidth) / 2;
 const rowStep = 168;
 const firstRowY = 180;
+const minZoom = 0.05;
+const maxZoom = 1.5;
+const leftPadding = 48;
+const rightPadding = 24;
+const verticalPadding = 24;
+const fitOptions = {
+  padding: {
+    left: `${leftPadding}px`,
+    right: `${rightPadding}px`,
+    y: `${verticalPadding}px`,
+  },
+} as const;
+const coarsePointerQuery = "(pointer: coarse)";
+
+function subscribeToPointer(onChange: () => void) {
+  const media = window.matchMedia(coarsePointerQuery);
+  media.addEventListener("change", onChange);
+  return () => media.removeEventListener("change", onChange);
+}
+
+function hasCoarsePointer() {
+  return window.matchMedia(coarsePointerQuery).matches;
+}
 
 function fitColumns(count: number, aspectRatio: number) {
   let columns = 1;
@@ -64,7 +98,7 @@ function fitColumns(count: number, aspectRatio: number) {
   return columns;
 }
 
-function DocumentNode({ data }: NodeProps<MapNode>) {
+function DocumentNode({ id, data }: NodeProps<MapNode>) {
   const Icon =
     data.kind === "law" ? BookOpen : data.kind === "root" ? Scale : FolderOpen;
   return (
@@ -73,6 +107,16 @@ function DocumentNode({ data }: NodeProps<MapNode>) {
       className={`legal-node registry-node ${data.kind}`}
       title={data.label}
       onClick={data.activate}
+      onPointerEnter={(event) => {
+        if (event.pointerType === "mouse") data.onHoverChange?.(id);
+      }}
+      onPointerLeave={() => data.onHoverChange?.(null)}
+      onFocus={(event) => {
+        if (event.currentTarget.matches(":focus-visible")) {
+          data.onFocusChange?.(id);
+        }
+      }}
+      onBlur={() => data.onFocusChange?.(null)}
       style={
         {
           "--node-color":
@@ -90,7 +134,7 @@ function DocumentNode({ data }: NodeProps<MapNode>) {
       </span>
       <div>
         <strong>{data.label}</strong>
-        <small>{data.caption}</small>
+        {data.caption && <small>{data.caption}</small>}
       </div>
       <ArrowUpRight size={13} />
       {data.sourcePosition && (
@@ -103,32 +147,62 @@ const nodeTypes = { document: DocumentNode };
 // Route category membership through the gutters, never behind another card.
 function MembershipEdge({
   id,
+  data,
   sourceX,
   sourceY,
   targetX,
   targetY,
-  style,
-}: EdgeProps) {
-  const railX = targetX - 28;
+}: EdgeProps<MapEdge>) {
+  if (!data) return null;
   const busY = (sourceY + firstRowY) / 2;
-  const path = `M ${sourceX} ${sourceY} V ${busY} H ${railX} V ${targetY} H ${targetX}`;
-  return <BaseEdge id={id} path={path} style={style} interactionWidth={0} />;
+  const path = `M ${sourceX} ${sourceY} V ${busY} H ${data.railX} V ${targetY} H ${targetX}`;
+  return <BaseEdge id={id} path={path} interactionWidth={0} />;
 }
 const edgeTypes = { membership: MembershipEdge };
-function FitCanvas({ columns }: { columns: number }) {
-  const { fitView } = useReactFlow();
-  const ready = useNodesInitialized();
+function FitCanvas({
+  columns,
+  fullscreen,
+}: {
+  columns: number;
+  fullscreen: boolean;
+}) {
+  const { getNodes, getNodesBounds, setViewport } = useReactFlow();
+  const ready = useStore(
+    ({ nodeLookup, panZoom }) =>
+      panZoom !== null &&
+      nodeLookup.size > 0 &&
+      Array.from(nodeLookup.values()).every(
+        (node) => node.measured.height !== undefined,
+      ),
+  );
   const width = useStore((state) => state.width);
   const height = useStore((state) => state.height);
   useEffect(() => {
-    if (!ready) return;
-    let frame = requestAnimationFrame(() => {
-      frame = requestAnimationFrame(() => {
-        void fitView({ padding: 0.12 });
-      });
+    if (!ready || !width || !height) return;
+    const frame = requestAnimationFrame(() => {
+      const bounds = getNodesBounds(getNodes().map((node) => node.id));
+      void setViewport(
+        getViewportForBounds(
+          bounds,
+          width,
+          height,
+          minZoom,
+          maxZoom,
+          fitOptions.padding,
+        ),
+      );
     });
     return () => cancelAnimationFrame(frame);
-  }, [columns, width, height, ready, fitView]);
+  }, [
+    columns,
+    fullscreen,
+    width,
+    height,
+    ready,
+    getNodes,
+    getNodesBounds,
+    setViewport,
+  ]);
   return null;
 }
 
@@ -143,9 +217,28 @@ function MapControls({
   onToggleFullscreen,
   fullscreenButton,
 }: MapControlsProps) {
-  const { zoomIn, zoomOut } = useReactFlow();
-  const canZoomIn = useStore((state) => state.transform[2] < state.maxZoom);
-  const canZoomOut = useStore((state) => state.transform[2] > state.minZoom);
+  const { getViewport, setViewport, zoomIn, zoomOut } = useReactFlow();
+  const width = useStore((state) => state.width);
+  const canZoomIn = useStore((state) => state.transform[2] < maxZoom);
+  const canZoomOut = useStore((state) => state.transform[2] > minZoom);
+  function zoom(increase: boolean) {
+    if (fullscreen) {
+      void (increase ? zoomIn() : zoomOut());
+      return;
+    }
+
+    const { x, y, zoom: currentZoom } = getViewport();
+    const nextZoom = increase
+      ? Math.min(maxZoom, currentZoom * 1.2)
+      : Math.max(minZoom, currentZoom / 1.2);
+    const scale = nextZoom / currentZoom;
+    // Keep the top of a tall inline map in view when zooming from its toolbar.
+    void setViewport({
+      x: width / 2 + (x - width / 2) * scale,
+      y: verticalPadding + (y - verticalPadding) * scale,
+      zoom: nextZoom,
+    });
+  }
   return (
     <div
       role="group"
@@ -159,9 +252,7 @@ function MapControls({
         title="Увећај мапу"
         disabled={!canZoomIn}
         focusableWhenDisabled
-        onClick={() => {
-          void zoomIn();
-        }}
+        onClick={() => zoom(true)}
       >
         <Plus aria-hidden="true" />
       </Button>
@@ -172,9 +263,7 @@ function MapControls({
         title="Умањи мапу"
         disabled={!canZoomOut}
         focusableWhenDisabled
-        onClick={() => {
-          void zoomOut();
-        }}
+        onClick={() => zoom(false)}
       >
         <Minus aria-hidden="true" />
       </Button>
@@ -207,6 +296,16 @@ type RegistryMapProps = {
 export function RegistryMap(props: RegistryMapProps) {
   const [fullscreen, setFullscreen] = useState(false);
   const fullscreenButton = useRef<HTMLButtonElement>(null);
+  const toolbar = useRef<HTMLDivElement>(null);
+
+  function selectCategory(value: string) {
+    const element = toolbar.current;
+    if (!fullscreen && element && element.getBoundingClientRect().top < 0) {
+      element.scrollIntoView({ block: "start" });
+    }
+    props.onCategory(value);
+  }
+
   useEffect(() => {
     if (!fullscreen) return;
     const previous = document.body.style.overflow;
@@ -227,6 +326,8 @@ export function RegistryMap(props: RegistryMapProps) {
     <ReactFlowProvider key={props.category}>
       <RegistryMapContent
         {...props}
+        onCategory={selectCategory}
+        toolbar={toolbar}
         fullscreen={fullscreen}
         onToggleFullscreen={() => setFullscreen((value) => !value)}
         fullscreenButton={fullscreenButton}
@@ -244,15 +345,50 @@ function RegistryMapContent({
   fullscreen,
   onToggleFullscreen,
   fullscreenButton,
-}: RegistryMapProps & MapControlsProps) {
-  const aspectRatio = useStore((state) =>
-    state.width > 0 && state.height > 0 ? state.width / state.height : 2,
+  toolbar,
+}: RegistryMapProps &
+  MapControlsProps & { toolbar: React.Ref<HTMLDivElement> }) {
+  const [hoveredNodeId, setHoveredNodeId] = useState<string | null>(null);
+  const [focusedNodeId, setFocusedNodeId] = useState<string | null>(null);
+  const width = useStore((state) => state.width);
+  const fullscreenHeight = useStore((state) => (fullscreen ? state.height : 0));
+  const coarsePointer = useSyncExternalStore(
+    subscribeToPointer,
+    hasCoarsePointer,
+    () => false,
   );
-  const columns =
-    category === "all" ? 4 : fitColumns(records.length, aspectRatio);
+  const overview = category === "all";
+  const count = overview ? categories.length : records.length;
+  const availableWidth = Math.max(0, width - leftPadding - rightPadding);
+  const inlineColumns = Math.max(
+    1,
+    1 + Math.floor((availableWidth - nodeWidth) / columnStep),
+  );
+  const maxColumns = overview ? Math.min(4, count) : count;
+  const fittedColumns = Math.max(
+    1,
+    Math.min(
+      maxColumns,
+      fullscreen && fullscreenHeight > 0
+        ? fitColumns(
+            count,
+            availableWidth /
+              Math.max(1, fullscreenHeight - 2 * verticalPadding),
+          )
+        : inlineColumns,
+    ),
+  );
+  const useFiveColumns =
+    !overview && count > 50 && (fullscreen || inlineColumns >= 3);
+  const columns = useFiveColumns ? 5 : fittedColumns;
+  const graphWidth = nodeWidth + (columns - 1) * columnStep;
+  const inlineZoom = Math.min(maxZoom, availableWidth / graphWidth);
+  const rows = Math.ceil(count / columns);
+  const inlineHeight =
+    Math.ceil((firstRowY + rows * rowStep) * inlineZoom) + 2 * verticalPadding;
   const { nodes, edges } = useMemo(() => {
     const nodes: MapNode[] = [];
-    const edges: Edge[] = [];
+    const edges: MapEdge[] = [];
     const rootId = "root";
     const add = (id: string, data: Data, x: number, y: number) =>
       nodes.push({
@@ -267,10 +403,10 @@ function RegistryMapContent({
           },
         },
         position: { x, y },
+        width: nodeWidth,
         ariaLabel: data.label,
         focusable: false,
       });
-    const overview = category === "all";
     add(
       rootId,
       {
@@ -296,15 +432,20 @@ function RegistryMapContent({
       : records.map((r) => ({
           id: r.id,
           label: r.title,
-          caption: `${r.documentType.toUpperCase()} · ${r.citation.slice(r.title.length).match(/\d+\/\d{4}/)?.[0] ?? "ПИС"}`,
           kind: "law",
           target: lawPath(r),
         }));
     children.forEach(({ id, ...data }, i) => {
+      const x = (i % columns) * columnStep;
       add(
         id,
-        { ...data, targetPosition: Position.Left },
-        (i % columns) * columnStep,
+        {
+          ...data,
+          targetPosition: Position.Left,
+          onHoverChange: setHoveredNodeId,
+          onFocusChange: setFocusedNodeId,
+        },
+        x,
         firstRowY + Math.floor(i / columns) * rowStep,
       );
       edges.push({
@@ -312,14 +453,26 @@ function RegistryMapContent({
         source: rootId,
         target: id,
         type: "membership",
-        style: { stroke: "var(--editorial-border)" },
+        data: { railX: x - gutterCenterOffset },
       });
     });
     return { nodes, edges };
-  }, [categories, category, columns, records, onCategory, returnTo]);
+  }, [categories, category, columns, overview, records, onCategory, returnTo]);
+  const highlightedNodeId = hoveredNodeId ?? focusedNodeId;
+  const displayEdges = useMemo(
+    () =>
+      highlightedNodeId === null
+        ? edges
+        : edges.map((edge) =>
+            edge.target === highlightedNodeId
+              ? { ...edge, className: "is-highlighted", zIndex: 1 }
+              : edge,
+          ),
+    [edges, highlightedNodeId],
+  );
   return (
     <div className={`map-shell${fullscreen ? " is-fullscreen" : ""}`}>
-      <div className="map-labels">
+      <div ref={toolbar} className="map-labels">
         {category !== "all" && (
           <Button variant="outline" size="sm" onClick={() => onCategory("all")}>
             <ArrowLeft aria-hidden="true" /> Назад на области
@@ -331,22 +484,30 @@ function RegistryMapContent({
           fullscreenButton={fullscreenButton}
         />
       </div>
-      <div className="map-canvas registry-canvas">
+      <div
+        className="map-canvas registry-canvas"
+        style={
+          {
+            "--registry-fit-height": `${inlineHeight}px`,
+          } as React.CSSProperties
+        }
+      >
         <ReactFlow
           nodes={nodes}
-          edges={edges}
+          edges={displayEdges}
           nodeTypes={nodeTypes}
           edgeTypes={edgeTypes}
           fitView
-          fitViewOptions={{ padding: 0.12 }}
-          minZoom={0.05}
-          maxZoom={1.5}
+          fitViewOptions={fitOptions}
+          minZoom={minZoom}
+          maxZoom={maxZoom}
           zoomOnScroll={false}
           preventScrolling={false}
+          panOnDrag={fullscreen || !coarsePointer}
           nodesDraggable={false}
           nodesConnectable={false}
         >
-          <FitCanvas columns={columns} />
+          <FitCanvas columns={columns} fullscreen={fullscreen} />
           <Background color="var(--border)" gap={20} size={1} />
         </ReactFlow>
       </div>
