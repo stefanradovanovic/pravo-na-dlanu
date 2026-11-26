@@ -1,14 +1,24 @@
 "use client";
 
-import { UserRound } from "lucide-react";
+import { Maximize, Minimize, Minus, Plus, UserRound } from "lucide-react";
 import {
   useCallback,
   useEffect,
+  useLayoutEffect,
   useMemo,
   useRef,
   useState,
   type CSSProperties,
 } from "react";
+import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import "./member-map.css";
 
 export type Member = {
@@ -37,6 +47,11 @@ const sideBenches = [
 // Tighten row spacing around the middle bench without changing its seat count.
 const rowSpacing = 0.8;
 const chamber = { left: -442, top: -149, width: 884, height: 558 };
+const minZoom = 1;
+const maxZoom = 3;
+const zoomStep = 0.5;
+const mapTitle = "Распоред у Великој сали";
+const seatingNote = "Распоред седења је приближан, без гаранције тачности.";
 type SeatPosition = { x: number; y: number; rotation: number };
 
 function benchRow(block: number, row: number) {
@@ -348,7 +363,6 @@ export function MemberMap({
   selectedId,
   onSelect,
   headingLevel: Heading = "h2",
-  showHallPlan = true,
 }: {
   members: Member[];
   groups: Groups;
@@ -356,13 +370,51 @@ export function MemberMap({
   selectedId: string;
   onSelect: (id: string) => void;
   headingLevel?: "h2" | "h3";
-  showHallPlan?: boolean;
 }) {
   const [hoveredId, setHoveredId] = useState("");
   const [focusedId, setFocusedId] = useState("");
+  const [zoom, setZoom] = useState(minZoom);
+  const [inlineMapHeight, setInlineMapHeight] = useState<number | null>(null);
+  const fullscreen = inlineMapHeight !== null;
   const matching = new Set(visible.map((member) => member.id));
   const selected = visible.find((member) => member.id === selectedId);
   const selectionRef = useRef<HTMLDivElement>(null);
+  const mapBodyRef = useRef<HTMLDivElement>(null);
+  const viewportRef = useRef<HTMLDivElement>(null);
+  const zoomCenter = useRef({ x: 0.5, y: 0.5 });
+
+  useLayoutEffect(() => {
+    const viewport = viewportRef.current;
+    if (viewport) {
+      viewport.dataset.pannable = "";
+      const { x, y } = zoomCenter.current;
+      viewport.scrollTo({
+        left: x * viewport.scrollWidth - viewport.clientWidth / 2,
+        top: y * viewport.scrollHeight - viewport.clientHeight / 2,
+      });
+    }
+  }, [zoom, fullscreen]);
+
+  function rememberZoomCenter() {
+    const viewport = viewportRef.current;
+    if (viewport?.scrollWidth && viewport.scrollHeight) {
+      zoomCenter.current = {
+        x:
+          (viewport.scrollLeft + viewport.clientWidth / 2) /
+          viewport.scrollWidth,
+        y:
+          (viewport.scrollTop + viewport.clientHeight / 2) /
+          viewport.scrollHeight,
+      };
+    }
+  }
+
+  function changeZoom(step: number) {
+    const nextZoom = Math.max(minZoom, Math.min(maxZoom, zoom + step));
+    if (nextZoom === minZoom) zoomCenter.current = { x: 0.5, y: 0.5 };
+    else rememberZoomCenter();
+    setZoom(nextZoom);
+  }
 
   const clearSelection = useCallback(() => {
     onSelect("");
@@ -375,6 +427,7 @@ export function MemberMap({
     function clearOnOutsideClick(event: MouseEvent) {
       if (!(event.target instanceof Element)) return;
       if (selectionRef.current?.contains(event.target)) return;
+      if (event.target.closest(".member-map-controls")) return;
       if (event.target.closest(".member-seat")?.querySelector("input:enabled"))
         return;
       clearSelection();
@@ -467,81 +520,81 @@ export function MemberMap({
       </label>
     );
   }
-  return (
-    <section
-      className="member-map"
-      aria-labelledby="mapa-sastava"
-      id="mapa-poslanika"
-      tabIndex={-1}
-      onKeyDown={(event) => {
-        if (event.key === "Escape" && selected) {
-          event.preventDefault();
-          clearSelection();
-        }
-      }}
-    >
-      <header>
-        <Heading id="mapa-sastava">Распоред у Великој сали</Heading>
-        <p>Распоред седења је приближан, без гаранције тачности.</p>
-      </header>
-      <div className="member-map-body">
-        <div className="member-map-chamber">
-          <div className="member-map-floor">
-            <svg
-              className="member-hemicycle"
-              viewBox={`${chamber.left} ${chamber.top} ${chamber.width} ${chamber.height}`}
-              role="img"
-              aria-labelledby="chamber-title"
-            >
-              <title id="chamber-title">
-                {`Осам сектора Велике сале. Из публике гледано, „${names["174"]}“ је десно, ` +
-                  "мањинске листе лево уз средишњи пролаз, а група Александар Вучић даље лево."}
-              </title>
-              <SeatRow seats={emptySeats(dais)} />
-              {sectors.map(({ number, rows }) => (
-                <g key={number} data-sector={number}>
-                  {rows.map((row, index) => (
-                    <SeatRow key={index} seats={emptySeats(row)} />
-                  ))}
-                </g>
-              ))}
-            </svg>
-            {areas.flatMap(({ area, dots }) =>
-              dots.map(
-                ({ member, position }) =>
-                  position && memberSeat(member, area, position),
-              ),
-            )}
-          </div>
-          <div
-            className="member-map-selection"
-            ref={selectionRef}
-            aria-live="polite"
-            aria-atomic="true"
-          >
-            {selected && (
-              <section
-                className="member-map-profile leading-snug"
-                aria-labelledby="member-map-profile-name"
+  const mapBody = (
+    <div className="member-map-body" ref={mapBodyRef}>
+      <div
+        className="member-map-chamber"
+        data-zoomed={zoom > minZoom || undefined}
+      >
+        <div
+          className="member-map-viewport"
+          ref={viewportRef}
+          style={
+            {
+              "--chamber-aspect-ratio": chamber.width / chamber.height,
+            } as CSSProperties
+          }
+        >
+          <div className="member-map-stage" style={{ width: `${zoom * 100}%` }}>
+            <div className="member-map-floor">
+              <svg
+                className="member-hemicycle"
+                viewBox={`${chamber.left} ${chamber.top} ${chamber.width} ${chamber.height}`}
+                role="img"
+                aria-labelledby="chamber-title"
               >
-                <MemberPortrait key={selected.id} member={selected} />
-                <div className="member-map-profile-copy">
-                  <strong id="member-map-profile-name">{selected.name}</strong>
-                  {description && <p>{description}</p>}
-                  <p>
-                    {[office(selected.id), groups[selected.group].name]
-                      .filter(Boolean)
-                      .join(" · ")}
-                  </p>
-                </div>
-              </section>
-            )}
+                <title id="chamber-title">
+                  {`Осам сектора Велике сале. Из публике гледано, „${names["174"]}“ је десно, ` +
+                    "мањинске листе лево уз средишњи пролаз, а група Александар Вучић даље лево."}
+                </title>
+                <SeatRow seats={emptySeats(dais)} />
+                {sectors.map(({ number, rows }) => (
+                  <g key={number} data-sector={number}>
+                    {rows.map((row, index) => (
+                      <SeatRow key={index} seats={emptySeats(row)} />
+                    ))}
+                  </g>
+                ))}
+              </svg>
+              {areas.flatMap(({ area, dots }) =>
+                dots.map(
+                  ({ member, position }) =>
+                    position && memberSeat(member, area, position),
+                ),
+              )}
+            </div>
           </div>
         </div>
-        <div className="member-map-key">
-          <ul aria-label="Број посланика по групама">
-            {areas.map(({ area, count, dots }) => (
-              <li key={area}>
+        <div
+          className="member-map-selection"
+          ref={selectionRef}
+          aria-live="polite"
+          aria-atomic="true"
+        >
+          {selected && (
+            <section
+              className="member-map-profile leading-snug"
+              aria-labelledby="member-map-profile-name"
+            >
+              <MemberPortrait key={selected.id} member={selected} />
+              <div className="member-map-profile-copy">
+                <strong id="member-map-profile-name">{selected.name}</strong>
+                {description && <p>{description}</p>}
+                <p>
+                  {[office(selected.id), groups[selected.group].name]
+                    .filter(Boolean)
+                    .join(" · ")}
+                </p>
+              </div>
+            </section>
+          )}
+        </div>
+      </div>
+      <div className="member-map-key">
+        <ul aria-label="Број посланика по групама">
+          {areas.map(({ area, count, dots }) => (
+            <li key={area}>
+              <span className="member-map-key-marker">
                 {dots[0].position ? (
                   <i
                     aria-hidden="true"
@@ -550,23 +603,108 @@ export function MemberMap({
                 ) : (
                   dots.map(({ member }) => memberSeat(member, area))
                 )}
-                {names[area]}
-                <b>{count}</b>
-              </li>
-            ))}
-          </ul>
-          {showHallPlan && (
-            <div className="member-map-detail">
-              <a
-                className="text-link"
-                href="https://www.parlament.gov.rs/upload/archive/files/eng/pdf/Informator/informator_eng.pdf#page=46"
-              >
-                План Велике сале (стр. 46)
-              </a>
-            </div>
-          )}
-        </div>
+              </span>
+              <span className="member-map-key-label">{names[area]}</span>
+              <b>{count}</b>
+            </li>
+          ))}
+        </ul>
       </div>
-    </section>
+    </div>
+  );
+
+  function controls(expanded: boolean) {
+    return (
+      <div
+        className="member-map-controls"
+        role="group"
+        aria-label="Контроле мапе"
+      >
+        <Button
+          variant="outline"
+          size="icon-xs"
+          aria-label="Увећај мапу"
+          disabled={zoom >= maxZoom}
+          focusableWhenDisabled
+          onClick={() => changeZoom(zoomStep)}
+        >
+          <Plus aria-hidden="true" />
+        </Button>
+        <Button
+          variant="outline"
+          size="icon-xs"
+          aria-label="Умањи мапу"
+          disabled={zoom <= minZoom}
+          focusableWhenDisabled
+          onClick={() => changeZoom(-zoomStep)}
+        >
+          <Minus aria-hidden="true" />
+        </Button>
+        {expanded ? (
+          <DialogClose
+            render={<Button variant="outline" size="icon-xs" />}
+            aria-label="Изађи из целог екрана"
+            title="Изађи из целог екрана"
+          >
+            <Minimize aria-hidden="true" />
+          </DialogClose>
+        ) : (
+          <DialogTrigger
+            render={<Button variant="outline" size="icon-xs" />}
+            aria-label="Цео екран"
+            title="Цео екран"
+          >
+            <Maximize aria-hidden="true" />
+          </DialogTrigger>
+        )}
+      </div>
+    );
+  }
+
+  return (
+    <Dialog
+      open={fullscreen}
+      onOpenChange={(open) => {
+        rememberZoomCenter();
+        setHoveredId("");
+        setFocusedId("");
+        setInlineMapHeight(
+          open ? (mapBodyRef.current?.offsetHeight ?? 0) : null,
+        );
+      }}
+    >
+      <section
+        className="member-map"
+        aria-labelledby="mapa-sastava"
+        id="mapa-poslanika"
+        tabIndex={-1}
+        onKeyDown={(event) => {
+          if (event.key === "Escape" && selected) {
+            event.preventDefault();
+            clearSelection();
+          }
+        }}
+      >
+        <header>
+          <Heading id="mapa-sastava">{mapTitle}</Heading>
+          <p>{seatingNote}</p>
+        </header>
+        {controls(false)}
+        {fullscreen ? <div style={{ minHeight: inlineMapHeight }} /> : mapBody}
+      </section>
+      <DialogContent
+        className="member-map member-map-fullscreen"
+        showCloseButton={false}
+      >
+        <div>
+          <header>
+            <DialogTitle className="sr-only">{mapTitle}</DialogTitle>
+            <DialogDescription>{seatingNote}</DialogDescription>
+          </header>
+          {controls(true)}
+        </div>
+        {fullscreen && mapBody}
+      </DialogContent>
+    </Dialog>
   );
 }

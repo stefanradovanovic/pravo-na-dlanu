@@ -24,7 +24,6 @@ export function AssemblyMapPreview({
       selectedId={selectedId}
       onSelect={setSelectedId}
       headingLevel="h3"
-      showHallPlan={false}
     />
   );
 }

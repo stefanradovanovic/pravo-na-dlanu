@@ -1,4 +1,3 @@
-import { normalizeSearch } from "@/lib/search";
 import type { ComponentProps } from "react";
 import type { SearchSnippet } from "@/lib/search-snippet";
 import {
@@ -15,18 +14,14 @@ export type LawSuggestion = {
 
 export function LawSuggestions({
   matches,
-  query,
   contentProps,
 }: {
   matches: readonly LawSuggestion[];
-  query: string;
   contentProps?: Pick<
     ComponentProps<typeof AutocompleteContent>,
     "align" | "className"
   >;
 }) {
-  const normalized = normalizeSearch(query);
-  if (normalized.length < 3) return null;
   const laws = matches.slice(0, 6);
   if (!laws.length) return null;
 

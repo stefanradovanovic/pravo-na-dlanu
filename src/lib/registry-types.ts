@@ -1,4 +1,10 @@
 import { normalizeSearch } from "./search";
+export const featuredDocuments = [
+  { title: "Устав Републике Србије", label: "Устав" },
+  { title: "Пословник Народне скупштине" },
+  { title: "Кривични законик" },
+];
+
 export type Facsimile = {
   sourceUrl: string;
   sourceSha256: string;

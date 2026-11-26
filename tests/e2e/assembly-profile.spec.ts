@@ -29,7 +29,7 @@ test("explore Assembly seats from the homepage and open the full roster", async 
   await expect(page.getByPlaceholder("Претражите посланике")).toBeVisible();
   await expect(
     page.getByRole("link", { name: /План Велике сале/ }),
-  ).toBeVisible();
+  ).toHaveCount(0);
 });
 
 test("open and reload the Assembly profile by its shareable address", async ({
@@ -130,11 +130,20 @@ test("show an official portrait and profile at a filtered Assembly seat", async 
     expect(card.y).toBeGreaterThan(floor.y);
     expect(card.y + card.height).toBeLessThan(floor.y + floor.height * 0.55);
     expect(card.height).toBeGreaterThan(card.width);
-    expect(photo.y + photo.height).toBeLessThan(name.y);
   } else {
     expect(card.y).toBeGreaterThanOrEqual(floor.y + floor.height);
-    expect(photo.x + photo.width).toBeLessThan(name.x);
+    expect(card.width).toBeLessThan(floor.width);
+    expect(card.x + card.width / 2).toBeCloseTo(floor.x + floor.width / 2, 0);
+    expect(photo.x + photo.width / 2).toBeCloseTo(card.x + card.width / 2, 0);
+    expect(photo.width).toBe(128);
+    expect(name.x + name.width / 2).toBeCloseTo(card.x + card.width / 2, 0);
+    await expect(profile).toHaveCSS("border-top-width", "0px");
   }
+  expect(photo.y + photo.height).toBeLessThan(name.y);
+  await expect(profile.getByText("доцент · Сопот")).toHaveCSS(
+    "text-align",
+    floor.width >= 768 ? "start" : "center",
+  );
 
   await profile.getByText("доцент · Сопот").click();
   await expect(seat).toBeChecked();
@@ -239,6 +248,7 @@ test("group the Assembly roster and open portraits from its links", async ({
 
 test("highlight hovered and selected seats while respecting reduced motion", async ({
   page,
+  hasTouch,
 }) => {
   await page.emulateMedia({ reducedMotion: "no-preference" });
   await page.goto("/institucije/skupstina#mapa-poslanika");
@@ -250,20 +260,20 @@ test("highlight hovered and selected seats while respecting reduced motion", asy
   const initialColor = await fill();
   let hoverColor: string | undefined;
 
-  if (
-    await page.evaluate(
-      () => matchMedia("(hover: hover) and (pointer: fine)").matches,
-    )
-  ) {
+  const supportsHover = await page.evaluate(
+    () => matchMedia("(hover: hover) and (pointer: fine)").matches,
+  );
+  if (supportsHover) {
     await chair.hover();
     await expect.poll(fill).not.toBe(initialColor);
     await expect(dot).toHaveCSS("translate", "0px -1px");
     hoverColor = await fill();
   }
-  await chair.click();
+  if (hasTouch) await chair.tap();
+  else await chair.click();
   await expect(seat).toBeChecked();
   await expect.poll(fill).not.toBe(initialColor);
-  await expect(dot).toHaveCSS("translate", "0px -2px");
+  await expect(dot).toHaveCSS("translate", supportsHover ? "0px -2px" : "none");
   await expect(dot).toHaveCSS("outline-style", "none");
   const selectedStyle = await dot.evaluate((element) => {
     const highlight = getComputedStyle(element);
@@ -294,6 +304,144 @@ test("highlight hovered and selected seats while respecting reduced motion", asy
   await chair.click();
   await expect(dot).toHaveCSS("translate", "none");
   await expect(dot).toHaveCSS("background-color", selectedStyle.fill);
+
+  if (supportsHover) {
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.emulateMedia({ reducedMotion: "no-preference" });
+    await chair.click();
+    await expect(seat).toBeChecked();
+    await expect(dot).toHaveCSS("translate", "none");
+  }
+});
+
+test("zoom the Assembly map and use it in full screen", async ({
+  page,
+  hasTouch,
+}) => {
+  await page.goto("/institucije/skupstina#mapa-poslanika");
+  const map = page.locator("#mapa-poslanika");
+  const seat = map.getByRole("radio", { name: "Бакић Јово" });
+  const chair = seat.locator("..");
+  if (hasTouch) await chair.tap();
+  else await chair.click();
+  const floor = map.locator(".member-map-floor");
+  const initialWidth = (await floor.boundingBox())!.width;
+  const zoomIn = map.getByRole("button", { name: "Увећај мапу" });
+  await expect(zoomIn).toHaveCSS("width", "28px");
+  await expect(zoomIn).toHaveCSS("height", "28px");
+  if (hasTouch) {
+    await zoomIn.scrollIntoViewIfNeeded();
+    const { x, y, height } = (await zoomIn.boundingBox())!;
+    await page.touchscreen.tap(x - 6, y + height / 2);
+  } else {
+    await zoomIn.click();
+  }
+  expect((await floor.boundingBox())!.width).toBeCloseTo(initialWidth * 1.5, 0);
+  await expect(seat).toBeChecked();
+
+  const trigger = map.getByRole("button", { name: "Цео екран" });
+  await expect(trigger).toHaveText("");
+  await expect(trigger).toHaveCSS("width", "28px");
+  if (hasTouch) await trigger.tap();
+  else await trigger.click();
+  const dialog = page.getByRole("dialog", { name: "Распоред у Великој сали" });
+  await expect(dialog).toBeVisible();
+  const bounds = (await dialog.boundingBox())!;
+  expect(bounds.x).toBe(0);
+  expect(bounds.y).toBe(0);
+  expect(bounds.width).toBe(page.viewportSize()?.width);
+  expect(bounds.height).toBe(page.viewportSize()?.height);
+  await expect(dialog.getByRole("radio", { name: "Бакић Јово" })).toBeChecked();
+
+  const zoomOut = dialog.getByRole("button", { name: "Умањи мапу" });
+  if (hasTouch) await zoomOut.tap();
+  else await zoomOut.click();
+  await expect(zoomOut).toBeDisabled();
+  await expect(
+    dialog.getByRole("region", { name: "Бакић Јово" }),
+  ).toBeVisible();
+
+  if (hasTouch) {
+    await dialog.getByRole("button", { name: "Изађи из целог екрана" }).tap();
+  } else {
+    await page.keyboard.press("Escape");
+    await expect(trigger).toBeFocused();
+  }
+  await expect(dialog).toBeHidden();
+  expect((await floor.boundingBox())!.width).toBeCloseTo(initialWidth, 0);
+  await expect(seat).toBeChecked();
+});
+
+test("align round Assembly legend markers and counts with the first label line", async ({
+  page,
+}) => {
+  await page.goto("/institucije/skupstina#mapa-poslanika");
+  const legend = page.getByRole("list", { name: "Број посланика по групама" });
+  for (const row of await legend.getByRole("listitem").all()) {
+    const label = row.locator(".member-map-key-label");
+    const labelBox = (await label.boundingBox())!;
+    const lineHeight = await label.evaluate((element) =>
+      parseFloat(getComputedStyle(element).lineHeight),
+    );
+    const count = (await row.locator("b").boundingBox())!;
+    const marker = row.locator("i, .member-seat > span");
+    const dot = (await marker.boundingBox())!;
+    expect(count.y).toBeCloseTo(labelBox.y, 0);
+    expect(dot.y + dot.height / 2).toBeCloseTo(labelBox.y + lineHeight / 2, 0);
+    expect(dot.width).toBeCloseTo(dot.height, 0);
+    await expect(marker).toHaveCSS("border-radius", "50%");
+  }
+});
+
+test("drag the Assembly map before and after zooming on a touchscreen", async ({
+  page,
+  hasTouch,
+}) => {
+  test.skip(!hasTouch, "Requires a touch viewport.");
+  await page.goto("/institucije/skupstina#mapa-poslanika");
+  const map = page.locator("#mapa-poslanika");
+  const cdp = await page.context().newCDPSession(page);
+  const viewport = page.locator(".member-map-viewport");
+
+  async function drag(axis: "x" | "y") {
+    await expect(viewport).toHaveAttribute("data-pannable", "");
+    await viewport.scrollIntoViewIfNeeded();
+    const box = (await viewport.boundingBox())!;
+    const point = { x: box.x + box.width / 2, y: box.y + box.height / 2 };
+    const offset = () =>
+      viewport.evaluate(
+        (element, direction) =>
+          direction === "x" ? element.scrollLeft : element.scrollTop,
+        axis,
+      );
+    const before = await offset();
+    await cdp.send("Input.dispatchTouchEvent", {
+      type: "touchStart",
+      touchPoints: [point],
+    });
+    for (let step = 12; step <= 72; step += 12) {
+      await cdp.send("Input.dispatchTouchEvent", {
+        type: "touchMove",
+        touchPoints: [{ ...point, [axis]: point[axis] - step }],
+      });
+    }
+    await cdp.send("Input.dispatchTouchEvent", {
+      type: "touchEnd",
+      touchPoints: [],
+    });
+    await expect.poll(offset).toBeGreaterThan(before);
+    await expect(page.getByRole("radio", { checked: true })).toHaveCount(0);
+  }
+
+  await drag("x");
+
+  await page.reload();
+  await map.getByRole("button", { name: "Цео екран" }).tap();
+  const dialog = page.getByRole("dialog");
+  const fullscreenZoomIn = dialog.getByRole("button", { name: "Увећај мапу" });
+  await fullscreenZoomIn.tap();
+  await fullscreenZoomIn.tap();
+  await drag("y");
 });
 
 test("the Assembly seats and legend use the palette for the active theme", async ({

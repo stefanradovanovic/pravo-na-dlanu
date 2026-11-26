@@ -138,13 +138,7 @@ html:has(.header-search .ui-input:focus) {
 .workspace {
   padding-top: 2rem;
 }
-.law-list-row {
-  padding: 1.25rem;
-}
 .law-list-row h3 {
-  overflow-wrap: anywhere;
-}
-.law-list-row small {
   overflow-wrap: anywhere;
 }
 .map-node {
@@ -634,6 +628,38 @@ html:has(.header-search .ui-input:focus) {
   .header-search-mobile {
     display: inline-flex;
   }
+  .header-search[data-mobile-expanded] {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    width: 100%;
+    padding-block: calc(var(--space-1) + env(safe-area-inset-top, 0px))
+      var(--space-1);
+    padding-inline: max(var(--space-4), env(safe-area-inset-left, 0px))
+      max(var(--space-4), env(safe-area-inset-right, 0px));
+    background: var(--chrome);
+  }
+  .header-search[data-mobile-expanded] > .ui-input {
+    width: 100%;
+    padding-inline: calc(var(--control-height) + var(--space-2));
+  }
+  .header-search[data-mobile-expanded] > .ui-button {
+    position: absolute;
+    inset-inline-end: max(var(--space-4), env(safe-area-inset-right, 0px));
+  }
+  .header-search[data-mobile-expanded] > .mobile-search-close {
+    inset-inline-start: max(var(--space-4), env(safe-area-inset-left, 0px));
+    inset-inline-end: auto;
+  }
+  .header-search-suggestions {
+    width: var(--anchor-width);
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .header-search[data-mobile-expanded][data-mobile-animate] {
+      animation: mobile-law-search-expand var(--motion-duration-panel)
+        var(--motion-ease-out);
+    }
+  }
   .back-to-top {
     inset-inline-end: max(var(--space-4), env(safe-area-inset-right, 0px));
     inset-block-end: calc(var(--mobile-navigation-height) + var(--space-3));
@@ -835,6 +861,14 @@ html:has(.header-search .ui-input:focus) {
 }
 .catalog-views {
   gap: 1rem;
+}
+@keyframes mobile-law-search-expand {
+  from {
+    clip-path: inset(0 36%);
+  }
+  to {
+    clip-path: inset(0);
+  }
 }
 .catalog-views .explorer-header {
   margin-bottom: 0;
