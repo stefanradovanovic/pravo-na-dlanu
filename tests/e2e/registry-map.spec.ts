@@ -1,5 +1,19 @@
 import { expect, test } from "@playwright/test";
 
+test("the regulations map links to its source beside the category count", async ({
+  page,
+}) => {
+  await page.goto("/");
+  const footer = page.locator(".map-footer");
+  await expect(footer.getByText(/\d+ области/)).toBeVisible();
+  await expect(page.locator(".source-banner")).toHaveCount(0);
+  await footer.getByRole("link", { name: "Извор", exact: true }).click();
+  await expect(page).toHaveURL(/\/o-projektu\/?$/);
+  await expect(
+    page.getByRole("heading", { name: "Обухват каталога" }),
+  ).toBeVisible();
+});
+
 test("the registry map fills its width and grows to fit every card", async ({
   page,
 }) => {

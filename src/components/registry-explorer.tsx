@@ -1,7 +1,6 @@
 "use client";
 import { useEffect, useMemo, useRef, useState } from "react";
 import dynamic from "next/dynamic";
-import Link from "next/link";
 import {
   Search,
   X,
@@ -9,7 +8,6 @@ import {
   List,
   BookOpen,
   ArrowUpRight,
-  Info,
   SlidersHorizontal,
 } from "lucide-react";
 import { Autocomplete, AutocompleteInput } from "@/components/ui/autocomplete";
@@ -252,7 +250,7 @@ export function RegistryExplorer({ registry }: { registry: Registry }) {
     setPage(0);
   };
   return (
-    <main id="main">
+    <>
       <div className="catalog-intro">
         <div className="catalog-intro-copy">
           <div className="eyebrow">БИБЛИОТЕКА ПРОПИСА</div>
@@ -567,37 +565,8 @@ export function RegistryExplorer({ registry }: { registry: Registry }) {
               )}
             </TabsContent>
           </Tabs>
-          <div className="source-banner">
-            <Info size={18} />
-            <div>
-              <strong>
-                {formatDocumentCount(records.length)} · искључиво ПИС
-              </strong>
-              <p>
-                {report.fullTextRecords?.toLocaleString("sr-RS")} HTML текстова;{" "}
-                {(report.facsimileRecords ?? 0).toLocaleString("sr-RS")} у
-                факсимилу. Збирка обухвата Устав, домаће законе и Пословник
-                Народне скупштине. Погледајте обухват и проверу извора.
-              </p>
-              {!!report.sourceOnlyRecords && (
-                <p className="source-warning">
-                  {report.sourceOnlyRecords.toLocaleString("sr-RS")} записа још
-                  нема локални пуни документ.
-                </p>
-              )}
-              {report.failures.length > 0 && (
-                <p className="source-warning">
-                  {report.failures.length} текстова није преузето. Обухват још
-                  није потпун.
-                </p>
-              )}
-            </div>
-            <Link href="/o-projektu">
-              О изворима <ArrowUpRight size={13} />
-            </Link>
-          </div>
         </section>
       </div>
-    </main>
+    </>
   );
 }

@@ -2,6 +2,10 @@
 html {
   scroll-padding-top: var(--header-height);
 }
+/* The sticky search field sits inside the inset used for page anchors. */
+html:has(.header-search .ui-input:focus) {
+  scroll-padding-top: 0;
+}
 .site-header,
 .catalog-intro,
 .workspace,
@@ -10,7 +14,6 @@ html {
 .institution-page,
 .page-intro,
 .learning-workspace,
-.reading-guide-page,
 .about-page,
 .ds-page {
   padding-inline: max(var(--space-8), calc((100% - var(--layout-wide)) / 2));
@@ -79,6 +82,12 @@ html {
 .site-header :focus-visible {
   outline-color: var(--chrome-active);
 }
+.site-header-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  min-width: 0;
+}
 .header-search {
   display: flex;
   align-items: center;
@@ -92,7 +101,7 @@ html {
 .header-search-suggestions {
   width: max(24rem, var(--anchor-width));
 }
-.header-search .ui-button {
+.site-header-actions .ui-button {
   flex-shrink: 0;
 }
 .header-search-mobile {
@@ -624,7 +633,6 @@ html {
   }
   .header-search-mobile {
     display: inline-flex;
-    margin-left: auto;
   }
   .back-to-top {
     inset-inline-end: max(var(--space-4), env(safe-area-inset-right, 0px));
@@ -830,6 +838,14 @@ html {
 }
 .catalog-views .explorer-header {
   margin-bottom: 0;
+}
+.assembly-preview {
+  padding-top: 0;
+}
+.assembly-preview h2 {
+  font-size: var(--text-title);
+  font-weight: 500;
+  letter-spacing: -0.6px;
 }
 @media (max-width: 1000px) {
   .catalog-intro {

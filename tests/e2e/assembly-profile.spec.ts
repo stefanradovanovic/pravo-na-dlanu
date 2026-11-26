@@ -2,6 +2,36 @@ import { expect, test } from "@playwright/test";
 
 const assembly = "#institucija-narodna-skupstina";
 
+test("explore Assembly seats from the homepage and open the full roster", async ({
+  page,
+}) => {
+  await page.goto("/");
+  const preview = page.getByRole("region", {
+    name: "Народна скупштина",
+    exact: true,
+  });
+  const map = preview.getByRole("region", { name: "Распоред у Великој сали" });
+  const seat = map.getByRole("radio", { name: /Чупић Александар/ });
+  await seat.locator("..").click();
+  await expect(seat).toBeChecked();
+  await expect(
+    map.getByRole("region", { name: "Чупић Александар" }),
+  ).toBeVisible();
+  await expect(page.locator(".assembly-roster")).toHaveCount(0);
+  await expect(page.getByPlaceholder("Претражите посланике")).toHaveCount(0);
+  await expect(
+    preview.getByRole("link", { name: /План Велике сале/ }),
+  ).toHaveCount(0);
+
+  await preview.getByRole("link", { name: "Погледај детаље" }).click();
+  await expect(page).toHaveURL(/\/institucije\/skupstina\/?$/);
+  await expect(page.locator(".assembly-roster")).toBeVisible();
+  await expect(page.getByPlaceholder("Претражите посланике")).toBeVisible();
+  await expect(
+    page.getByRole("link", { name: /План Велике сале/ }),
+  ).toBeVisible();
+});
+
 test("open and reload the Assembly profile by its shareable address", async ({
   page,
 }) => {
