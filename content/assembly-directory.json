@@ -1,0 +1,3184 @@
+{
+  "accessedAt": "2026-11-26",
+  "memberSource": "https://www.parlament.gov.rs/народна-скупштина/састав/народни-посланици/актуелни-сазив.11.html",
+  "committeeSource": "https://www.parlament.gov.rs/народна-скупштина/састав/радна-тела/одбори.13.html",
+  "groupSource": "https://www.parlament.gov.rs/народна-скупштина/састав/посланичке-групе-/посланичке-групе.5005.html",
+  "groups": {
+    "174": {
+      "name": "Студентска листа",
+      "source": "https://www.parlament.gov.rs/народна-скупштина/састав/посланичке-групе-/посланичке-групе.174.5005.html"
+    },
+    "175": {
+      "name": "Александар Вучић - Србија побеђује",
+      "source": "https://www.parlament.gov.rs/народна-скупштина/састав/посланичке-групе-/посланичке-групе.175.5005.html"
+    },
+    "173": {
+      "name": "Без посланичке групе",
+      "source": "https://www.parlament.gov.rs/народна-скупштина/састав/посланичке-групе-/посланичке-групе.173.5005.html"
+    }
+  },
+  "members": [
+    {
+      "id": "1435",
+      "name": "Абрамовић Ненад",
+      "group": "175",
+      "source": "https://www.parlament.gov.rs/НЕНАД_АБРАМОВИЋ.1435.245.html"
+    },
+    {
+      "id": "1572",
+      "name": "Аксентијевић Јелка",
+      "group": "174",
+      "source": "https://www.parlament.gov.rs/ЈЕЛКА_АКСЕНТИЈЕВИЋ.1572.245.html"
+    },
+    {
+      "id": "1502",
+      "name": "Андрић Мирослав",
+      "group": "174",
+      "source": "https://www.parlament.gov.rs/МИРОСЛАВ_АНДРИЋ.1502.245.html"
+    },
+    {
+      "id": "1596",
+      "name": "Антић Периз Јелена",
+      "group": "175",
+      "source": "https://www.parlament.gov.rs/ЈЕЛЕНА_АНТИЋ+ПЕРИЗ.1596.245.html"
+    },
+    {
+      "id": "1519",
+      "name": "Арсић Александар",
+      "group": "174",
+      "source": "https://www.parlament.gov.rs/АЛЕКСАНДАР_АРСИЋ.1519.245.html"
+    },
+    {
+      "id": "1415",
+      "name": "Бајић Борис",
+      "group": "173",
+      "source": "https://www.parlament.gov.rs/БОРИС_БАЈИЋ.1415.245.html"
+    },
+    {
+      "id": "1073",
+      "name": "Бакарец Небојша",
+      "group": "175",
+      "source": "https://www.parlament.gov.rs/НЕБОЈША_БАКАРЕЦ.1073.245.html"
+    },
+    {
+      "id": "1512",
+      "name": "Бакић Јово",
+      "group": "174",
+      "source": "https://www.parlament.gov.rs/ЈОВО_БАКИЋ.1512.245.html"
+    },
+    {
+      "id": "1618",
+      "name": "Балаћ Владимир",
+      "group": "175",
+      "source": "https://www.parlament.gov.rs/ВЛАДИМИР_БАЛАЋ.1618.245.html"
+    },
+    {
+      "id": "1523",
+      "name": "Бауцал Александер",
+      "group": "174",
+      "source": "https://www.parlament.gov.rs/АЛЕКСАНДЕР_БАУЦАЛ.1523.245.html"
+    },
+    {
+      "id": "1510",
+      "name": "Белић Сања",
+      "group": "174",
+      "source": "https://www.parlament.gov.rs/САЊА_БЕЛИЋ.1510.245.html"
+    },
+    {
+      "id": "1485",
+      "name": "Беседеш Нађ Андреа",
+      "group": "174",
+      "source": "https://www.parlament.gov.rs/АНДРЕА_БЕСЕДЕШ+НАЂ.1485.245.html"
+    },
+    {
+      "id": "1449",
+      "name": "Бјелобрк Марија",
+      "group": "174",
+      "source": "https://www.parlament.gov.rs/МАРИЈА_БЈЕЛОБРК.1449.245.html"
+    },
+    {
+      "id": "1563",
+      "name": "Богојевић Драган",
+      "group": "174",
+      "source": "https://www.parlament.gov.rs/ДРАГАН_БОГОЈЕВИЋ.1563.245.html"
+    },
+    {
+      "id": "1542",
+      "name": "Богуновић Милан",
+      "group": "174",
+      "source": "https://www.parlament.gov.rs/МИЛАН_БОГУНОВИЋ.1542.245.html"
+    },
+    {
+      "id": "1460",
+      "name": "Бодирога Дејан",
+      "group": "174",
+      "source": "https://www.parlament.gov.rs/ДЕЈАН_БОДИРОГА.1460.245.html"
+    },
+    {
+      "id": "1205",
+      "name": "Бокан Никола",
+      "group": "175",
+      "source": "https://www.parlament.gov.rs/НИКОЛА_БОКАН.1205.245.html"
+    },
+    {
+      "id": "1582",
+      "name": "Боројевић Саша",
+      "group": "175",
+      "source": "https://www.parlament.gov.rs/САША_БОРОЈЕВИЋ.1582.245.html"
+    },
+    {
+      "id": "1190",
+      "name": "Брнабић Ана",
+      "group": "175",
+      "source": "https://www.parlament.gov.rs/АНА_БРНАБИЋ.1190.245.html"
+    },
+    {
+      "id": "1539",
+      "name": "Бубњевић Слободан",
+      "group": "174",
+      "source": "https://www.parlament.gov.rs/СЛОБОДАН_БУБЊЕВИЋ.1539.245.html"
+    },
+    {
+      "id": "1568",
+      "name": "Булатовић Анђелка",
+      "group": "174",
+      "source": "https://www.parlament.gov.rs/АНЂЕЛКА_БУЛАТОВИЋ.1568.245.html"
+    },
+    {
+      "id": "1222",
+      "name": "Булатовић Дејан",
+      "group": "175",
+      "source": "https://www.parlament.gov.rs/ДЕЈАН_БУЛАТОВИЋ.1222.245.html"
+    },
+    {
+      "id": "1454",
+      "name": "Валентик Сара",
+      "group": "174",
+      "source": "https://www.parlament.gov.rs/САРА_ВАЛЕНТИК.1454.245.html"
+    },
+    {
+      "id": "1561",
+      "name": "Васиљевић Благојевић Милица",
+      "group": "174",
+      "source": "https://www.parlament.gov.rs/МИЛИЦА_ВАСИЉЕВИЋ+БЛАГОЈЕВИЋ.1561.245.html"
+    },
+    {
+      "id": "1610",
+      "name": "Васиљковић Кристина",
+      "group": "175",
+      "source": "https://www.parlament.gov.rs/КРИСТИНА+_ВАСИЉКОВИЋ+.1610.245.html"
+    },
+    {
+      "id": "1504",
+      "name": "Васов Александар",
+      "group": "174",
+      "source": "https://www.parlament.gov.rs/АЛЕКСАНДАР_ВАСОВ.1504.245.html"
+    },
+    {
+      "id": "1478",
+      "name": "Вељковић Томислав",
+      "group": "174",
+      "source": "https://www.parlament.gov.rs/ТОМИСЛАВ_ВЕЉКОВИЋ.1478.245.html"
+    },
+    {
+      "id": "1623",
+      "name": "Весовић Марија",
+      "group": "175",
+      "source": "https://www.parlament.gov.rs/МАРИЈА_ВЕСОВИЋ.1623.245.html"
+    },
+    {
+      "id": "907",
+      "name": "Вујадиновић Милимир",
+      "group": "175",
+      "source": "https://www.parlament.gov.rs/МИЛИМИР_ВУЈАДИНОВИЋ.907.245.html"
+    },
+    {
+      "id": "1499",
+      "name": "Вујичић Јован",
+      "group": "174",
+      "source": "https://www.parlament.gov.rs/ЈОВАН_ВУЈИЧИЋ.1499.245.html"
+    },
+    {
+      "id": "268",
+      "name": "Вукелић Никола",
+      "group": "175",
+      "source": "https://www.parlament.gov.rs/НИКОЛА_ВУКЕЛИЋ.268.245.html"
+    },
+    {
+      "id": "270",
+      "name": "Вукићевић Лидија",
+      "group": "175",
+      "source": "https://www.parlament.gov.rs/ЛИДИЈА_ВУКИЋЕВИЋ.270.245.html"
+    },
+    {
+      "id": "1451",
+      "name": "Вукосавић Слободан",
+      "group": "174",
+      "source": "https://www.parlament.gov.rs/СЛОБОДАН_ВУКОСАВИЋ.1451.245.html"
+    },
+    {
+      "id": "1452",
+      "name": "Вуловић Марија",
+      "group": "174",
+      "source": "https://www.parlament.gov.rs/МАРИЈА_ВУЛОВИЋ.1452.245.html"
+    },
+    {
+      "id": "1016",
+      "name": "Вучевић Милош",
+      "group": "175",
+      "source": "https://www.parlament.gov.rs/МИЛОШ+_ВУЧЕВИЋ.1016.245.html"
+    },
+    {
+      "id": "1602",
+      "name": "Вучинић Дина",
+      "group": "175",
+      "source": "https://www.parlament.gov.rs/ДИНА_ВУЧИНИЋ.1602.245.html"
+    },
+    {
+      "id": "30",
+      "name": "Вучић Александар",
+      "group": "175",
+      "source": "https://www.parlament.gov.rs/АЛЕКСАНДАР_ВУЧИЋ.30.245.html"
+    },
+    {
+      "id": "1587",
+      "name": "Вучићевић Вукашин",
+      "group": "175",
+      "source": "https://www.parlament.gov.rs/ВУКАШИН_ВУЧИЋЕВИЋ.1587.245.html"
+    },
+    {
+      "id": "1532",
+      "name": "Гашић Југослав",
+      "group": "174",
+      "source": "https://www.parlament.gov.rs/ЈУГОСЛАВ_ГАШИЋ.1532.245.html"
+    },
+    {
+      "id": "1601",
+      "name": "Грубешић Алекса",
+      "group": "175",
+      "source": "https://www.parlament.gov.rs/АЛЕКСА_ГРУБЕШИЋ.1601.245.html"
+    },
+    {
+      "id": "1613",
+      "name": "Грујин Иван",
+      "group": "175",
+      "source": "https://www.parlament.gov.rs/ИВАН_ГРУЈИН.1613.245.html"
+    },
+    {
+      "id": "1566",
+      "name": "Грујић Татјана",
+      "group": "174",
+      "source": "https://www.parlament.gov.rs/ТАТЈАНА_ГРУЈИЋ.1566.245.html"
+    },
+    {
+      "id": "1326",
+      "name": "Гујон Арно",
+      "group": "175",
+      "source": "https://www.parlament.gov.rs/АРНО_ГУЈОН.1326.245.html"
+    },
+    {
+      "id": "1506",
+      "name": "Деветаковић Јована",
+      "group": "174",
+      "source": "https://www.parlament.gov.rs/ЈОВАНА_ДЕВЕТАКОВИЋ.1506.245.html"
+    },
+    {
+      "id": "1604",
+      "name": "Дивовић Александар",
+      "group": "175",
+      "source": "https://www.parlament.gov.rs/АЛЕКСАНДАР_ДИВОВИЋ.1604.245.html"
+    },
+    {
+      "id": "1574",
+      "name": "Димитријевић Бојан",
+      "group": "174",
+      "source": "https://www.parlament.gov.rs/БОЈАН_ДИМИТРИЈЕВИЋ.1574.245.html"
+    },
+    {
+      "id": "1450",
+      "name": "Димитријевић Лидија",
+      "group": "174",
+      "source": "https://www.parlament.gov.rs/ЛИДИЈА_ДИМИТРИЈЕВИЋ.1450.245.html"
+    },
+    {
+      "id": "1484",
+      "name": "Димовић Феђа",
+      "group": "174",
+      "source": "https://www.parlament.gov.rs/ФЕЂА_ДИМОВИЋ.1484.245.html"
+    },
+    {
+      "id": "1517",
+      "name": "Драшковић Дражен",
+      "group": "174",
+      "source": "https://www.parlament.gov.rs/ДРАЖЕН_ДРАШКОВИЋ.1517.245.html"
+    },
+    {
+      "id": "619",
+      "name": "Дрецун мр Милован",
+      "group": "175",
+      "source": "https://www.parlament.gov.rs/МИЛОВАН_ДРЕЦУН+.619.245.html"
+    },
+    {
+      "id": "1494",
+      "name": "Ђајић Зоран",
+      "group": "174",
+      "source": "https://www.parlament.gov.rs/ЗОРАН_ЂАЈИЋ.1494.245.html"
+    },
+    {
+      "id": "1455",
+      "name": "Ђорђевић Драгана",
+      "group": "174",
+      "source": "https://www.parlament.gov.rs/ДРАГАНА_ЂОРЂЕВИЋ.1455.245.html"
+    },
+    {
+      "id": "1595",
+      "name": "Ђорђевић Павле",
+      "group": "175",
+      "source": "https://www.parlament.gov.rs/ПАВЛЕ_ЂОРЂЕВИЋ.1595.245.html"
+    },
+    {
+      "id": "1511",
+      "name": "Ђорђевић Хамидовић Тања",
+      "group": "174",
+      "source": "https://www.parlament.gov.rs/ТАЊА_ЂОРЂЕВИЋ+ХАМИДОВИЋ.1511.245.html"
+    },
+    {
+      "id": "1490",
+      "name": "Ђорђијевић Милена",
+      "group": "174",
+      "source": "https://www.parlament.gov.rs/МИЛЕНА_ЂОРЂИЈЕВИЋ.1490.245.html"
+    },
+    {
+      "id": "1243",
+      "name": "Ђорђић Ђорђо",
+      "group": "175",
+      "source": "https://www.parlament.gov.rs/ЂОРЂО_ЂОРЂИЋ.1243.245.html"
+    },
+    {
+      "id": "757",
+      "name": "Ђукановић Владимир",
+      "group": "175",
+      "source": "https://www.parlament.gov.rs/ВЛАДИМИР_ЂУКАНОВИЋ.757.245.html"
+    },
+    {
+      "id": "1578",
+      "name": "Ђукић Милинковић Јелена",
+      "group": "175",
+      "source": "https://www.parlament.gov.rs/ЈЕЛЕНА_ЂУКИЋ+МИЛИНКОВИЋ.1578.245.html"
+    },
+    {
+      "id": "1528",
+      "name": "Ђурђев Дејан",
+      "group": "174",
+      "source": "https://www.parlament.gov.rs/ДЕЈАН_ЂУРЂЕВ.1528.245.html"
+    },
+    {
+      "id": "1472",
+      "name": "Ђурђевић Душан",
+      "group": "174",
+      "source": "https://www.parlament.gov.rs/ДУШАН_ЂУРЂЕВИЋ.1472.245.html"
+    },
+    {
+      "id": "1034",
+      "name": "Ђурић Никитовић Невена",
+      "group": "175",
+      "source": "https://www.parlament.gov.rs/НЕВЕНА_ЂУРИЋ+НИКИТОВИЋ.1034.245.html"
+    },
+    {
+      "id": "1546",
+      "name": "Ел Сараг Сарах",
+      "group": "174",
+      "source": "https://www.parlament.gov.rs/САРАХ_ЕЛ+САРАГ.1546.245.html"
+    },
+    {
+      "id": "1620",
+      "name": "Ердељан Јована",
+      "group": "175",
+      "source": "https://www.parlament.gov.rs/ЈОВАНА_ЕРДЕЉАН.1620.245.html"
+    },
+    {
+      "id": "1597",
+      "name": "Живковић Љиљана",
+      "group": "175",
+      "source": "https://www.parlament.gov.rs/ЉИЉАНА_ЖИВКОВИЋ.1597.245.html"
+    },
+    {
+      "id": "1606",
+      "name": "Живковић - Обрадовић Драгана",
+      "group": "175",
+      "source": "https://www.parlament.gov.rs/ДРАГАНА_ЖИВКОВИЋ+-+ОБРАДОВИЋ.1606.245.html"
+    },
+    {
+      "id": "1571",
+      "name": "Жунић Татјана",
+      "group": "174",
+      "source": "https://www.parlament.gov.rs/ТАТЈАНА_ЖУНИЋ.1571.245.html"
+    },
+    {
+      "id": "1184",
+      "name": "Здравковић проф. др Марија",
+      "group": "175",
+      "source": "https://www.parlament.gov.rs/МАРИЈА_ЗДРАВКОВИЋ.1184.245.html"
+    },
+    {
+      "id": "1560",
+      "name": "Здравковић Милан",
+      "group": "174",
+      "source": "https://www.parlament.gov.rs/МИЛАН_ЗДРАВКОВИЋ.1560.245.html"
+    },
+    {
+      "id": "1295",
+      "name": "Зукорлић Усаме",
+      "group": "173",
+      "source": "https://www.parlament.gov.rs/УСАМЕ_ЗУКОРЛИЋ.1295.245.html"
+    },
+    {
+      "id": "1468",
+      "name": "Иванишевић Дејан",
+      "group": "174",
+      "source": "https://www.parlament.gov.rs/ДЕЈАН_ИВАНИШЕВИЋ.1468.245.html"
+    },
+    {
+      "id": "1187",
+      "name": "Ивковић Лепомир",
+      "group": "175",
+      "source": "https://www.parlament.gov.rs/ЛЕПОМИР_ИВКОВИЋ.1187.245.html"
+    },
+    {
+      "id": "1480",
+      "name": "Илић Александра",
+      "group": "174",
+      "source": "https://www.parlament.gov.rs/АЛЕКСАНДРА_ИЛИЋ.1480.245.html"
+    },
+    {
+      "id": "1344",
+      "name": "Илић Соња",
+      "group": "175",
+      "source": "https://www.parlament.gov.rs/СОЊА_ИЛИЋ.1344.245.html"
+    },
+    {
+      "id": "1537",
+      "name": "Јакшић Дејан",
+      "group": "174",
+      "source": "https://www.parlament.gov.rs/ДЕЈАН_ЈАКШИЋ.1537.245.html"
+    },
+    {
+      "id": "991",
+      "name": "Јаношевић Станислава",
+      "group": "175",
+      "source": "https://www.parlament.gov.rs/СТАНИСЛАВА_ЈАНОШЕВИЋ.991.245.html"
+    },
+    {
+      "id": "1443",
+      "name": "Јевтић Милош",
+      "group": "174",
+      "source": "https://www.parlament.gov.rs/МИЛОШ_ЈЕВТИЋ.1443.245.html"
+    },
+    {
+      "id": "1515",
+      "name": "Јемовић Јована",
+      "group": "174",
+      "source": "https://www.parlament.gov.rs/ЈОВАНА_ЈЕМОВИЋ.1515.245.html"
+    },
+    {
+      "id": "1029",
+      "name": "Јованов Миленко",
+      "group": "175",
+      "source": "https://www.parlament.gov.rs/МИЛЕНКО_ЈОВАНОВ.1029.245.html"
+    },
+    {
+      "id": "1577",
+      "name": "Јовановић проф. др Верица",
+      "group": "175",
+      "source": "https://www.parlament.gov.rs/ВЕРИЦА+_ЈОВАНОВИЋ.1577.245.html"
+    },
+    {
+      "id": "1477",
+      "name": "Јовановић Владан",
+      "group": "174",
+      "source": "https://www.parlament.gov.rs/ВЛАДАН_ЈОВАНОВИЋ.1477.245.html"
+    },
+    {
+      "id": "1558",
+      "name": "Јовановић Драган",
+      "group": "174",
+      "source": "https://www.parlament.gov.rs/ДРАГАН_ЈОВАНОВИЋ.1558.245.html"
+    },
+    {
+      "id": "1549",
+      "name": "Јовановић Милица",
+      "group": "174",
+      "source": "https://www.parlament.gov.rs/МИЛИЦА_ЈОВАНОВИЋ.1549.245.html"
+    },
+    {
+      "id": "59",
+      "name": "Јовановић Наташа",
+      "group": "175",
+      "source": "https://www.parlament.gov.rs/НАТАША_ЈОВАНОВИЋ.59.245.html"
+    },
+    {
+      "id": "1509",
+      "name": "Јовић Растко",
+      "group": "174",
+      "source": "https://www.parlament.gov.rs/РАСТКО_ЈОВИЋ.1509.245.html"
+    },
+    {
+      "id": "1314",
+      "name": "Јосифовић Бранислав",
+      "group": "175",
+      "source": "https://www.parlament.gov.rs/БРАНИСЛАВ_ЈОСИФОВИЋ.1314.245.html"
+    },
+    {
+      "id": "863",
+      "name": "Камбери Шаип",
+      "group": "173",
+      "source": "https://www.parlament.gov.rs/ШАИП_КАМБЕРИ.863.245.html"
+    },
+    {
+      "id": "1453",
+      "name": "Кокановић Златко",
+      "group": "174",
+      "source": "https://www.parlament.gov.rs/ЗЛАТКО_КОКАНОВИЋ.1453.245.html"
+    },
+    {
+      "id": "1015",
+      "name": "Колунџија Јован",
+      "group": "175",
+      "source": "https://www.parlament.gov.rs/ЈОВАН_КОЛУНЏИЈА.1015.245.html"
+    },
+    {
+      "id": "1615",
+      "name": "Кондић Алекса",
+      "group": "175",
+      "source": "https://www.parlament.gov.rs/АЛЕКСА_КОНДИЋ.1615.245.html"
+    },
+    {
+      "id": "1057",
+      "name": "Кондић Мирослав",
+      "group": "175",
+      "source": "https://www.parlament.gov.rs/МИРОСЛАВ_КОНДИЋ.1057.245.html"
+    },
+    {
+      "id": "1588",
+      "name": "Кораћ Марко",
+      "group": "173",
+      "source": "https://www.parlament.gov.rs/МАРКО_КОРАЋ.1588.245.html"
+    },
+    {
+      "id": "1347",
+      "name": "Костов Ристо",
+      "group": "175",
+      "source": "https://www.parlament.gov.rs/РИСТО_КОСТОВ.1347.245.html"
+    },
+    {
+      "id": "1497",
+      "name": "Кризманић Имре",
+      "group": "174",
+      "source": "https://www.parlament.gov.rs/ИМРЕ_КРИЗМАНИЋ.1497.245.html"
+    },
+    {
+      "id": "1062",
+      "name": "Кркобабић Стефан",
+      "group": "175",
+      "source": "https://www.parlament.gov.rs/СТЕФАН_КРКОБАБИЋ.1062.245.html"
+    },
+    {
+      "id": "1461",
+      "name": "Крстић Маја",
+      "group": "174",
+      "source": "https://www.parlament.gov.rs/МАЈА_КРСТИЋ.1461.245.html"
+    },
+    {
+      "id": "1458",
+      "name": "Крстић Митар",
+      "group": "174",
+      "source": "https://www.parlament.gov.rs/МИТАР_КРСТИЋ.1458.245.html"
+    },
+    {
+      "id": "1570",
+      "name": "Крстић Младен",
+      "group": "174",
+      "source": "https://www.parlament.gov.rs/МЛАДЕН_КРСТИЋ.1570.245.html"
+    },
+    {
+      "id": "1498",
+      "name": "Крстић Немања",
+      "group": "174",
+      "source": "https://www.parlament.gov.rs/НЕМАЊА_КРСТИЋ.1498.245.html"
+    },
+    {
+      "id": "1600",
+      "name": "Кубуровић Нина",
+      "group": "175",
+      "source": "https://www.parlament.gov.rs/НИНА_КУБУРОВИЋ.1600.245.html"
+    },
+    {
+      "id": "1508",
+      "name": "Лазар Тибор",
+      "group": "174",
+      "source": "https://www.parlament.gov.rs/ТИБОР_ЛАЗАР.1508.245.html"
+    },
+    {
+      "id": "780",
+      "name": "Лакетић доц. др Дарко",
+      "group": "175",
+      "source": "https://www.parlament.gov.rs/ДАРКО_ЛАКЕТИЋ.780.245.html"
+    },
+    {
+      "id": "1594",
+      "name": "Лалошевић Лука",
+      "group": "175",
+      "source": "https://www.parlament.gov.rs/ЛУКА_ЛАЛОШЕВИЋ.1594.245.html"
+    },
+    {
+      "id": "1541",
+      "name": "Лесјак Марија",
+      "group": "174",
+      "source": "https://www.parlament.gov.rs/МАРИЈА_ЛЕСЈАК.1541.245.html"
+    },
+    {
+      "id": "1579",
+      "name": "Лечић Бранислав",
+      "group": "175",
+      "source": "https://www.parlament.gov.rs/БРАНИСЛАВ_ЛЕЧИЋ.1579.245.html"
+    },
+    {
+      "id": "1545",
+      "name": "Љубомировић Ирена",
+      "group": "174",
+      "source": "https://www.parlament.gov.rs/ИРЕНА_ЉУБОМИРОВИЋ.1545.245.html"
+    },
+    {
+      "id": "1442",
+      "name": "Маврић Адем",
+      "group": "174",
+      "source": "https://www.parlament.gov.rs/AДЕМ_МАВРИЋ.1442.245.html"
+    },
+    {
+      "id": "1503",
+      "name": "Манчић Владан",
+      "group": "174",
+      "source": "https://www.parlament.gov.rs/ВЛАДАН_МАНЧИЋ.1503.245.html"
+    },
+    {
+      "id": "1624",
+      "name": "Маринковић Дејан",
+      "group": "175",
+      "source": "https://www.parlament.gov.rs/ДЕЈАН_МАРИНКОВИЋ.1624.245.html"
+    },
+    {
+      "id": "1591",
+      "name": "Маринковић Мирка",
+      "group": "175",
+      "source": "https://www.parlament.gov.rs/МИРКА_МАРИНКОВИЋ.1591.245.html"
+    },
+    {
+      "id": "450",
+      "name": "Марић Душан",
+      "group": "175",
+      "source": "https://www.parlament.gov.rs/ДУШАН_МАРИЋ.450.245.html"
+    },
+    {
+      "id": "1608",
+      "name": "Марић Лазар",
+      "group": "175",
+      "source": "https://www.parlament.gov.rs/ЛАЗАР_МАРИЋ.1608.245.html"
+    },
+    {
+      "id": "1446",
+      "name": "Марић Милина",
+      "group": "174",
+      "source": "https://www.parlament.gov.rs/МИЛИНА_МАРИЋ.1446.245.html"
+    },
+    {
+      "id": "806",
+      "name": "Марковић Александар",
+      "group": "175",
+      "source": "https://www.parlament.gov.rs/АЛЕКСАНДАР_МАРКОВИЋ.806.245.html"
+    },
+    {
+      "id": "1055",
+      "name": "Марковић Драган",
+      "group": "175",
+      "source": "https://www.parlament.gov.rs/ДРАГАН_МАРКОВИЋ.1055.245.html"
+    },
+    {
+      "id": "1491",
+      "name": "Маруна Марија",
+      "group": "174",
+      "source": "https://www.parlament.gov.rs/МАРИЈА_МАРУНА.1491.245.html"
+    },
+    {
+      "id": "1567",
+      "name": "Матић Милан",
+      "group": "174",
+      "source": "https://www.parlament.gov.rs/МИЛАН_МАТИЋ.1567.245.html"
+    },
+    {
+      "id": "1106",
+      "name": "Матовић Рајка",
+      "group": "175",
+      "source": "https://www.parlament.gov.rs/РАЈКА+_МАТОВИЋ.1106.245.html"
+    },
+    {
+      "id": "1616",
+      "name": "Мацак Ивана",
+      "group": "175",
+      "source": "https://www.parlament.gov.rs/ИВАНА_МАЦАК.1616.245.html"
+    },
+    {
+      "id": "1196",
+      "name": "Мацура прим. др Нада",
+      "group": "175",
+      "source": "https://www.parlament.gov.rs/НАДА_МАЦУРА.1196.245.html"
+    },
+    {
+      "id": "1573",
+      "name": "Међедовић Јанко",
+      "group": "174",
+      "source": "https://www.parlament.gov.rs/ЈАНКО_МЕЂЕДОВИЋ.1573.245.html"
+    },
+    {
+      "id": "1580",
+      "name": "Месаровић Адријана",
+      "group": "175",
+      "source": "https://www.parlament.gov.rs/АДРИЈАНА_МЕСАРОВИЋ.1580.245.html"
+    },
+    {
+      "id": "1625",
+      "name": "Мехмети Висар",
+      "group": "173",
+      "source": "https://www.parlament.gov.rs/ВИСАР_МЕХМЕТИ.1625.245.html"
+    },
+    {
+      "id": "1492",
+      "name": "Мијаиловић Иван",
+      "group": "174",
+      "source": "https://www.parlament.gov.rs/ИВАН_МИЈАИЛОВИЋ.1492.245.html"
+    },
+    {
+      "id": "1576",
+      "name": "Микитишин Игор",
+      "group": "174",
+      "source": "https://www.parlament.gov.rs/ИГОР_МИКИТИШИН.1576.245.html"
+    },
+    {
+      "id": "1482",
+      "name": "Микић Никола",
+      "group": "174",
+      "source": "https://www.parlament.gov.rs/НИКОЛА_МИКИЋ.1482.245.html"
+    },
+    {
+      "id": "1489",
+      "name": "Микић Урош",
+      "group": "174",
+      "source": "https://www.parlament.gov.rs/УРОШ_МИКИЋ.1489.245.html"
+    },
+    {
+      "id": "789",
+      "name": "Милетић Милија",
+      "group": "175",
+      "source": "https://www.parlament.gov.rs/МИЛИЈА_МИЛЕТИЋ.789.245.html"
+    },
+    {
+      "id": "1581",
+      "name": "Милетић - Дракулић проф. др Светлана",
+      "group": "175",
+      "source": "https://www.parlament.gov.rs/СВЕТЛАНА_МИЛЕТИЋ+-+ДРАКУЛИЋ.1581.245.html"
+    },
+    {
+      "id": "1556",
+      "name": "Милићев Драган",
+      "group": "174",
+      "source": "https://www.parlament.gov.rs/ДРАГАН_МИЛИЋЕВ.1556.245.html"
+    },
+    {
+      "id": "1467",
+      "name": "Миловановић Живојин",
+      "group": "174",
+      "source": "https://www.parlament.gov.rs/ЖИВОЈИН_МИЛОВАНОВИЋ.1467.245.html"
+    },
+    {
+      "id": "1550",
+      "name": "Миловановић Марија",
+      "group": "174",
+      "source": "https://www.parlament.gov.rs/МАРИЈА_МИЛОВАНОВИЋ.1550.245.html"
+    },
+    {
+      "id": "1475",
+      "name": "Милојковић Александар",
+      "group": "174",
+      "source": "https://www.parlament.gov.rs/АЛЕКСАНДАР_МИЛОЈКОВИЋ.1475.245.html"
+    },
+    {
+      "id": "1562",
+      "name": "Милосављевић Иван",
+      "group": "174",
+      "source": "https://www.parlament.gov.rs/ИВАН_МИЛОСАВЉЕВИЋ.1562.245.html"
+    },
+    {
+      "id": "1483",
+      "name": "Милошевић Станислав",
+      "group": "174",
+      "source": "https://www.parlament.gov.rs/СТАНИСЛАВ_МИЛОШЕВИЋ.1483.245.html"
+    },
+    {
+      "id": "1041",
+      "name": "Мирковић Александар",
+      "group": "175",
+      "source": "https://www.parlament.gov.rs/АЛЕКСАНДАР_МИРКОВИЋ.1041.245.html"
+    },
+    {
+      "id": "1569",
+      "name": "Митов Петар",
+      "group": "174",
+      "source": "https://www.parlament.gov.rs/ПЕТАР_МИТОВ.1569.245.html"
+    },
+    {
+      "id": "1540",
+      "name": "Митровић Марија",
+      "group": "174",
+      "source": "https://www.parlament.gov.rs/МАРИЈА_МИТРОВИЋ.1540.245.html"
+    },
+    {
+      "id": "1427",
+      "name": "Младеновић Здравко",
+      "group": "175",
+      "source": "https://www.parlament.gov.rs/ЗДРАВКО_МЛАДЕНОВИЋ.1427.245.html"
+    },
+    {
+      "id": "1102",
+      "name": "Младеновић Марко",
+      "group": "175",
+      "source": "https://www.parlament.gov.rs/МАРКО_МЛАДЕНОВИЋ.1102.245.html"
+    },
+    {
+      "id": "1529",
+      "name": "Младеновић Стефан",
+      "group": "174",
+      "source": "https://www.parlament.gov.rs/СТЕФАН_МЛАДЕНОВИЋ.1529.245.html"
+    },
+    {
+      "id": "1621",
+      "name": "Момчиловић Предраг",
+      "group": "175",
+      "source": "https://www.parlament.gov.rs/ПРЕДРАГ_МОМЧИЛОВИЋ.1621.245.html"
+    },
+    {
+      "id": "1058",
+      "name": "Мрдић др Угљеша",
+      "group": "175",
+      "source": "https://www.parlament.gov.rs/УГЉЕША_МРДИЋ.1058.245.html"
+    },
+    {
+      "id": "1456",
+      "name": "Мрђа Предраг",
+      "group": "174",
+      "source": "https://www.parlament.gov.rs/ПРЕДРАГ_МРЂА.1456.245.html"
+    },
+    {
+      "id": "1611",
+      "name": "Недељковић др Марина",
+      "group": "175",
+      "source": "https://www.parlament.gov.rs/МАРИНА_НЕДЕЉКОВИЋ.1611.245.html"
+    },
+    {
+      "id": "1448",
+      "name": "Нешковић Александар",
+      "group": "174",
+      "source": "https://www.parlament.gov.rs/АЛЕКСАНДАР_НЕШКОВИЋ.1448.245.html"
+    },
+    {
+      "id": "1337",
+      "name": "Николић Горан",
+      "group": "175",
+      "source": "https://www.parlament.gov.rs/ГОРАН_НИКОЛИЋ.1337.245.html"
+    },
+    {
+      "id": "1038",
+      "name": "Николић мр Данијела",
+      "group": "175",
+      "source": "https://www.parlament.gov.rs/ДАНИЈЕЛА_НИКОЛИЋ.1038.245.html"
+    },
+    {
+      "id": "1514",
+      "name": "Николић Марко",
+      "group": "174",
+      "source": "https://www.parlament.gov.rs/МАРКО_НИКОЛИЋ.1514.245.html"
+    },
+    {
+      "id": "1526",
+      "name": "Николић Мирјана",
+      "group": "174",
+      "source": "https://www.parlament.gov.rs/МИРЈАНА_НИКОЛИЋ.1526.245.html"
+    },
+    {
+      "id": "718",
+      "name": "Обрадовић Јасмина",
+      "group": "175",
+      "source": "https://www.parlament.gov.rs/ЈАСМИНА_ОБРАДОВИЋ.718.245.html"
+    },
+    {
+      "id": "1495",
+      "name": "Опарница Љубица",
+      "group": "174",
+      "source": "https://www.parlament.gov.rs/ЉУБИЦА_ОПАРНИЦА.1495.245.html"
+    },
+    {
+      "id": "1589",
+      "name": "Павловић Јелена",
+      "group": "175",
+      "source": "https://www.parlament.gov.rs/ЈЕЛЕНА_ПАВЛОВИЋ.1589.245.html"
+    },
+    {
+      "id": "1586",
+      "name": "Павловић Милош",
+      "group": "175",
+      "source": "https://www.parlament.gov.rs/МИЛОШ_ПАВЛОВИЋ.1586.245.html"
+    },
+    {
+      "id": "1626",
+      "name": "Паламар Џенан",
+      "group": "173",
+      "source": "https://www.parlament.gov.rs/ЏЕНАН_ПАЛАМАР.1626.245.html"
+    },
+    {
+      "id": "1592",
+      "name": "Пантелић др Владимир",
+      "group": "175",
+      "source": "https://www.parlament.gov.rs/ВЛАДИМИР_ПАНТЕЛИЋ.1592.245.html"
+    },
+    {
+      "id": "617",
+      "name": "Пантић Пиља Биљана",
+      "group": "175",
+      "source": "https://www.parlament.gov.rs/БИЉАНА_ПАНТИЋ+ПИЉА.617.245.html"
+    },
+    {
+      "id": "324",
+      "name": "Пастор проф. др Балинт",
+      "group": "173",
+      "source": "https://www.parlament.gov.rs/БАЛИНТ_ПАСТОР.324.245.html"
+    },
+    {
+      "id": "1445",
+      "name": "Пауновић Татјана",
+      "group": "174",
+      "source": "https://www.parlament.gov.rs/ТАТЈАНА_ПАУНОВИЋ.1445.245.html"
+    },
+    {
+      "id": "1565",
+      "name": "Пејчић Татјана",
+      "group": "174",
+      "source": "https://www.parlament.gov.rs/ТАТЈАНА_ПЕЈЧИЋ.1565.245.html"
+    },
+    {
+      "id": "1543",
+      "name": "Перишић Горан",
+      "group": "174",
+      "source": "https://www.parlament.gov.rs/ГОРАН_ПЕРИШИЋ.1543.245.html"
+    },
+    {
+      "id": "1466",
+      "name": "Перков Александра",
+      "group": "174",
+      "source": "https://www.parlament.gov.rs/АЛЕКСАНДРА_ПЕРКОВ.1466.245.html"
+    },
+    {
+      "id": "1336",
+      "name": "Петрашиновић Мирослав",
+      "group": "175",
+      "source": "https://www.parlament.gov.rs/МИРОСЛАВ+_ПЕТРАШИНОВИЋ.1336.245.html"
+    },
+    {
+      "id": "1501",
+      "name": "Петровић Ивана",
+      "group": "174",
+      "source": "https://www.parlament.gov.rs/ИВАНА_ПЕТРОВИЋ.1501.245.html"
+    },
+    {
+      "id": "1525",
+      "name": "Петровић Јелена",
+      "group": "174",
+      "source": "https://www.parlament.gov.rs/ЈЕЛЕНА_ПЕТРОВИЋ.1525.245.html"
+    },
+    {
+      "id": "1465",
+      "name": "Петровић Милена",
+      "group": "174",
+      "source": "https://www.parlament.gov.rs/МИЛЕНА_ПЕТРОВИЋ.1465.245.html"
+    },
+    {
+      "id": "1023",
+      "name": "Петровић Оља",
+      "group": "175",
+      "source": "https://www.parlament.gov.rs/ОЉА_ПЕТРОВИЋ.1023.245.html"
+    },
+    {
+      "id": "1500",
+      "name": "Петровић - Ропрет Татјана",
+      "group": "174",
+      "source": "https://www.parlament.gov.rs/ТАТЈАНА_ПЕТРОВИЋ+-+РОПРЕТ.1500.245.html"
+    },
+    {
+      "id": "1481",
+      "name": "Петровић Јулицх Марина",
+      "group": "174",
+      "source": "https://www.parlament.gov.rs/МАРИНА_ПЕТРОВИЋ+ЈУЛИЦХ.1481.245.html"
+    },
+    {
+      "id": "1459",
+      "name": "Писарић Милана",
+      "group": "174",
+      "source": "https://www.parlament.gov.rs/МИЛАНА_ПИСАРИЋ.1459.245.html"
+    },
+    {
+      "id": "1584",
+      "name": "Попадић проф. др Светлана",
+      "group": "175",
+      "source": "https://www.parlament.gov.rs/СВЕТЛАНА_ПОПАДИЋ.1584.245.html"
+    },
+    {
+      "id": "1516",
+      "name": "Попин Александра",
+      "group": "174",
+      "source": "https://www.parlament.gov.rs/АЛЕКСАНДРА_ПОПИН.1516.245.html"
+    },
+    {
+      "id": "1531",
+      "name": "Пурић Далиборка",
+      "group": "174",
+      "source": "https://www.parlament.gov.rs/ДАЛИБОРКА_ПУРИЋ.1531.245.html"
+    },
+    {
+      "id": "302",
+      "name": "Рагуш Марина",
+      "group": "175",
+      "source": "https://www.parlament.gov.rs/МАРИНА_РАГУШ.302.245.html"
+    },
+    {
+      "id": "1180",
+      "name": "Раденовић Стојан",
+      "group": "175",
+      "source": "https://www.parlament.gov.rs/СТОЈАН_РАДЕНОВИЋ.1180.245.html"
+    },
+    {
+      "id": "118",
+      "name": "Радета Вјерица",
+      "group": "175",
+      "source": "https://www.parlament.gov.rs/ВЈЕРИЦА_РАДЕТА.118.245.html"
+    },
+    {
+      "id": "1050",
+      "name": "Радин Милан",
+      "group": "175",
+      "source": "https://www.parlament.gov.rs/МИЛАН_РАДИН.1050.245.html"
+    },
+    {
+      "id": "1520",
+      "name": "Радовановић Бркановић Биљана",
+      "group": "174",
+      "source": "https://www.parlament.gov.rs/БИЉАНА+_РАДОВАНОВИЋ+БРКАНОВИЋ.1520.245.html"
+    },
+    {
+      "id": "1533",
+      "name": "Радованчев Урош",
+      "group": "174",
+      "source": "https://www.parlament.gov.rs/УРОШ_РАДОВАНЧЕВ.1533.245.html"
+    },
+    {
+      "id": "1486",
+      "name": "Радовић Вера",
+      "group": "174",
+      "source": "https://www.parlament.gov.rs/ВЕРА_РАДОВИЋ.1486.245.html"
+    },
+    {
+      "id": "1590",
+      "name": "Радуловић Урош",
+      "group": "175",
+      "source": "https://www.parlament.gov.rs/УРОШ_РАДУЛОВИЋ.1590.245.html"
+    },
+    {
+      "id": "1332",
+      "name": "Ракић Горан",
+      "group": "175",
+      "source": "https://www.parlament.gov.rs/ГОРАН_РАКИЋ.1332.245.html"
+    },
+    {
+      "id": "1496",
+      "name": "Рамадановић Санела",
+      "group": "174",
+      "source": "https://www.parlament.gov.rs/САНЕЛА_РАМАДАНОВИЋ.1496.245.html"
+    },
+    {
+      "id": "1474",
+      "name": "Рамусовић Мирза",
+      "group": "174",
+      "source": "https://www.parlament.gov.rs/МИРЗА_РАМУСОВИЋ.1474.245.html"
+    },
+    {
+      "id": "1619",
+      "name": "Ранковић Ања",
+      "group": "175",
+      "source": "https://www.parlament.gov.rs/АЊА_РАНКОВИЋ.1619.245.html"
+    },
+    {
+      "id": "1330",
+      "name": "Ребрача Жељко",
+      "group": "175",
+      "source": "https://www.parlament.gov.rs/ЖЕЉКО_РЕБРАЧА.1330.245.html"
+    },
+    {
+      "id": "1544",
+      "name": "Рељановић Марио",
+      "group": "174",
+      "source": "https://www.parlament.gov.rs/МАРИО_РЕЉАНОВИЋ.1544.245.html"
+    },
+    {
+      "id": "1507",
+      "name": "Ристић Југослав",
+      "group": "174",
+      "source": "https://www.parlament.gov.rs/ЈУГОСЛАВ_РИСТИЋ.1507.245.html"
+    },
+    {
+      "id": "598",
+      "name": "Ристичевић Маријан",
+      "group": "175",
+      "source": "https://www.parlament.gov.rs/МАРИЈАН_РИСТИЧЕВИЋ.598.245.html"
+    },
+    {
+      "id": "1547",
+      "name": "Роган Сузана",
+      "group": "174",
+      "source": "https://www.parlament.gov.rs/СУЗАНА_РОГАН.1547.245.html"
+    },
+    {
+      "id": "1536",
+      "name": "Савић Ана",
+      "group": "174",
+      "source": "https://www.parlament.gov.rs/АНА_САВИЋ.1536.245.html"
+    },
+    {
+      "id": "1554",
+      "name": "Савић Владимир",
+      "group": "174",
+      "source": "https://www.parlament.gov.rs/ВЛАДИМИР_САВИЋ.1554.245.html"
+    },
+    {
+      "id": "1551",
+      "name": "Савић Слободан",
+      "group": "174",
+      "source": "https://www.parlament.gov.rs/СЛОБОДАН_САВИЋ.1551.245.html"
+    },
+    {
+      "id": "1521",
+      "name": "Савчић Сања",
+      "group": "174",
+      "source": "https://www.parlament.gov.rs/САЊА_САВЧИЋ.1521.245.html"
+    },
+    {
+      "id": "1527",
+      "name": "Саичић Радомир",
+      "group": "174",
+      "source": "https://www.parlament.gov.rs/РАДОМИР_САИЧИЋ.1527.245.html"
+    },
+    {
+      "id": "1598",
+      "name": "Сантрач Славица",
+      "group": "175",
+      "source": "https://www.parlament.gov.rs/СЛАВИЦА_САНТРАЧ.1598.245.html"
+    },
+    {
+      "id": "1324",
+      "name": "Селаковић Никола",
+      "group": "175",
+      "source": "https://www.parlament.gov.rs/НИКОЛА_СЕЛАКОВИЋ.1324.245.html"
+    },
+    {
+      "id": "1530",
+      "name": "Сеничић мр Весна",
+      "group": "174",
+      "source": "https://www.parlament.gov.rs/ВЕСНА_СЕНИЧИЋ.1530.245.html"
+    },
+    {
+      "id": "1513",
+      "name": "Сибиновић Микица",
+      "group": "174",
+      "source": "https://www.parlament.gov.rs/МИКИЦА_СИБИНОВИЋ.1513.245.html"
+    },
+    {
+      "id": "1559",
+      "name": "Спасојевић Бркић Весна",
+      "group": "174",
+      "source": "https://www.parlament.gov.rs/ВЕСНА_СПАСОЈЕВИЋ+БРКИЋ.1559.245.html"
+    },
+    {
+      "id": "1437",
+      "name": "Срдановић Илија",
+      "group": "174",
+      "source": "https://www.parlament.gov.rs/ИЛИЈА_СРДАНОВИЋ.1437.245.html"
+    },
+    {
+      "id": "1447",
+      "name": "Срећковић Весна",
+      "group": "174",
+      "source": "https://www.parlament.gov.rs/ВЕСНА_СРЕЋКОВИЋ.1447.245.html"
+    },
+    {
+      "id": "1614",
+      "name": "Сталовић Дејан",
+      "group": "175",
+      "source": "https://www.parlament.gov.rs/ДЕЈАН_СТАЛОВИЋ.1614.245.html"
+    },
+    {
+      "id": "1607",
+      "name": "Стаматовић Павле",
+      "group": "175",
+      "source": "https://www.parlament.gov.rs/ПАВЛЕ_СТАМАТОВИЋ.1607.245.html"
+    },
+    {
+      "id": "1575",
+      "name": "Станаревић Светлана",
+      "group": "174",
+      "source": "https://www.parlament.gov.rs/СВЕТЛАНА_СТАНАРЕВИЋ.1575.245.html"
+    },
+    {
+      "id": "1444",
+      "name": "Станић Тихомир",
+      "group": "174",
+      "source": "https://www.parlament.gov.rs/ТИХОМИР_СТАНИЋ.1444.245.html"
+    },
+    {
+      "id": "1438",
+      "name": "Станковић Катарина",
+      "group": "174",
+      "source": "https://www.parlament.gov.rs/КАТАРИНА_СТАНКОВИЋ.1438.245.html"
+    },
+    {
+      "id": "1605",
+      "name": "Станковић Марија",
+      "group": "175",
+      "source": "https://www.parlament.gov.rs/МАРИЈА_СТАНКОВИЋ.1605.245.html"
+    },
+    {
+      "id": "1585",
+      "name": "Станојевић проф. др Горан",
+      "group": "175",
+      "source": "https://www.parlament.gov.rs/ГОРАН_СТАНОЈЕВИЋ.1585.245.html"
+    },
+    {
+      "id": "1603",
+      "name": "Стеванић Милош",
+      "group": "175",
+      "source": "https://www.parlament.gov.rs/МИЛОШ_СТЕВАНИЋ.1603.245.html"
+    },
+    {
+      "id": "1522",
+      "name": "Стевановић Зоран",
+      "group": "174",
+      "source": "https://www.parlament.gov.rs/ЗОРАН_СТЕВАНОВИЋ.1522.245.html"
+    },
+    {
+      "id": "1464",
+      "name": "Стефановић Гордана",
+      "group": "174",
+      "source": "https://www.parlament.gov.rs/ГОРДАНА_СТЕФАНОВИЋ.1464.245.html"
+    },
+    {
+      "id": "1553",
+      "name": "Стојановић Зорица",
+      "group": "174",
+      "source": "https://www.parlament.gov.rs/ЗОРИЦА_СТОЈАНОВИЋ.1553.245.html"
+    },
+    {
+      "id": "1488",
+      "name": "Стојановић Сретен",
+      "group": "174",
+      "source": "https://www.parlament.gov.rs/СРЕТЕН_СТОЈАНОВИЋ.1488.245.html"
+    },
+    {
+      "id": "1557",
+      "name": "Стојиљковић Зоран",
+      "group": "174",
+      "source": "https://www.parlament.gov.rs/ЗОРАН_СТОЈИЉКОВИЋ.1557.245.html"
+    },
+    {
+      "id": "1548",
+      "name": "Стојић Драган",
+      "group": "174",
+      "source": "https://www.parlament.gov.rs/ДРАГАН_СТОЈИЋ.1548.245.html"
+    },
+    {
+      "id": "1583",
+      "name": "Стојичић др Милан",
+      "group": "175",
+      "source": "https://www.parlament.gov.rs/МИЛАН_СТОЈИЧИЋ.1583.245.html"
+    },
+    {
+      "id": "1471",
+      "name": "Стојковић Драган",
+      "group": "174",
+      "source": "https://www.parlament.gov.rs/ДРАГАН_СТОЈКОВИЋ.1471.245.html"
+    },
+    {
+      "id": "1612",
+      "name": "Стојковић Милош",
+      "group": "175",
+      "source": "https://www.parlament.gov.rs/МИЛОШ_СТОЈКОВИЋ+.1612.245.html"
+    },
+    {
+      "id": "1469",
+      "name": "Стошић Панић Данијела",
+      "group": "174",
+      "source": "https://www.parlament.gov.rs/ДАНИЈЕЛА_СТОШИЋ+ПАНИЋ.1469.245.html"
+    },
+    {
+      "id": "1148",
+      "name": "Тандир Самир",
+      "group": "175",
+      "source": "https://www.parlament.gov.rs/САМИР_ТАНДИР.1148.245.html"
+    },
+    {
+      "id": "1191",
+      "name": "Тасић Кнежевић Наташа",
+      "group": "175",
+      "source": "https://www.parlament.gov.rs/НАТАША_ТАСИЋ+КНЕЖЕВИЋ.1191.245.html"
+    },
+    {
+      "id": "1518",
+      "name": "Тодоровић Милош",
+      "group": "174",
+      "source": "https://www.parlament.gov.rs/МИЛОШ_ТОДОРОВИЋ.1518.245.html"
+    },
+    {
+      "id": "1462",
+      "name": "Томас Саша",
+      "group": "174",
+      "source": "https://www.parlament.gov.rs/САША_ТОМАС.1462.245.html"
+    },
+    {
+      "id": "1622",
+      "name": "Томић Гајић Снежана",
+      "group": "175",
+      "source": "https://www.parlament.gov.rs/СНЕЖАНА_ТОМИЋ+ГАЈИЋ.1622.245.html"
+    },
+    {
+      "id": "1593",
+      "name": "Тошић Милица",
+      "group": "175",
+      "source": "https://www.parlament.gov.rs/МИЛИЦА_ТОШИЋ.1593.245.html"
+    },
+    {
+      "id": "1457",
+      "name": "Тошковић Оливер",
+      "group": "174",
+      "source": "https://www.parlament.gov.rs/ОЛИВЕР_ТОШКОВИЋ.1457.245.html"
+    },
+    {
+      "id": "1505",
+      "name": "Трифуновић Ана",
+      "group": "174",
+      "source": "https://www.parlament.gov.rs/АНА_ТРИФУНОВИЋ.1505.245.html"
+    },
+    {
+      "id": "1534",
+      "name": "Ћирић Иван",
+      "group": "174",
+      "source": "https://www.parlament.gov.rs/ИВАН_ЋИРИЋ.1534.245.html"
+    },
+    {
+      "id": "1479",
+      "name": "Ћурчић Ђока",
+      "group": "174",
+      "source": "https://www.parlament.gov.rs/ЂОКА_ЋУРЧИЋ.1479.245.html"
+    },
+    {
+      "id": "1538",
+      "name": "Узуновић Славољуб",
+      "group": "174",
+      "source": "https://www.parlament.gov.rs/СЛАВОЉУБ_УЗУНОВИЋ.1538.245.html"
+    },
+    {
+      "id": "1617",
+      "name": "Филиповић Ивана",
+      "group": "175",
+      "source": "https://www.parlament.gov.rs/ИВАНА_ФИЛИПОВИЋ.1617.245.html"
+    },
+    {
+      "id": "1473",
+      "name": "Филиповић Славица",
+      "group": "174",
+      "source": "https://www.parlament.gov.rs/СЛАВИЦА_ФИЛИПОВИЋ.1473.245.html"
+    },
+    {
+      "id": "1609",
+      "name": "Филиповић Филип",
+      "group": "175",
+      "source": "https://www.parlament.gov.rs/ФИЛИП_ФИЛИПОВИЋ.1609.245.html"
+    },
+    {
+      "id": "1476",
+      "name": "Фриц Сања",
+      "group": "174",
+      "source": "https://www.parlament.gov.rs/САЊА_ФРИЦ.1476.245.html"
+    },
+    {
+      "id": "1493",
+      "name": "Фуштар Станко",
+      "group": "174",
+      "source": "https://www.parlament.gov.rs/СТАНКО_ФУШТАР.1493.245.html"
+    },
+    {
+      "id": "1439",
+      "name": "Хубач Жељко",
+      "group": "174",
+      "source": "https://www.parlament.gov.rs/ЖЕЉКО_ХУБАЧ.1439.245.html"
+    },
+    {
+      "id": "1440",
+      "name": "Цветковић Александар",
+      "group": "174",
+      "source": "https://www.parlament.gov.rs/АЛЕКСАНДАР_ЦВЕТКОВИЋ.1440.245.html"
+    },
+    {
+      "id": "1524",
+      "name": "Цветковић Драган",
+      "group": "174",
+      "source": "https://www.parlament.gov.rs/ДРАГАН_ЦВЕТКОВИЋ.1524.245.html"
+    },
+    {
+      "id": "1535",
+      "name": "Цветковић Марковић Маријана",
+      "group": "174",
+      "source": "https://www.parlament.gov.rs/МАРИЈАНА_ЦВЕТКОВИЋ+МАРКОВИЋ.1535.245.html"
+    },
+    {
+      "id": "1564",
+      "name": "Цегледи Игор",
+      "group": "174",
+      "source": "https://www.parlament.gov.rs/ИГОР_ЦЕГЛЕДИ.1564.245.html"
+    },
+    {
+      "id": "1552",
+      "name": "Црногорац Ђурић Маја",
+      "group": "174",
+      "source": "https://www.parlament.gov.rs/МАЈА_ЦРНОГОРАЦ+ЂУРИЋ.1552.245.html"
+    },
+    {
+      "id": "1487",
+      "name": "Чупић Александар",
+      "group": "174",
+      "source": "https://www.parlament.gov.rs/АЛЕКСАНДАР_ЧУПИЋ.1487.245.html"
+    },
+    {
+      "id": "1328",
+      "name": "Џајић Сања",
+      "group": "175",
+      "source": "https://www.parlament.gov.rs/САЊА_ЏАЈИЋ.1328.245.html"
+    },
+    {
+      "id": "1555",
+      "name": "Џунић Марија",
+      "group": "174",
+      "source": "https://www.parlament.gov.rs/МАРИЈА_ЏУНИЋ.1555.245.html"
+    },
+    {
+      "id": "1002",
+      "name": "Шешељ Александар",
+      "group": "175",
+      "source": "https://www.parlament.gov.rs/АЛЕКСАНДАР_ШЕШЕЉ+.1002.245.html"
+    },
+    {
+      "id": "1418",
+      "name": "Шкријељ Ахмедин",
+      "group": "173",
+      "source": "https://www.parlament.gov.rs/АХМЕДИН_ШКРИЈЕЉ.1418.245.html"
+    },
+    {
+      "id": "1463",
+      "name": "Шошкић Дејан",
+      "group": "174",
+      "source": "https://www.parlament.gov.rs/ДЕЈАН_ШОШКИЋ.1463.245.html"
+    },
+    {
+      "id": "1470",
+      "name": "Штимац Александра",
+      "group": "174",
+      "source": "https://www.parlament.gov.rs/АЛЕКСАНДРА_ШТИМАЦ.1470.245.html"
+    },
+    {
+      "id": "1441",
+      "name": "Шћепановић Катарина",
+      "group": "174",
+      "source": "https://www.parlament.gov.rs/КАТАРИНА_ШЋЕПАНОВИЋ.1441.245.html"
+    },
+    {
+      "id": "1599",
+      "name": "Шутовић Борка",
+      "group": "175",
+      "source": "https://www.parlament.gov.rs/БОРКА_ШУТОВИЋ.1599.245.html"
+    }
+  ],
+  "committees": [
+    {
+      "name": "Одбор за људска и мањинска права и равноправност полова",
+      "article": 52,
+      "summary": "Разматра заштиту људских и мањинских права и равноправност жена и мушкараца.",
+      "source": "https://www.parlament.gov.rs/народна-скупштина/састав/радна-тела/одбори.174.13.html",
+      "seats": [
+        {
+          "member": "1454",
+          "role": "члан"
+        },
+        {
+          "member": "1526",
+          "role": "заменик члана"
+        },
+        {
+          "member": "1504",
+          "role": "члан"
+        },
+        {
+          "member": "1507",
+          "role": "заменик члана"
+        },
+        {
+          "member": "1515",
+          "role": "члан"
+        },
+        {
+          "member": "1477",
+          "role": "заменик члана"
+        },
+        {
+          "member": "863",
+          "role": "члан"
+        },
+        {
+          "member": "1490",
+          "role": "заменик члана"
+        },
+        {
+          "member": "1525",
+          "role": "члан"
+        },
+        {
+          "member": "1498",
+          "role": "заменик члана"
+        },
+        {
+          "member": "1500",
+          "role": "члан"
+        },
+        {
+          "member": "1439",
+          "role": "заменик члана"
+        },
+        {
+          "member": "1481",
+          "role": "члан"
+        },
+        {
+          "member": "1485",
+          "role": "заменик члана"
+        },
+        {
+          "member": "1554",
+          "role": "члан"
+        },
+        {
+          "member": "1474",
+          "role": "заменик члана"
+        },
+        {
+          "member": "1530",
+          "role": "члан"
+        },
+        {
+          "member": "1548",
+          "role": "заменик члана"
+        },
+        {
+          "member": "1473",
+          "role": "члан"
+        },
+        {
+          "member": "1511",
+          "role": "заменик члана"
+        }
+      ]
+    },
+    {
+      "name": "Одбор за административно-буџетска и мандатно-имунитетска питања",
+      "article": 65,
+      "summary": "Разматра посланичке мандате, имунитет и буџет Народне скупштине.",
+      "source": "https://www.parlament.gov.rs/народна-скупштина/састав/радна-тела/одбори.161.13.html",
+      "seats": [
+        {
+          "member": "1572",
+          "role": "члан"
+        },
+        {
+          "member": "1509",
+          "role": "заменик члана"
+        },
+        {
+          "member": "1510",
+          "role": "члан"
+        },
+        {
+          "member": "1469",
+          "role": "заменик члана"
+        },
+        {
+          "member": "1568",
+          "role": "члан"
+        },
+        {
+          "member": "1443",
+          "role": "заменик члана"
+        },
+        {
+          "member": "1566",
+          "role": "члан"
+        },
+        {
+          "member": "1550",
+          "role": "заменик члана"
+        },
+        {
+          "member": "1546",
+          "role": "члан"
+        },
+        {
+          "member": "1534",
+          "role": "заменик члана"
+        },
+        {
+          "member": "1495",
+          "role": "члан"
+        },
+        {
+          "member": "1463",
+          "role": "заменик члана"
+        },
+        {
+          "member": "1507",
+          "role": "члан"
+        },
+        {
+          "member": "1565",
+          "role": "заменик члана"
+        },
+        {
+          "member": "1471",
+          "role": "члан"
+        },
+        {
+          "member": "1533",
+          "role": "заменик члана"
+        },
+        {
+          "member": "1476",
+          "role": "члан"
+        },
+        {
+          "member": "1537",
+          "role": "заменик члана"
+        },
+        {
+          "member": "1493",
+          "role": "члан"
+        },
+        {
+          "member": "1539",
+          "role": "заменик члана"
+        }
+      ]
+    },
+    {
+      "name": "Одбор за дијаспору и Србе у региону",
+      "article": 53,
+      "summary": "Прати односе Србије са дијаспором и Србима у региону.",
+      "source": "https://www.parlament.gov.rs/народна-скупштина/састав/радна-тела/одбори.173.13.html",
+      "seats": [
+        {
+          "member": "1502",
+          "role": "члан"
+        },
+        {
+          "member": "1529",
+          "role": "заменик члана"
+        },
+        {
+          "member": "1532",
+          "role": "члан"
+        },
+        {
+          "member": "1483",
+          "role": "заменик члана"
+        },
+        {
+          "member": "1528",
+          "role": "члан"
+        },
+        {
+          "member": "1460",
+          "role": "заменик члана"
+        },
+        {
+          "member": "1571",
+          "role": "члан"
+        },
+        {
+          "member": "1553",
+          "role": "заменик члана"
+        },
+        {
+          "member": "1489",
+          "role": "члан"
+        },
+        {
+          "member": "1535",
+          "role": "заменик члана"
+        },
+        {
+          "member": "1444",
+          "role": "члан"
+        },
+        {
+          "member": "1450",
+          "role": "заменик члана"
+        },
+        {
+          "member": "1505",
+          "role": "члан"
+        },
+        {
+          "member": "1558",
+          "role": "заменик члана"
+        },
+        {
+          "member": "1538",
+          "role": "члан"
+        },
+        {
+          "member": "1520",
+          "role": "заменик члана"
+        },
+        {
+          "member": "1441",
+          "role": "члан"
+        },
+        {
+          "member": "1486",
+          "role": "заменик члана"
+        }
+      ]
+    },
+    {
+      "name": "Одбор за европске интеграције",
+      "article": 64,
+      "summary": "Проверава усклађеност предлога закона са прописима Европске уније.",
+      "source": "https://www.parlament.gov.rs/народна-скупштина/састав/радна-тела/одбори.162.13.html",
+      "seats": [
+        {
+          "member": "1523",
+          "role": "члан"
+        },
+        {
+          "member": "1555",
+          "role": "заменик члана"
+        },
+        {
+          "member": "1499",
+          "role": "члан"
+        },
+        {
+          "member": "1445",
+          "role": "заменик члана"
+        },
+        {
+          "member": "1451",
+          "role": "члан"
+        },
+        {
+          "member": "1521",
+          "role": "заменик члана"
+        },
+        {
+          "member": "1461",
+          "role": "члан"
+        },
+        {
+          "member": "1442",
+          "role": "заменик члана"
+        },
+        {
+          "member": "1545",
+          "role": "члан"
+        },
+        {
+          "member": "1438",
+          "role": "заменик члана"
+        },
+        {
+          "member": "1448",
+          "role": "члан"
+        },
+        {
+          "member": "1464",
+          "role": "заменик члана"
+        },
+        {
+          "member": "1459",
+          "role": "члан"
+        },
+        {
+          "member": "1469",
+          "role": "заменик члана"
+        },
+        {
+          "member": "1437",
+          "role": "члан"
+        },
+        {
+          "member": "1454",
+          "role": "заменик члана"
+        },
+        {
+          "member": "1457",
+          "role": "члан"
+        },
+        {
+          "member": "1481",
+          "role": "заменик члана"
+        },
+        {
+          "member": "1439",
+          "role": "члан"
+        },
+        {
+          "member": "1560",
+          "role": "заменик члана"
+        }
+      ]
+    },
+    {
+      "name": "Одбор за заштиту животне средине",
+      "article": 63,
+      "summary": "Разматра прописе о заштити природе и прати стање животне средине.",
+      "source": "https://www.parlament.gov.rs/народна-скупштина/састав/радна-тела/одбори.163.13.html",
+      "seats": [
+        {
+          "member": "1455",
+          "role": "члан"
+        },
+        {
+          "member": "1542",
+          "role": "заменик члана"
+        },
+        {
+          "member": "1453",
+          "role": "члан"
+        },
+        {
+          "member": "1504",
+          "role": "заменик члана"
+        },
+        {
+          "member": "1497",
+          "role": "члан"
+        },
+        {
+          "member": "1506",
+          "role": "заменик члана"
+        },
+        {
+          "member": "1541",
+          "role": "члан"
+        },
+        {
+          "member": "1557",
+          "role": "заменик члана"
+        },
+        {
+          "member": "1496",
+          "role": "члан"
+        },
+        {
+          "member": "1574",
+          "role": "заменик члана"
+        },
+        {
+          "member": "1536",
+          "role": "члан"
+        },
+        {
+          "member": "1494",
+          "role": "заменик члана"
+        },
+        {
+          "member": "1522",
+          "role": "члан"
+        },
+        {
+          "member": "1562",
+          "role": "заменик члана"
+        },
+        {
+          "member": "1464",
+          "role": "члан"
+        },
+        {
+          "member": "1492",
+          "role": "заменик члана"
+        },
+        {
+          "member": "1524",
+          "role": "члан"
+        },
+        {
+          "member": "1564",
+          "role": "заменик члана"
+        }
+      ]
+    },
+    {
+      "name": "Одбор за здравље и породицу",
+      "article": 62,
+      "summary": "Разматра прописе о здравственој заштити, осигурању и породичним односима.",
+      "source": "https://www.parlament.gov.rs/народна-скупштина/састав/радна-тела/одбори.164.13.html",
+      "seats": [
+        {
+          "member": "1502",
+          "role": "члан"
+        },
+        {
+          "member": "1551",
+          "role": "заменик члана"
+        },
+        {
+          "member": "1449",
+          "role": "члан"
+        },
+        {
+          "member": "1448",
+          "role": "заменик члана"
+        },
+        {
+          "member": "1450",
+          "role": "члан"
+        },
+        {
+          "member": "1500",
+          "role": "заменик члана"
+        },
+        {
+          "member": "1461",
+          "role": "члан"
+        },
+        {
+          "member": "1565",
+          "role": "заменик члана"
+        },
+        {
+          "member": "1446",
+          "role": "члан"
+        },
+        {
+          "member": "1571",
+          "role": "заменик члана"
+        },
+        {
+          "member": "1554",
+          "role": "члан"
+        },
+        {
+          "member": "1525",
+          "role": "заменик члана"
+        },
+        {
+          "member": "1438",
+          "role": "члан"
+        },
+        {
+          "member": "1437",
+          "role": "заменик члана"
+        },
+        {
+          "member": "1440",
+          "role": "члан"
+        },
+        {
+          "member": "1466",
+          "role": "заменик члана"
+        },
+        {
+          "member": "1470",
+          "role": "члан"
+        },
+        {
+          "member": "1505",
+          "role": "заменик члана"
+        }
+      ]
+    },
+    {
+      "name": "Одбор за контролу служби безбедности",
+      "article": 66,
+      "summary": "Надзире законитост рада служби безбедности.",
+      "source": "https://www.parlament.gov.rs/народна-скупштина/састав/радна-тела/одбори.160.13.html",
+      "seats": [
+        {
+          "member": "1512",
+          "role": "члан"
+        },
+        {
+          "member": "1569",
+          "role": "заменик члана"
+        },
+        {
+          "member": "1480",
+          "role": "члан"
+        },
+        {
+          "member": "1459",
+          "role": "заменик члана"
+        },
+        {
+          "member": "1458",
+          "role": "члан"
+        },
+        {
+          "member": "1510",
+          "role": "заменик члана"
+        },
+        {
+          "member": "1513",
+          "role": "члан"
+        },
+        {
+          "member": "1572",
+          "role": "заменик члана"
+        },
+        {
+          "member": "1575",
+          "role": "члан"
+        },
+        {
+          "member": "1541",
+          "role": "заменик члана"
+        }
+      ]
+    },
+    {
+      "name": "Одбор за Косово и Метохију",
+      "article": 59,
+      "summary": "Разматра прописе и друга питања која се односе на Косово и Метохију.",
+      "source": "https://www.parlament.gov.rs/народна-скупштина/састав/радна-тела/одбори.167.13.html",
+      "seats": [
+        {
+          "member": "1532",
+          "role": "члан"
+        },
+        {
+          "member": "1527",
+          "role": "заменик члана"
+        },
+        {
+          "member": "1484",
+          "role": "члан"
+        },
+        {
+          "member": "1455",
+          "role": "заменик члана"
+        },
+        {
+          "member": "1528",
+          "role": "члан"
+        },
+        {
+          "member": "1570",
+          "role": "заменик члана"
+        },
+        {
+          "member": "1472",
+          "role": "члан"
+        },
+        {
+          "member": "1501",
+          "role": "заменик члана"
+        },
+        {
+          "member": "1482",
+          "role": "члан"
+        },
+        {
+          "member": "1470",
+          "role": "заменик члана"
+        },
+        {
+          "member": "1465",
+          "role": "члан"
+        },
+        {
+          "member": "1452",
+          "role": "заменик члана"
+        },
+        {
+          "member": "1500",
+          "role": "члан"
+        },
+        {
+          "member": "1515",
+          "role": "заменик члана"
+        },
+        {
+          "member": "1531",
+          "role": "члан"
+        },
+        {
+          "member": "1517",
+          "role": "заменик члана"
+        },
+        {
+          "member": "1462",
+          "role": "члан"
+        },
+        {
+          "member": "1564",
+          "role": "заменик члана"
+        }
+      ]
+    },
+    {
+      "name": "Одбор за културу и информисање",
+      "article": 60,
+      "summary": "Разматра питања културног наслеђа, уметности и јавног информисања.",
+      "source": "https://www.parlament.gov.rs/народна-скупштина/састав/радна-тела/одбори.166.13.html",
+      "seats": [
+        {
+          "member": "1539",
+          "role": "члан"
+        },
+        {
+          "member": "1501",
+          "role": "заменик члана"
+        },
+        {
+          "member": "1452",
+          "role": "члан"
+        },
+        {
+          "member": "1444",
+          "role": "заменик члана"
+        },
+        {
+          "member": "1574",
+          "role": "члан"
+        },
+        {
+          "member": "1439",
+          "role": "заменик члана"
+        },
+        {
+          "member": "1490",
+          "role": "члан"
+        },
+        {
+          "member": "1508",
+          "role": "заменик члана"
+        },
+        {
+          "member": "1482",
+          "role": "члан"
+        },
+        {
+          "member": "1547",
+          "role": "заменик члана"
+        },
+        {
+          "member": "1489",
+          "role": "члан"
+        },
+        {
+          "member": "1516",
+          "role": "заменик члана"
+        },
+        {
+          "member": "1529",
+          "role": "члан"
+        },
+        {
+          "member": "1538",
+          "role": "заменик члана"
+        },
+        {
+          "member": "1526",
+          "role": "члан"
+        },
+        {
+          "member": "1558",
+          "role": "заменик члана"
+        },
+        {
+          "member": "1520",
+          "role": "члан"
+        },
+        {
+          "member": "1573",
+          "role": "заменик члана"
+        },
+        {
+          "member": "1535",
+          "role": "члан"
+        },
+        {
+          "member": "1625",
+          "role": "заменик члана"
+        }
+      ]
+    },
+    {
+      "name": "Одбор за образовање, науку, технолошки развој и информатичко друштво",
+      "article": 58,
+      "summary": "Разматра прописе о школама, универзитетима, истраживању и информационим технологијама.",
+      "source": "https://www.parlament.gov.rs/народна-скупштина/састав/радна-тела/одбори.168.13.html",
+      "seats": [
+        {
+          "member": "1568",
+          "role": "члан"
+        },
+        {
+          "member": "1445",
+          "role": "заменик члана"
+        },
+        {
+          "member": "1561",
+          "role": "члан"
+        },
+        {
+          "member": "1516",
+          "role": "заменик члана"
+        },
+        {
+          "member": "1560",
+          "role": "члан"
+        },
+        {
+          "member": "1559",
+          "role": "заменик члана"
+        },
+        {
+          "member": "1549",
+          "role": "члан"
+        },
+        {
+          "member": "1514",
+          "role": "заменик члана"
+        },
+        {
+          "member": "1500",
+          "role": "члан"
+        },
+        {
+          "member": "1540",
+          "role": "заменик члана"
+        },
+        {
+          "member": "1531",
+          "role": "члан"
+        },
+        {
+          "member": "1486",
+          "role": "заменик члана"
+        },
+        {
+          "member": "1547",
+          "role": "члан"
+        },
+        {
+          "member": "1530",
+          "role": "заменик члана"
+        },
+        {
+          "member": "1527",
+          "role": "члан"
+        },
+        {
+          "member": "1545",
+          "role": "заменик члана"
+        },
+        {
+          "member": "1552",
+          "role": "члан"
+        },
+        {
+          "member": "1550",
+          "role": "заменик члана"
+        },
+        {
+          "member": "1441",
+          "role": "члан"
+        },
+        {
+          "member": "1473",
+          "role": "заменик члана"
+        }
+      ]
+    },
+    {
+      "name": "Одбор за одбрану и унутрашње послове",
+      "article": 49,
+      "summary": "Разматра прописе о одбрани, Војсци Србије и раду полиције.",
+      "source": "https://www.parlament.gov.rs/народна-скупштина/састав/радна-тела/одбори.177.13.html",
+      "seats": [
+        {
+          "member": "1519",
+          "role": "члан"
+        },
+        {
+          "member": "1561",
+          "role": "заменик члана"
+        },
+        {
+          "member": "1512",
+          "role": "члан"
+        },
+        {
+          "member": "1527",
+          "role": "заменик члана"
+        },
+        {
+          "member": "1484",
+          "role": "члан"
+        },
+        {
+          "member": "1567",
+          "role": "заменик члана"
+        },
+        {
+          "member": "1468",
+          "role": "члан"
+        },
+        {
+          "member": "1513",
+          "role": "заменик члана"
+        },
+        {
+          "member": "1458",
+          "role": "члан"
+        },
+        {
+          "member": "1539",
+          "role": "заменик члана"
+        },
+        {
+          "member": "1456",
+          "role": "члан"
+        },
+        {
+          "member": "1570",
+          "role": "заменик члана"
+        },
+        {
+          "member": "1495",
+          "role": "члан"
+        },
+        {
+          "member": "1573",
+          "role": "заменик члана"
+        },
+        {
+          "member": "1459",
+          "role": "члан"
+        },
+        {
+          "member": "1503",
+          "role": "заменик члана"
+        },
+        {
+          "member": "1575",
+          "role": "члан"
+        },
+        {
+          "member": "1509",
+          "role": "заменик члана"
+        },
+        {
+          "member": "1493",
+          "role": "члан"
+        },
+        {
+          "member": "1542",
+          "role": "заменик члана"
+        }
+      ]
+    },
+    {
+      "name": "Одбор за пољопривреду, шумарство и водопривреду",
+      "article": 56,
+      "summary": "Разматра прописе о пољопривредном земљишту, шумама и управљању водама.",
+      "source": "https://www.parlament.gov.rs/народна-скупштина/састав/радна-тела/одбори.170.13.html",
+      "seats": [
+        {
+          "member": "1563",
+          "role": "члан"
+        },
+        {
+          "member": "1542",
+          "role": "заменик члана"
+        },
+        {
+          "member": "1504",
+          "role": "члан"
+        },
+        {
+          "member": "1485",
+          "role": "заменик члана"
+        },
+        {
+          "member": "1506",
+          "role": "члан"
+        },
+        {
+          "member": "1522",
+          "role": "заменик члана"
+        },
+        {
+          "member": "1515",
+          "role": "члан"
+        },
+        {
+          "member": "1497",
+          "role": "заменик члана"
+        },
+        {
+          "member": "1453",
+          "role": "члан"
+        },
+        {
+          "member": "1536",
+          "role": "заменик члана"
+        },
+        {
+          "member": "1570",
+          "role": "члан"
+        },
+        {
+          "member": "1534",
+          "role": "заменик члана"
+        },
+        {
+          "member": "1553",
+          "role": "члан"
+        },
+        {
+          "member": "1468",
+          "role": "заменик члана"
+        },
+        {
+          "member": "1462",
+          "role": "члан"
+        },
+        {
+          "member": "1562",
+          "role": "заменик члана"
+        },
+        {
+          "member": "1479",
+          "role": "члан"
+        },
+        {
+          "member": "1567",
+          "role": "заменик члана"
+        },
+        {
+          "member": "1564",
+          "role": "члан"
+        },
+        {
+          "member": "1524",
+          "role": "заменик члана"
+        }
+      ]
+    },
+    {
+      "name": "Одбор за права детета",
+      "article": 67,
+      "summary": "Разматра како предлози закона утичу на децу и прати остваривање њихових права.",
+      "source": "https://www.parlament.gov.rs/народна-скупштина/састав/радна-тела/одбори.159.13.html",
+      "seats": [
+        {
+          "member": "1449",
+          "role": "члан"
+        },
+        {
+          "member": "1454",
+          "role": "члан"
+        },
+        {
+          "member": "1450",
+          "role": "члан"
+        },
+        {
+          "member": "1508",
+          "role": "члан"
+        },
+        {
+          "member": "1442",
+          "role": "члан"
+        },
+        {
+          "member": "1550",
+          "role": "члан"
+        },
+        {
+          "member": "1531",
+          "role": "заменик члана"
+        },
+        {
+          "member": "1540",
+          "role": "члан"
+        },
+        {
+          "member": "1566",
+          "role": "заменик члана"
+        },
+        {
+          "member": "1525",
+          "role": "члан"
+        },
+        {
+          "member": "1552",
+          "role": "члан"
+        },
+        {
+          "member": "1486",
+          "role": "заменик члана"
+        },
+        {
+          "member": "1487",
+          "role": "председник"
+        }
+      ]
+    },
+    {
+      "name": "Одбор за правосуђе, државну управу и локалну самоуправу",
+      "article": 51,
+      "summary": "Разматра прописе о раду судова, државних органа и локалних самоуправа.",
+      "source": "https://www.parlament.gov.rs/народна-скупштина/састав/радна-тела/одбори.175.13.html",
+      "seats": [
+        {
+          "member": "1572",
+          "role": "члан"
+        },
+        {
+          "member": "1495",
+          "role": "заменик члана"
+        },
+        {
+          "member": "1499",
+          "role": "члан"
+        },
+        {
+          "member": "1540",
+          "role": "заменик члана"
+        },
+        {
+          "member": "1484",
+          "role": "члан"
+        },
+        {
+          "member": "1563",
+          "role": "заменик члана"
+        },
+        {
+          "member": "1511",
+          "role": "члан"
+        },
+        {
+          "member": "1443",
+          "role": "заменик члана"
+        },
+        {
+          "member": "1546",
+          "role": "члан"
+        },
+        {
+          "member": "1458",
+          "role": "заменик члана"
+        },
+        {
+          "member": "1480",
+          "role": "члан"
+        },
+        {
+          "member": "1493",
+          "role": "заменик члана"
+        },
+        {
+          "member": "1503",
+          "role": "члан"
+        },
+        {
+          "member": "1551",
+          "role": "заменик члана"
+        },
+        {
+          "member": "1569",
+          "role": "члан"
+        },
+        {
+          "member": "1557",
+          "role": "заменик члана"
+        },
+        {
+          "member": "1459",
+          "role": "члан"
+        },
+        {
+          "member": "1491",
+          "role": "заменик члана"
+        },
+        {
+          "member": "1474",
+          "role": "члан"
+        },
+        {
+          "member": "1521",
+          "role": "заменик члана"
+        }
+      ]
+    },
+    {
+      "name": "Одбор за привреду, регионални развој, трговину, туризам и енергетику",
+      "article": 54,
+      "summary": "Разматра услове пословања, снабдевање енергијом и развој региона.",
+      "source": "https://www.parlament.gov.rs/народна-скупштина/састав/радна-тела/одбори.172.13.html",
+      "seats": [
+        {
+          "member": "1517",
+          "role": "члан"
+        },
+        {
+          "member": "1467",
+          "role": "заменик члана"
+        },
+        {
+          "member": "1537",
+          "role": "члан"
+        },
+        {
+          "member": "1463",
+          "role": "заменик члана"
+        },
+        {
+          "member": "1543",
+          "role": "члан"
+        },
+        {
+          "member": "1549",
+          "role": "заменик члана"
+        },
+        {
+          "member": "1559",
+          "role": "члан"
+        },
+        {
+          "member": "1513",
+          "role": "заменик члана"
+        },
+        {
+          "member": "1464",
+          "role": "члан"
+        },
+        {
+          "member": "1522",
+          "role": "заменик члана"
+        },
+        {
+          "member": "1488",
+          "role": "члан"
+        },
+        {
+          "member": "1494",
+          "role": "заменик члана"
+        },
+        {
+          "member": "1469",
+          "role": "члан"
+        },
+        {
+          "member": "1475",
+          "role": "заменик члана"
+        },
+        {
+          "member": "1518",
+          "role": "члан"
+        },
+        {
+          "member": "1456",
+          "role": "заменик члана"
+        },
+        {
+          "member": "1534",
+          "role": "члан"
+        },
+        {
+          "member": "1507",
+          "role": "заменик члана"
+        },
+        {
+          "member": "1555",
+          "role": "члан"
+        },
+        {
+          "member": "1471",
+          "role": "заменик члана"
+        }
+      ]
+    },
+    {
+      "name": "Одбор за просторно планирање, саобраћај, инфраструктуру и телекомуникације",
+      "article": 57,
+      "summary": "Разматра просторне планове и прописе о изградњи, превозу и комуникацијама.",
+      "source": "https://www.parlament.gov.rs/народна-скупштина/састав/радна-тела/одбори.169.13.html",
+      "seats": [
+        {
+          "member": "1519",
+          "role": "члан"
+        },
+        {
+          "member": "1488",
+          "role": "заменик члана"
+        },
+        {
+          "member": "1494",
+          "role": "члан"
+        },
+        {
+          "member": "1456",
+          "role": "заменик члана"
+        },
+        {
+          "member": "1497",
+          "role": "члан"
+        },
+        {
+          "member": "1453",
+          "role": "заменик члана"
+        },
+        {
+          "member": "1491",
+          "role": "члан"
+        },
+        {
+          "member": "1536",
+          "role": "заменик члана"
+        },
+        {
+          "member": "1576",
+          "role": "члан"
+        },
+        {
+          "member": "1548",
+          "role": "заменик члана"
+        },
+        {
+          "member": "1556",
+          "role": "члан"
+        },
+        {
+          "member": "1553",
+          "role": "заменик члана"
+        },
+        {
+          "member": "1475",
+          "role": "члан"
+        },
+        {
+          "member": "1517",
+          "role": "заменик члана"
+        },
+        {
+          "member": "1562",
+          "role": "члан"
+        },
+        {
+          "member": "1560",
+          "role": "заменик члана"
+        },
+        {
+          "member": "1514",
+          "role": "члан"
+        },
+        {
+          "member": "1472",
+          "role": "заменик члана"
+        },
+        {
+          "member": "1476",
+          "role": "члан"
+        },
+        {
+          "member": "1559",
+          "role": "заменик члана"
+        }
+      ]
+    },
+    {
+      "name": "Одбор за рад, социјална питања, друштвену укљученост и смањење сиромаштва",
+      "article": 61,
+      "summary": "Разматра прописе о раду, запошљавању, пензијама и социјалној заштити.",
+      "source": "https://www.parlament.gov.rs/народна-скупштина/састав/радна-тела/одбори.165.13.html",
+      "seats": [
+        {
+          "member": "1478",
+          "role": "члан"
+        },
+        {
+          "member": "1523",
+          "role": "заменик члана"
+        },
+        {
+          "member": "1477",
+          "role": "члан"
+        },
+        {
+          "member": "1479",
+          "role": "заменик члана"
+        },
+        {
+          "member": "1498",
+          "role": "члан"
+        },
+        {
+          "member": "1572",
+          "role": "заменик члана"
+        },
+        {
+          "member": "1573",
+          "role": "члан"
+        },
+        {
+          "member": "1440",
+          "role": "заменик члана"
+        },
+        {
+          "member": "1492",
+          "role": "члан"
+        },
+        {
+          "member": "1449",
+          "role": "заменик члана"
+        },
+        {
+          "member": "1467",
+          "role": "члан"
+        },
+        {
+          "member": "1446",
+          "role": "заменик члана"
+        },
+        {
+          "member": "1544",
+          "role": "члан"
+        },
+        {
+          "member": "1466",
+          "role": "заменик члана"
+        },
+        {
+          "member": "1507",
+          "role": "члан"
+        },
+        {
+          "member": "1543",
+          "role": "заменик члана"
+        },
+        {
+          "member": "1447",
+          "role": "члан"
+        },
+        {
+          "member": "1457",
+          "role": "заменик члана"
+        },
+        {
+          "member": "1557",
+          "role": "члан"
+        },
+        {
+          "member": "1552",
+          "role": "заменик члана"
+        }
+      ]
+    },
+    {
+      "name": "Одбор за спољне послове",
+      "article": 50,
+      "summary": "Разматра спољну политику и сарадњу Србије са другим државама.",
+      "source": "https://www.parlament.gov.rs/народна-скупштина/састав/радна-тела/одбори.176.13.html",
+      "seats": [
+        {
+          "member": "1295",
+          "role": "члан"
+        },
+        {
+          "member": "1476",
+          "role": "заменик члана"
+        },
+        {
+          "member": "1477",
+          "role": "члан"
+        },
+        {
+          "member": "1535",
+          "role": "заменик члана"
+        },
+        {
+          "member": "1549",
+          "role": "члан"
+        },
+        {
+          "member": "1441",
+          "role": "заменик члана"
+        },
+        {
+          "member": "1442",
+          "role": "члан"
+        },
+        {
+          "member": "1454",
+          "role": "заменик члана"
+        },
+        {
+          "member": "1483",
+          "role": "члан"
+        },
+        {
+          "member": "1451",
+          "role": "заменик члана"
+        },
+        {
+          "member": "1448",
+          "role": "члан"
+        },
+        {
+          "member": "1512",
+          "role": "заменик члана"
+        },
+        {
+          "member": "1445",
+          "role": "члан"
+        },
+        {
+          "member": "1505",
+          "role": "заменик члана"
+        },
+        {
+          "member": "1501",
+          "role": "члан"
+        },
+        {
+          "member": "1438",
+          "role": "заменик члана"
+        },
+        {
+          "member": "1465",
+          "role": "члан"
+        },
+        {
+          "member": "1457",
+          "role": "заменик члана"
+        },
+        {
+          "member": "1513",
+          "role": "члан"
+        },
+        {
+          "member": "1482",
+          "role": "заменик члана"
+        }
+      ]
+    },
+    {
+      "name": "Одбор за уставна питања и законодавство",
+      "article": 48,
+      "summary": "Проверава усклађеност предлога закона са Уставом и разматра предлоге за промену Устава.",
+      "source": "https://www.parlament.gov.rs/народна-скупштина/састав/радна-тела/одбори.178.13.html",
+      "seats": [
+        {
+          "member": "1572",
+          "role": "члан"
+        },
+        {
+          "member": "1461",
+          "role": "заменик члана"
+        },
+        {
+          "member": "1484",
+          "role": "члан"
+        },
+        {
+          "member": "1544",
+          "role": "заменик члана"
+        },
+        {
+          "member": "1546",
+          "role": "члан"
+        },
+        {
+          "member": "1571",
+          "role": "заменик члана"
+        },
+        {
+          "member": "1569",
+          "role": "члан"
+        },
+        {
+          "member": "1499",
+          "role": "заменик члана"
+        },
+        {
+          "member": "1533",
+          "role": "члан"
+        },
+        {
+          "member": "1509",
+          "role": "заменик члана"
+        },
+        {
+          "member": "1474",
+          "role": "члан"
+        },
+        {
+          "member": "1551",
+          "role": "заменик члана"
+        },
+        {
+          "member": "1521",
+          "role": "члан"
+        },
+        {
+          "member": "1480",
+          "role": "заменик члана"
+        },
+        {
+          "member": "1575",
+          "role": "члан"
+        },
+        {
+          "member": "1503",
+          "role": "заменик члана"
+        },
+        {
+          "member": "1493",
+          "role": "члан"
+        },
+        {
+          "member": "1458",
+          "role": "заменик члана"
+        },
+        {
+          "member": "1418",
+          "role": "члан"
+        },
+        {
+          "member": "1442",
+          "role": "заменик члана"
+        }
+      ]
+    },
+    {
+      "name": "Одбор за финансије, републички буџет и контролу трошења јавних средстава",
+      "article": 55,
+      "summary": "Разматра предлог републичког буџета и прати како се троши јавни новац.",
+      "source": "https://www.parlament.gov.rs/народна-скупштина/састав/радна-тела/одбори.171.13.html",
+      "seats": [
+        {
+          "member": "1485",
+          "role": "члан"
+        },
+        {
+          "member": "1567",
+          "role": "заменик члана"
+        },
+        {
+          "member": "1472",
+          "role": "члан"
+        },
+        {
+          "member": "1496",
+          "role": "заменик члана"
+        },
+        {
+          "member": "1537",
+          "role": "члан"
+        },
+        {
+          "member": "1465",
+          "role": "заменик члана"
+        },
+        {
+          "member": "1443",
+          "role": "члан"
+        },
+        {
+          "member": "1497",
+          "role": "заменик члана"
+        },
+        {
+          "member": "1556",
+          "role": "члан"
+        },
+        {
+          "member": "1491",
+          "role": "заменик члана"
+        },
+        {
+          "member": "1548",
+          "role": "члан"
+        },
+        {
+          "member": "1468",
+          "role": "заменик члана"
+        },
+        {
+          "member": "1471",
+          "role": "члан"
+        },
+        {
+          "member": "1561",
+          "role": "заменик члана"
+        },
+        {
+          "member": "1518",
+          "role": "члан"
+        },
+        {
+          "member": "1469",
+          "role": "заменик члана"
+        },
+        {
+          "member": "1555",
+          "role": "члан"
+        },
+        {
+          "member": "1549",
+          "role": "заменик члана"
+        },
+        {
+          "member": "1463",
+          "role": "члан"
+        },
+        {
+          "member": "1506",
+          "role": "заменик члана"
+        }
+      ]
+    }
+  ]
+}

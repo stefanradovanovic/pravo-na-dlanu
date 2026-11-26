@@ -1,0 +1,101 @@
+.assembly-page {
+  max-width: var(--layout-wide);
+}
+.assembly-page > * {
+  max-width: 64rem;
+  margin-inline: auto;
+}
+.assembly-page .institution-intro {
+  display: grid;
+  gap: var(--space-3);
+  margin-bottom: var(--space-4);
+}
+.assembly-nav,
+.assembly-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3) var(--space-5);
+}
+.assembly-nav {
+  border-bottom: 1px solid var(--border);
+  margin-bottom: var(--space-6);
+}
+.assembly-nav a {
+  padding-block: var(--space-2);
+}
+.assembly-nav [aria-current="page"] {
+  color: var(--foreground);
+  border-bottom: 2px solid currentColor;
+  text-decoration: none;
+}
+.assembly-filters {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr));
+  gap: var(--space-4);
+}
+.assembly-filters > div {
+  min-width: 0;
+  display: grid;
+  align-content: start;
+  gap: var(--space-1);
+}
+.assembly-filters label,
+.assembly-filters p,
+.assembly-status,
+.assembly-page footer,
+.assembly-links,
+.assembly-list span {
+  font-size: var(--text-caption);
+  color: var(--muted-foreground);
+}
+.assembly-status,
+.assembly-page footer,
+.assembly-links {
+  padding-block: var(--space-3);
+}
+.assembly-list {
+  list-style: none;
+  padding: 0;
+  background: var(--card);
+}
+.assembly-list li {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-2);
+  align-items: baseline;
+  border-top: 1px solid var(--border);
+  padding: var(--space-2) var(--space-3);
+  scroll-margin-top: calc(var(--header-height) + var(--space-4));
+  overflow-wrap: anywhere;
+}
+.assembly-list li:target {
+  background: var(--editorial);
+  outline: 2px solid var(--ring);
+}
+.assembly-committees {
+  display: grid;
+  gap: var(--space-4);
+}
+.assembly-committees article {
+  display: grid;
+  gap: var(--space-2);
+  padding: var(--space-4);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--card);
+}
+.assembly-committees h2 {
+  font: 500 var(--text-reading)/var(--leading-title) var(--type-editorial);
+}
+.assembly-committees summary {
+  cursor: pointer;
+}
+.assembly-committees details[open] summary {
+  margin-bottom: var(--space-2);
+}
+@media (max-width: 36rem) {
+  .assembly-list li {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+}
