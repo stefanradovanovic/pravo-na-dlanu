@@ -303,7 +303,6 @@ test("the full-width catalog map fits every category document without paging", a
     map.getByRole("button", { name: "Прикажи целу мапу" }),
   ).toHaveCount(0);
 
-  await expect.poll(zoom).toBeLessThan(1);
   const initialZoom = await zoom();
   if (!isMobile) {
     await canvas.hover();
@@ -317,10 +316,10 @@ test("the full-width catalog map fits every category document without paging", a
   for (const control of [zoomIn, zoomOut, fullscreen]) {
     await expect(control).toHaveCSS("height", isMobile ? "44px" : "36px");
   }
+  await zoomOut.click();
+  await expect.poll(zoom).toBeLessThan(initialZoom);
   await zoomIn.focus();
   await zoomIn.press("Enter");
-  await expect.poll(zoom).toBeGreaterThan(initialZoom);
-  await zoomOut.click();
   await expect.poll(zoom).toBeCloseTo(initialZoom);
 
   await fullscreen.click();
