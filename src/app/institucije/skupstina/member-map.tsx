@@ -68,7 +68,7 @@ function SeatRow({ seats }: { seats: SeatPosition[] }) {
           transform={`translate(${x.toFixed(3)} ${y.toFixed(3)}) rotate(${rotation.toFixed(3)})`}
           fill="none"
           stroke="var(--muted-foreground)"
-          strokeOpacity=".6"
+          strokeOpacity=".45"
           strokeWidth="1"
         />
       ))}
@@ -118,8 +118,8 @@ function seatingArea(member: Member) {
 
 const colors: Record<string, string> = {
   "174": "var(--chart-1)",
-  "175": "var(--chart-2)",
-  minority: "var(--chart-3)",
+  "175": "var(--chart-3)",
+  minority: "var(--chart-2)",
 };
 
 // Sample the existing bench positions within each area. Use the full roster so
