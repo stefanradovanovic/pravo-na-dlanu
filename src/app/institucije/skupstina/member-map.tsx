@@ -68,7 +68,7 @@ function SeatRow({ seats }: { seats: SeatPosition[] }) {
           transform={`translate(${x.toFixed(3)} ${y.toFixed(3)}) rotate(${rotation.toFixed(3)})`}
           fill="none"
           stroke="var(--muted-foreground)"
-          strokeOpacity=".45"
+          strokeOpacity=".3"
           strokeWidth="1"
         />
       ))}
