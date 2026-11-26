@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import {
   findSearchSnippet,
-  type SearchPassage,
+  loadSearchPassages,
   type SearchSnippet as Snippet,
 } from "@/lib/search-snippet";
 import { documentUrl } from "@/lib/explorer-url";
@@ -28,12 +28,7 @@ export function SearchSnippet({
     const controller = new AbortController();
     async function load() {
       try {
-        const response = await fetch(
-          `/pagefind/passages/${encodeURIComponent(id)}.json`,
-          { signal: controller.signal },
-        );
-        if (!response.ok) throw new Error("Snippet unavailable");
-        const passages: SearchPassage[] = await response.json();
+        const passages = await loadSearchPassages(id, controller.signal);
         const snippet = findSearchSnippet(passages, query);
         if (!controller.signal.aborted) setResult({ key, snippet });
       } catch {

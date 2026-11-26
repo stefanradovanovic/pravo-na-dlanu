@@ -9,6 +9,18 @@ export type SearchSnippet = {
   after: string;
 };
 
+export async function loadSearchPassages(
+  id: string,
+  signal: AbortSignal,
+): Promise<SearchPassage[]> {
+  const response = await fetch(
+    `/pagefind/passages/${encodeURIComponent(id)}.json`,
+    { signal },
+  );
+  if (!response.ok) throw new Error("Snippet unavailable");
+  return response.json();
+}
+
 // Keep offsets into the original text: Serbian љ/њ/ђ/џ expand during normalization.
 function normalizedOffsets(text: string, limit: number) {
   const starts: number[] = [],
@@ -41,6 +53,7 @@ function normalizedOffsets(text: string, limit: number) {
 export function findSearchSnippet(
   passages: SearchPassage[],
   query: string,
+  context = { before: 90, after: 160 },
 ): SearchSnippet | null {
   const needle = normalizeSearch(query);
   if (!needle) return null;
@@ -58,8 +71,8 @@ export function findSearchSnippet(
     );
     const start = starts[position],
       end = ends[position + needle.length - 1];
-    let left = Math.max(0, start - 90),
-      right = Math.min(passage.text.length, end + 160);
+    let left = Math.max(0, start - context.before),
+      right = Math.min(passage.text.length, end + context.after);
     while (left > 0 && left < start && !/\s/u.test(passage.text[left - 1]))
       left++;
     while (right < passage.text.length && !/\s/u.test(passage.text[right]))

@@ -9,7 +9,6 @@ import {
   List,
   BookOpen,
   ArrowUpRight,
-  Scale,
   Info,
   SlidersHorizontal,
 } from "lucide-react";
@@ -17,13 +16,34 @@ import { Autocomplete, AutocompleteInput } from "@/components/ui/autocomplete";
 import { LawSuggestions } from "./law-title-suggestions";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import { normalizeSearch, searchLawTitles } from "@/lib/search";
-import { categoryLabel, lawPath, type Registry } from "@/lib/registry-types";
+import {
+  findLawSearchTopic,
+  lawSearchExamples,
+  normalizeSearch,
+  searchLawTitles,
+} from "@/lib/search";
+import {
+  searchLawText,
+  suggestLawPassages,
+  type LawPassageMatch,
+} from "@/lib/full-text-search";
+import {
+  categoryLabel,
+  formatDocumentCount,
+  lawPath,
+  type Registry,
+} from "@/lib/registry-types";
 import { useExplorerLocation } from "./explorer-location";
 import { documentUrl, explorerUrl } from "@/lib/explorer-url";
 import { SearchSnippet } from "./search-snippet";
-import { learningTopics } from "@/lib/learning";
 
 const constitutionTitle = "Устав Републике Србије";
 const featuredDocuments = [
@@ -31,6 +51,15 @@ const featuredDocuments = [
   { title: "Пословник Народне скупштине" },
   { title: "Кривични законик" },
 ];
+const titleSearchExamples = lawSearchExamples.map(({ phrases, title }) => ({
+  label: phrases[0],
+  query: title,
+}));
+const detailedSearchExamples = [
+  "Пробни рад",
+  "Право на жалбу",
+  "Уговор на даљину",
+].map((query) => ({ label: query, query }));
 
 const RegistryMap = dynamic(
   () => import("./registry-map").then((m) => m.RegistryMap),
@@ -39,32 +68,12 @@ const RegistryMap = dynamic(
     loading: () => <div className="map-loading">Учитавање мапе закона…</div>,
   },
 );
-type SearchHit = { id: string };
-type SearchModule = {
-  filters: () => Promise<unknown>;
-  search: (
-    query: string,
-  ) => Promise<{ filters: { law: Record<string, number> } }>;
-};
-let searchModule: Promise<SearchModule> | undefined;
-function loadSearch() {
-  const modulePath = "/pagefind/pagefind.js";
-  return (searchModule ??= import(/* webpackIgnore: true */ modulePath)
-    .then(async (engine) => {
-      await engine.filters();
-      return engine;
-    })
-    .catch((error) => {
-      searchModule = undefined;
-      throw error;
-    }) as Promise<SearchModule>);
-}
-
 export function RegistryExplorer({ registry }: { registry: Registry }) {
   const searchInput = useRef<HTMLInputElement>(null);
   const location = useExplorerLocation();
   const { query, view, page, mode, update } = location;
   const [draft, setDraft] = useState(query);
+  const [searchFocused, setSearchFocused] = useState(false);
   const [previousQuery, setPreviousQuery] = useState(query);
   if (query !== previousQuery) {
     setPreviousQuery(query);
@@ -82,15 +91,11 @@ export function RegistryExplorer({ registry }: { registry: Registry }) {
   const setMode = (value: string) => update("mode", value);
   const [fullResults, setFullResults] = useState<{
     query: string;
-    hits: SearchHit[];
+    ids: ReadonlySet<string>;
     error?: string;
-  }>({ query: "", hits: [] });
+  }>({ query: "", ids: new Set() });
   const { records, report } = registry;
   const corpus = records;
-  const constitution = corpus.find((r) => r.title === constitutionTitle);
-  const constitutionPath = constitution
-    ? lawPath(constitution)
-    : "/zakoni/ustav";
   const categories = useMemo(
     () =>
       [...new Set(corpus.flatMap((r) => r.categories))].map((name) => ({
@@ -99,26 +104,36 @@ export function RegistryExplorer({ registry }: { registry: Registry }) {
       })),
     [corpus],
   );
+  const categoryOptions = useMemo(
+    () => [
+      { value: "all", label: "Све области" },
+      ...categories.map(({ name }) => ({
+        value: name,
+        label: categoryLabel(name),
+      })),
+    ],
+    [categories],
+  );
+  const scopedRecords = useMemo(
+    () =>
+      category === "all"
+        ? corpus
+        : corpus.filter((record) => record.categories.includes(category)),
+    [corpus, category],
+  );
   const normalized = normalizeSearch(query);
   useEffect(() => {
     if (mode !== "full" || !normalized) return;
     let cancelled = false;
     const timer = setTimeout(async () => {
       try {
-        const engine = await loadSearch();
-        const result = await engine.search(
-          normalized.includes(" ") ? `"${normalized}"` : normalized,
-        );
-        // Per-law facets identify matches without downloading every result's full content.
-        const hits = Object.entries(result.filters.law ?? {})
-          .filter(([, count]) => count > 0)
-          .map(([id]) => ({ id }));
-        if (!cancelled) setFullResults({ query: normalized, hits });
+        const ids = await searchLawText(normalized);
+        if (!cancelled) setFullResults({ query: normalized, ids });
       } catch {
         if (!cancelled)
           setFullResults({
             query: normalized,
-            hits: [],
+            ids: new Set(),
             error:
               "Претрага текста тренутно није доступна. Претрага назива и читање докумената раде.",
           });
@@ -130,28 +145,24 @@ export function RegistryExplorer({ registry }: { registry: Registry }) {
     };
   }, [mode, normalized]);
   const matches = useMemo(() => {
-    let list = corpus.filter(
-      (r) => category === "all" || r.categories.includes(category),
+    if (!normalized) return scopedRecords;
+    if (mode !== "full") return searchLawTitles(scopedRecords, normalized);
+    if (fullResults.query !== normalized) return [];
+    const records = scopedRecords.filter((record) =>
+      fullResults.ids.has(record.id),
     );
-    if (normalized) {
-      if (mode === "full") {
-        const ids = new Set(
-          fullResults.query === normalized
-            ? fullResults.hits.map((h) => h.id)
-            : [],
-        );
-        list = list.filter((r) => ids.has(r.id));
-      } else {
-        list = searchLawTitles(list, normalized);
-      }
+    const topic = findLawSearchTopic(normalized);
+    if (topic) {
+      const index = records.findIndex(({ title }) => title === topic.title);
+      if (index > 0) records.unshift(...records.splice(index, 1));
     }
-    return list;
-  }, [corpus, category, normalized, mode, fullResults]);
+    return records;
+  }, [scopedRecords, normalized, mode, fullResults]);
   const searching = !!normalized;
   const showingMap = view === "map" && !searching;
-  const size = showingMap ? 8 : 20;
+  const size = 20;
   const pageCount = Math.max(1, Math.ceil(matches.length / size));
-  const currentPage = Math.min(page, pageCount - 1);
+  const currentPage = showingMap ? 0 : Math.min(page, pageCount - 1);
   const returnTo = explorerUrl({
     query,
     category,
@@ -159,28 +170,80 @@ export function RegistryExplorer({ registry }: { registry: Registry }) {
     mode,
     page: currentPage,
   });
-  const constitutionHref = documentUrl(constitutionPath, returnTo);
   const shortcutClassName = buttonVariants({ variant: "ghost", size: "sm" });
   const suggestionQuery = normalizeSearch(draft);
-  const suggestions = useMemo(
+  const titleSuggestions = useMemo(
     () =>
-      suggestionQuery.length < 3
+      mode !== "titles" || suggestionQuery.length < 3
         ? []
-        : searchLawTitles(
-            corpus.filter(
-              (law) => category === "all" || law.categories.includes(category),
-            ),
-            suggestionQuery,
-          ).slice(0, 6),
-    [corpus, category, suggestionQuery],
+        : searchLawTitles(scopedRecords, suggestionQuery).slice(0, 6),
+    [mode, scopedRecords, suggestionQuery],
   );
-  const suggestionReturn = explorerUrl({
+  const [passageSuggestions, setPassageSuggestions] = useState<{
+    query: string;
+    category: string;
+    matches: LawPassageMatch[];
+  }>();
+  useEffect(() => {
+    if (mode !== "full" || !searchFocused || suggestionQuery.length < 3) return;
+    const controller = new AbortController();
+    const timer = setTimeout(async () => {
+      try {
+        const matches = await suggestLawPassages(
+          suggestionQuery,
+          scopedRecords,
+          category,
+          controller.signal,
+        );
+        if (!controller.signal.aborted)
+          setPassageSuggestions({ query: suggestionQuery, category, matches });
+      } catch {
+        if (!controller.signal.aborted)
+          setPassageSuggestions({
+            query: suggestionQuery,
+            category,
+            matches: [],
+          });
+      }
+    }, 240);
+    return () => {
+      clearTimeout(timer);
+      controller.abort();
+    };
+  }, [mode, searchFocused, suggestionQuery, scopedRecords, category]);
+  const suggestionState = {
     query: draft,
     category,
     view,
     mode,
     page: 0,
-  });
+  };
+  const suggestionReturn = explorerUrl(suggestionState);
+  const suggestions =
+    mode === "full"
+      ? passageSuggestions?.query === suggestionQuery &&
+        passageSuggestions.category === category
+        ? passageSuggestions.matches.map(({ law, snippet }) => {
+            const suffix = snippet.after.match(/^[\p{L}\p{M}\p{N}]+/u)?.[0];
+            const returnUrl = suffix
+              ? explorerUrl({
+                  ...suggestionState,
+                  query: snippet.match + suffix,
+                })
+              : suggestionReturn;
+            return {
+              title: law.title,
+              href: documentUrl(lawPath(law), returnUrl, snippet.anchor),
+              snippet,
+            };
+          })
+        : []
+      : titleSuggestions.map((law) => ({
+          title: law.title,
+          href: documentUrl(lawPath(law), suggestionReturn),
+        }));
+  const searchExamples =
+    mode === "full" ? detailedSearchExamples : titleSearchExamples;
   const visible = matches.slice(currentPage * size, (currentPage + 1) * size);
   const waiting =
     mode === "full" && searching && fullResults.query !== normalized;
@@ -225,7 +288,7 @@ export function RegistryExplorer({ registry }: { registry: Registry }) {
         >
           <TabsList aria-label="Обим претраге" variant="line">
             <TabsTrigger value="titles">Прописи</TabsTrigger>
-            <TabsTrigger value="full">Цео текст</TabsTrigger>
+            <TabsTrigger value="full">Детаљна претрага</TabsTrigger>
           </TabsList>
           <TabsContent value={mode}>
             <form
@@ -243,6 +306,12 @@ export function RegistryExplorer({ registry }: { registry: Registry }) {
               <Autocomplete
                 value={draft}
                 filter={false}
+                openOnFocus={suggestionQuery.length >= 3}
+                announcement={(change) =>
+                  change.type === "results" && change.count
+                    ? `${mode === "full" ? "Предложени одломци" : "Предложени прописи"}: ${change.count}.`
+                    : null
+                }
                 onValueChange={(value, details) => {
                   if (details.reason !== "item-press") setDraft(value);
                 }}
@@ -252,15 +321,15 @@ export function RegistryExplorer({ registry }: { registry: Registry }) {
                   className="pl-9 pr-20"
                   aria-label="Претрага закона"
                   enterKeyHint="search"
-                  placeholder="Претражите законе — нпр. рад, саобраћај, заштита потрошача…"
+                  placeholder={
+                    mode === "full"
+                      ? "Реч или фраза из текста прописа…"
+                      : "Назив прописа…"
+                  }
+                  onFocus={() => setSearchFocused(true)}
+                  onBlur={() => setSearchFocused(false)}
                 />
-                <LawSuggestions
-                  matches={suggestions.map((law) => ({
-                    title: law.title,
-                    href: documentUrl(lawPath(law), suggestionReturn),
-                  }))}
-                  query={draft}
-                />
+                <LawSuggestions matches={suggestions} query={draft} />
               </Autocomplete>
               {draft && (
                 <Button
@@ -289,22 +358,14 @@ export function RegistryExplorer({ registry }: { registry: Registry }) {
               {!draft && <span className="search-hint">Ћир / лат</span>}
             </form>
             <div className="suggestions" aria-label="Предлози претраге">
-              {[
-                { label: "Рад", title: "Закон о раду" },
-                {
-                  label: "Саобраћај",
-                  title: "Закон о безбедности саобраћаја на путевима",
-                },
-                { label: "Потрошач", title: "Закон о заштити потрошача" },
-              ].map(({ label, title }) => (
+              {searchExamples.map(({ label, query }) => (
                 <Button
                   variant="ghost"
                   size="sm"
                   key={label}
-                  title={title}
+                  title={query}
                   onClick={() => {
-                    setQuery(title);
-                    setMode("titles");
+                    setQuery(query);
                     setCategory("all");
                     setPage(0);
                   }}
@@ -317,93 +378,7 @@ export function RegistryExplorer({ registry }: { registry: Registry }) {
           </TabsContent>
         </Tabs>
       </div>
-      {!searching && category === "all" && (
-        <section
-          className="citizen-start"
-          aria-labelledby="citizen-start-title"
-        >
-          <div className="learning-section-heading">
-            <div>
-              <span className="eyebrow">ОД СИТУАЦИЈЕ ДО ПРАВИЛА</span>
-              <h2 id="citizen-start-title">Не морате да знате назив закона.</h2>
-              <p className="heading-description">
-                Изаберите тему, упознајте правило и проверите га у извору.
-              </p>
-            </div>
-          </div>
-          <div className="citizen-topic-list">
-            {learningTopics.map((topic) => (
-              <Link
-                key={topic.id}
-                href={`/ucenje?tema=${topic.id}`}
-                className={buttonVariants({ variant: "outline" })}
-              >
-                {topic.title} <ArrowUpRight />
-              </Link>
-            ))}
-          </div>
-        </section>
-      )}
       <div className="workspace">
-        <aside className="browse-sidebar registry-sidebar">
-          <p className="sidebar-label">ВАШ ВОДИЧ</p>
-          <Link
-            className={buttonVariants({
-              variant: "ghost",
-              className: "side-link active",
-            })}
-            href={returnTo}
-          >
-            <Network size={16} /> Истражи право
-          </Link>
-          <Link
-            className={buttonVariants({
-              variant: "ghost",
-              className: "side-link",
-            })}
-            href="/institucije"
-          >
-            Мапе институција <ArrowUpRight aria-hidden="true" />
-          </Link>
-          <div className="sidebar-divider" />
-          <p className="sidebar-label">ПРАВНЕ ОБЛАСТИ</p>
-          <Button
-            variant="ghost"
-            className={`topic-link ${category === "all" ? "active" : ""}`}
-            onClick={() => chooseCategory("all")}
-          >
-            <span className="topic-dot all" /> Све области{" "}
-            <span>{corpus.length}</span>
-          </Button>
-          <div className="category-scroll">
-            {categories.map((c, i) => (
-              <Button
-                variant="ghost"
-                title={c.name}
-                key={c.name}
-                className={`topic-link category-link ${category === c.name ? "active" : ""}`}
-                onClick={() => chooseCategory(c.name)}
-              >
-                <span
-                  className="topic-dot"
-                  style={{
-                    background: `var(--chart-${(i % 4) + 1})`,
-                  }}
-                />
-                <span className="category-name">{categoryLabel(c.name)}</span>
-                <span>{c.count}</span>
-              </Button>
-            ))}
-          </div>
-          <div className="constitution-note">
-            <Scale size={25} />
-            <h3>Све почиње Уставом.</h3>
-            <p>Прочитајте цео Устав Републике Србије.</p>
-            <a href={constitutionHref}>
-              Отвори документ <ArrowUpRight size={14} />
-            </a>
-          </div>
-        </aside>
         <section className="explorer" aria-label="Истраживач закона">
           <Tabs
             className="catalog-views"
@@ -427,7 +402,9 @@ export function RegistryExplorer({ registry }: { registry: Registry }) {
                 </h2>
                 <p className="heading-description">
                   {searching
-                    ? `${matches.length} докумената · ${mode === "full" ? "претрага фразе у тексту" : "претрага назива прописа"}`
+                    ? mode === "full"
+                      ? "Претрага фразе у тексту"
+                      : "Претрага назива прописа"
                     : "Изаберите област и истражите прописе који јој припадају."}
                 </p>
               </div>
@@ -442,10 +419,38 @@ export function RegistryExplorer({ registry }: { registry: Registry }) {
             </div>
             <TabsContent value={showingMap ? "map" : "list"}>
               <div className="collection-bar">
-                <span role="status" aria-live="polite" aria-atomic="true">
-                  <SlidersHorizontal size={14} />
-                  {matches.length} докумената
-                </span>
+                <div className="collection-summary">
+                  {!showingMap && (
+                    <Select
+                      items={categoryOptions}
+                      value={category}
+                      onValueChange={(value) => {
+                        if (value !== null) chooseCategory(value);
+                      }}
+                    >
+                      <SelectTrigger
+                        aria-label="Правна област"
+                        className="max-w-full min-w-0"
+                      >
+                        <SelectValue className="truncate" />
+                      </SelectTrigger>
+                      <SelectContent alignItemWithTrigger={false}>
+                        {categoryOptions.map(({ value, label }) => (
+                          <SelectItem key={value} value={value}>
+                            {label}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  )}
+                  {!waiting &&
+                    !(mode === "full" && searching && fullResults.error) && (
+                      <span role="status" aria-live="polite" aria-atomic="true">
+                        <SlidersHorizontal size={14} aria-hidden="true" />
+                        {formatDocumentCount(matches.length)}
+                      </span>
+                    )}
+                </div>
                 <span>
                   Преузето{" "}
                   {new Date(report.finishedAt).toLocaleDateString("sr-RS", {
@@ -468,12 +473,9 @@ export function RegistryExplorer({ registry }: { registry: Registry }) {
               ) : showingMap ? (
                 <RegistryMap
                   categories={categories}
-                  records={visible}
+                  records={matches}
                   category={category}
                   onCategory={chooseCategory}
-                  total={matches.length}
-                  page={currentPage}
-                  onPage={setPage}
                   returnTo={returnTo}
                 />
               ) : (
@@ -569,8 +571,7 @@ export function RegistryExplorer({ registry }: { registry: Registry }) {
             <Info size={18} />
             <div>
               <strong>
-                {report.importedRecords.toLocaleString("sr-RS")} докумената ·
-                искључиво ПИС
+                {formatDocumentCount(records.length)} · искључиво ПИС
               </strong>
               <p>
                 {report.fullTextRecords?.toLocaleString("sr-RS")} HTML текстова;{" "}

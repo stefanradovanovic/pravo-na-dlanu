@@ -62,7 +62,14 @@ html {
   display: flex;
   align-items: center;
   gap: var(--space-1);
-  width: clamp(14rem, 26vw, 25rem);
+  width: clamp(18rem, 34vw, 30rem);
+  min-width: 0;
+}
+.header-search .ui-input {
+  min-width: 0;
+}
+.header-search-suggestions {
+  width: max(24rem, var(--anchor-width));
 }
 .header-search .ui-button {
   flex-shrink: 0;
@@ -98,26 +105,8 @@ html {
   width: 44px;
   min-height: 44px;
 }
-.citizen-start {
-  margin-block: 0;
-  padding-block: 1.75rem;
-  border-bottom: 0;
-}
-.citizen-start h2 {
-  font-size: 1.375rem;
-}
-.citizen-start .learning-section-heading {
-  margin: 0 0 1rem;
-}
 .workspace {
   padding-top: 2rem;
-}
-.browse-sidebar {
-  background: var(--sidebar);
-  padding: 1.5rem 1rem;
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  align-self: start;
 }
 .law-list-row {
   padding: 1.25rem;
@@ -127,9 +116,6 @@ html {
 }
 .law-list-row small {
   overflow-wrap: anywhere;
-}
-.topic-link {
-  min-height: 44px;
 }
 .map-node {
   transition: border-color var(--motion-duration-feedback) ease;
@@ -518,9 +504,6 @@ html {
     gap: var(--space-4);
     padding-inline: 1.5rem;
   }
-  .header-search {
-    width: 14rem;
-  }
   .reader-main {
     padding-inline: 2rem;
   }
@@ -634,11 +617,6 @@ html {
   .mobile-navigation-link[aria-current="page"] {
     background: var(--accent);
     color: var(--primary);
-  }
-  .browse-sidebar {
-    padding: 0.75rem;
-    margin-bottom: 1.5rem;
-    border: 1px solid var(--border);
   }
   .page-intro {
     padding: 2rem 1.25rem;
@@ -836,26 +814,6 @@ html {
 .catalog-views .explorer-header {
   margin-bottom: 0;
 }
-.citizen-start {
-  display: grid;
-  grid-template-columns: 17rem minmax(0, 1fr);
-  align-items: center;
-  gap: 2rem;
-  max-width: var(--layout-wide);
-  padding: 1.5rem 2rem;
-}
-.citizen-start .learning-section-heading {
-  margin: 0;
-}
-.citizen-start .learning-section-heading .eyebrow {
-  display: none;
-}
-.citizen-start .learning-section-heading p {
-  font-size: 0.875rem;
-}
-.citizen-topic-list {
-  gap: 0.5rem;
-}
 @media (max-width: 1000px) {
   .catalog-intro {
     gap: 2rem;
@@ -872,12 +830,6 @@ html {
     max-width: 44rem;
     width: 100%;
   }
-  .citizen-start {
-    display: block;
-  }
-  .citizen-start .learning-section-heading {
-    margin-bottom: 1rem;
-  }
 }
 @media (max-width: 600px) {
   .catalog-intro {
@@ -892,8 +844,5 @@ html {
   }
   .catalog-intro .search-hint {
     display: none;
-  }
-  .citizen-start {
-    padding: 1.5rem 1.25rem 0;
   }
 }

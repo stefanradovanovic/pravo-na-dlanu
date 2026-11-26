@@ -62,6 +62,17 @@ export type RegistryReport = {
   partitions: { levels: number[]; expected: number; received: number }[];
 };
 export type Registry = { report: RegistryReport; records: RegistryRecord[] };
+
+const documentNumber = new Intl.NumberFormat("sr-Cyrl-RS");
+const documentPlural = new Intl.PluralRules("sr-Cyrl-RS");
+
+export function formatDocumentCount(count: number) {
+  const form = documentPlural.select(count);
+  const word =
+    form === "one" ? "документ" : form === "few" ? "документа" : "докумената";
+  return `${documentNumber.format(count)} ${word}`;
+}
+
 export function categoryLabel(value: string) {
   const label = value.replace(/^[IVXLCDM]+\s+/u, "").toLocaleLowerCase("sr");
   return label.charAt(0).toLocaleUpperCase("sr") + label.slice(1);

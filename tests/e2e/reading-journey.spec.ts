@@ -1,4 +1,6 @@
 import { test, expect } from "@playwright/test";
+import { getRegistry } from "../../src/lib/registry";
+import { formatDocumentCount } from "../../src/lib/registry-types";
 
 test.beforeEach(async ({ page }) => {
   page.on("pageerror", (error) => {
@@ -12,6 +14,9 @@ test("exact title search excludes unrelated laws and survives reload", async ({
   await page.goto("/?q=zakon+o+radu&view=list");
   const rows = page.locator(".law-list-row");
   await expect(rows).toHaveCount(1);
+  await expect(
+    page.getByRole("status").filter({ hasText: "1 документ" }),
+  ).toHaveText("1 документ");
   await expect(rows.getByRole("heading")).toHaveText("Закон о раду");
   await page
     .getByRole("combobox", { name: "Претрага закона" })
@@ -60,7 +65,7 @@ test("full-text search opens a Cyrillic passage and returns to the same search",
     page.getByRole("combobox", { name: "Претрага закона" }),
   ).toHaveValue("sanitarni nadzor");
   await expect(
-    page.getByRole("tab", { name: "Цео текст", exact: true }),
+    page.getByRole("tab", { name: "Детаљна претрага", exact: true }),
   ).toHaveAttribute("aria-selected", "true");
   await expect(row.locator("mark")).toBeVisible();
 });
@@ -197,11 +202,15 @@ test("query, category, view and pagination survive reload and history navigation
   await expect(page.locator(".catalog-pagination")).toContainText("2 /");
   await page.goForward();
   await expect(page.locator(".catalog-pagination")).toContainText("3 /");
-  await page.locator(".category-link").first().click();
+  const categoryFilter = page.getByRole("combobox", { name: "Правна област" });
+  await categoryFilter.click();
+  await page
+    .getByRole("option", { name: "Државно уређење", exact: true })
+    .click();
   expect(new URL(page.url()).searchParams.has("category")).toBe(true);
   expect(new URL(page.url()).searchParams.has("page")).toBe(false);
   await page.reload();
-  await expect(page.locator(".category-link.active")).toHaveCount(1);
+  await expect(categoryFilter).toContainText("Државно уређење");
   await page.getByRole("combobox", { name: "Претрага закона" }).fill("ustav");
   await page.getByRole("combobox", { name: "Претрага закона" }).press("Enter");
   await expect(page).toHaveURL(/q=ustav/);
@@ -212,6 +221,133 @@ test("query, category, view and pagination survive reload and history navigation
   await expect(
     page.getByRole("tab", { name: "Листа", exact: true }),
   ).toHaveAttribute("aria-selected", "true");
+});
+
+test("the full-width catalog map fits every category document without paging", async ({
+  page,
+  isMobile,
+}) => {
+  if (isMobile) await page.setViewportSize({ width: 320, height: 844 });
+  await page.goto("/");
+  const explorer = page.getByRole("region", { name: "Истраживач закона" });
+  const map = explorer.locator(".map-shell");
+  const canvas = map.locator(".registry-canvas");
+  const header = map.locator(".map-labels");
+  const controls = header.getByRole("group", { name: "Контроле мапе" });
+  const controlOffset = () =>
+    controls.evaluate((element) => {
+      const group = element.getBoundingClientRect();
+      const heading = element.parentElement!.getBoundingClientRect();
+      return Math.abs(
+        group.x + group.width / 2 - heading.x - heading.width / 2,
+      );
+    });
+  const zoomIn = map.getByRole("button", { name: "Увећај мапу" });
+  const zoomOut = map.getByRole("button", { name: "Умањи мапу" });
+  const fullscreen = map.getByRole("button", { name: "Цео екран" });
+  const { records } = getRegistry();
+  const categories = records.flatMap((record) => record.categories);
+  const stateStructure = categories.find((name) => /^I\s+/.test(name))!;
+  const finance = categories.find((name) => /^V\s+/.test(name))!;
+  const count = (category: string) =>
+    records.filter((record) => record.categories.includes(category)).length;
+  const allCardsFit = () =>
+    canvas.evaluate((element) => {
+      const bounds = element.getBoundingClientRect();
+      return [...element.querySelectorAll(".registry-node.law")].every(
+        (card) => {
+          const rect = card.getBoundingClientRect();
+          return (
+            rect.left >= bounds.left &&
+            rect.top >= bounds.top &&
+            rect.right <= bounds.right &&
+            rect.bottom <= bounds.bottom
+          );
+        },
+      );
+    });
+  const stateStructureCard = map.getByRole("button", {
+    name: /Државно уређење/,
+  });
+  const viewport = map.locator(".react-flow__viewport");
+  const zoom = () =>
+    viewport.evaluate(
+      (element) => new DOMMatrixReadOnly(getComputedStyle(element).transform).a,
+    );
+
+  await expect(map).toBeVisible();
+  await expect(
+    page.getByRole("heading", { name: "Не морате да знате назив закона." }),
+  ).toHaveCount(0);
+  const box = (await map.boundingBox())!;
+  expect(box.width).toBeGreaterThan(page.viewportSize()!.width - 65);
+  expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBe(
+    page.viewportSize()!.width,
+  );
+  await expect(header.getByRole("button")).toHaveCount(3);
+  await expect(header).toHaveCSS("background-color", /^rgb\(/);
+  await expect(header.getByText("ИСТРАЖИТЕ ОБЛАСТ")).toHaveCount(0);
+  await expect.poll(controlOffset).toBeLessThan(1);
+  await expect(stateStructureCard).toHaveAccessibleName(
+    `Државно уређење ${formatDocumentCount(count(stateStructure))}`,
+  );
+  const iconOffsets = await stateStructureCard.evaluate((card) => {
+    const titleTop = card.querySelector("strong")!.getBoundingClientRect().top;
+    return [...card.querySelectorAll(":scope > .node-icon, :scope > svg")].map(
+      (icon) => Math.abs(icon.getBoundingClientRect().top - titleTop),
+    );
+  });
+  expect(iconOffsets).toHaveLength(2);
+  expect(iconOffsets.every((offset) => offset < 1)).toBe(true);
+  await expect(
+    map.getByRole("button", { name: "Прикажи целу мапу" }),
+  ).toHaveCount(0);
+
+  await expect.poll(zoom).toBeLessThan(1);
+  const initialZoom = await zoom();
+  if (!isMobile) {
+    await canvas.hover();
+    const scrollPosition = await page.evaluate(() => window.scrollY);
+    await page.mouse.wheel(0, 180);
+    await expect
+      .poll(() => page.evaluate(() => window.scrollY))
+      .toBeGreaterThan(scrollPosition);
+    expect(await zoom()).toBeCloseTo(initialZoom);
+  }
+  for (const control of [zoomIn, zoomOut, fullscreen]) {
+    await expect(control).toHaveCSS("height", isMobile ? "44px" : "36px");
+  }
+  await zoomIn.focus();
+  await zoomIn.press("Enter");
+  await expect.poll(zoom).toBeGreaterThan(initialZoom);
+  await zoomOut.click();
+  await expect.poll(zoom).toBeCloseTo(initialZoom);
+
+  await fullscreen.click();
+  await expect(fullscreen).toHaveAttribute("aria-pressed", "true");
+  const expanded = (await map.boundingBox())!;
+  expect(expanded).toMatchObject({ x: 0, y: 0, ...page.viewportSize() });
+  await page.keyboard.press("Escape");
+  await expect(fullscreen).toHaveAttribute("aria-pressed", "false");
+  await expect(fullscreen).toBeFocused();
+
+  await stateStructureCard.click();
+  await expect.poll(controlOffset).toBeLessThan(1);
+  await expect(map.locator(".registry-node.law")).toHaveCount(
+    count(stateStructure),
+  );
+  await expect.poll(allCardsFit).toBe(true);
+  await expect(map.locator(".catalog-pagination")).toHaveCount(0);
+  await map.getByRole("button", { name: "Назад на области" }).click();
+  await expect(stateStructureCard).toBeVisible();
+
+  await page.goto(`/?category=${encodeURIComponent(finance)}&page=2`);
+  await expect(map.locator(".registry-node.law")).toHaveCount(count(finance));
+  await expect.poll(allCardsFit).toBe(true);
+  await fullscreen.click();
+  await expect(fullscreen).toHaveAttribute("aria-pressed", "true");
+  await expect.poll(allCardsFit).toBe(true);
+  await expect.poll(controlOffset).toBeLessThan(1);
 });
 
 test("snippet fetch failure keeps the whole law accessible", async ({

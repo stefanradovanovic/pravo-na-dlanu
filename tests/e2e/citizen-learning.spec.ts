@@ -53,17 +53,12 @@ async function answerWithKeyboard(
   return question;
 }
 
-test("home offers direct routes to new citizen topics and the reading guide", async ({
+test("citizen topic links and the homepage reading guide open", async ({
   page,
 }) => {
   for (const id of ["ustav", "potrosaci"] as const) {
     const topic = learningTopics.find((candidate) => candidate.id === id)!;
-    await page.goto("/");
-    await page
-      .locator(".citizen-topic-list")
-      .getByRole("link", { name: topic.title })
-      .click();
-    await expect(page).toHaveURL(new RegExp(`/ucenje\\?tema=${id}$`));
+    await page.goto(`/ucenje?tema=${id}`);
     await expect(
       page.getByRole("heading", { name: topic.title, exact: true }),
     ).toBeVisible();
