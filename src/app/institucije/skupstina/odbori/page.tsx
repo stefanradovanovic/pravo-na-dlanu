@@ -1,3 +1,4 @@
+import { assemblyRulesSource } from "@/lib/assembly-map";
 import data from "../../../../../content/assembly-directory.json";
 import { AssemblyShell } from "../assembly-shell";
 import { buttonVariants } from "@/components/ui/button";
@@ -42,10 +43,7 @@ export default function CommitteesPage() {
                 </p>
               )}
               {committee.article === 67 && (
-                <a
-                  className="text-link"
-                  href="/propisi/poslovnik-narodne-skupstine#clan-47"
-                >
+                <a className="text-link" href={assemblyRulesSource(47).href}>
                   Председник по функцији · члан 47. Пословника
                 </a>
               )}
@@ -56,7 +54,7 @@ export default function CommitteesPage() {
               </a>
               <a
                 className="text-link"
-                href={`/propisi/poslovnik-narodne-skupstine#clan-${committee.article}`}
+                href={assemblyRulesSource(committee.article).href}
               >
                 Пословник, члан {committee.article}.
               </a>
