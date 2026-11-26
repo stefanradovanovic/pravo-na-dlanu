@@ -375,8 +375,8 @@ test("open the courts profile and its legal source from the overview", async ({
 }) => {
   await page.goto("/");
   await page
-    .getByRole("main")
-    .getByRole("link", { name: "Мапе институција" })
+    .getByRole("navigation", { name: "Главна навигација" })
+    .getByRole("link", { name: /^(Мапе институција|Институције)$/ })
     .click();
   await expect(page).toHaveURL(/\/institucije$/);
   await expect(

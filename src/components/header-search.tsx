@@ -51,7 +51,14 @@ export function HeaderSearch() {
             if (!titles.length) void loadTitles().then(setTitles, () => {});
           }}
         />
-        <LawSuggestions matches={matches} query={query} />
+        <LawSuggestions
+          matches={matches}
+          query={query}
+          contentProps={{
+            align: "end",
+            className: "header-search-suggestions",
+          }}
+        />
       </Autocomplete>
       <input type="hidden" name="view" value="list" />
       <Button

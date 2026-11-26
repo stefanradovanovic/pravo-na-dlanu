@@ -1,10 +1,9 @@
 "use client";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
   ReactFlow,
+  ReactFlowProvider,
   Background,
-  Controls,
-  Panel,
   Handle,
   Position,
   BaseEdge,
@@ -24,9 +23,16 @@ import {
   ArrowLeft,
   Maximize,
   Minimize,
+  Minus,
+  Plus,
 } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import type { RegistryRecord } from "@/lib/registry-types";
-import { categoryLabel, lawPath } from "@/lib/registry-types";
+import {
+  categoryLabel,
+  formatDocumentCount,
+  lawPath,
+} from "@/lib/registry-types";
 import { documentUrl } from "@/lib/explorer-url";
 import "@xyflow/react/dist/style.css";
 type Data = {
@@ -39,6 +45,25 @@ type Data = {
   activate?: () => void;
 };
 type MapNode = Node<Data>;
+const columnStep = 320;
+const rowStep = 168;
+const firstRowY = 180;
+
+function fitColumns(count: number, aspectRatio: number) {
+  let columns = 1;
+  let bestScale = 0;
+  for (let candidate = 1; candidate <= count; candidate++) {
+    const width = candidate * columnStep;
+    const height = firstRowY + Math.ceil(count / candidate) * rowStep;
+    const scale = Math.min(aspectRatio / width, 1 / height);
+    if (scale > bestScale) {
+      columns = candidate;
+      bestScale = scale;
+    }
+  }
+  return columns;
+}
+
 function DocumentNode({ data }: NodeProps<MapNode>) {
   const Icon =
     data.kind === "law" ? BookOpen : data.kind === "root" ? Scale : FolderOpen;
@@ -64,8 +89,8 @@ function DocumentNode({ data }: NodeProps<MapNode>) {
         <Icon size={20} />
       </span>
       <div>
-        <small>{data.caption}</small>
         <strong>{data.label}</strong>
+        <small>{data.caption}</small>
       </div>
       <ArrowUpRight size={13} />
       {data.sourcePosition && (
@@ -82,19 +107,15 @@ function MembershipEdge({
   sourceY,
   targetX,
   targetY,
-  data,
   style,
 }: EdgeProps) {
-  const overview = data?.overview === true;
   const railX = targetX - 28;
-  const busY = overview ? 140 : -35;
-  const path = overview
-    ? `M ${sourceX} ${sourceY} V ${busY} H ${railX} V ${targetY} H ${targetX}`
-    : `M ${sourceX} ${sourceY} H 290 V ${busY} H ${railX} V ${targetY} H ${targetX}`;
+  const busY = (sourceY + firstRowY) / 2;
+  const path = `M ${sourceX} ${sourceY} V ${busY} H ${railX} V ${targetY} H ${targetX}`;
   return <BaseEdge id={id} path={path} style={style} interactionWidth={0} />;
 }
 const edgeTypes = { membership: MembershipEdge };
-function FitCanvas() {
+function FitCanvas({ columns }: { columns: number }) {
   const { fitView } = useReactFlow();
   const ready = useNodesInitialized();
   const width = useStore((state) => state.width);
@@ -107,46 +128,128 @@ function FitCanvas() {
       });
     });
     return () => cancelAnimationFrame(frame);
-  }, [width, height, ready, fitView]);
+  }, [columns, width, height, ready, fitView]);
   return null;
 }
-export function RegistryMap({
-  categories,
-  records,
-  category,
-  onCategory,
-  total,
-  page,
-  onPage,
-  returnTo,
-}: {
+
+type MapControlsProps = {
+  fullscreen: boolean;
+  onToggleFullscreen: () => void;
+  fullscreenButton: React.Ref<HTMLButtonElement>;
+};
+
+function MapControls({
+  fullscreen,
+  onToggleFullscreen,
+  fullscreenButton,
+}: MapControlsProps) {
+  const { zoomIn, zoomOut } = useReactFlow();
+  const canZoomIn = useStore((state) => state.transform[2] < state.maxZoom);
+  const canZoomOut = useStore((state) => state.transform[2] > state.minZoom);
+  return (
+    <div
+      role="group"
+      aria-label="Контроле мапе"
+      className="map-controls flex items-center gap-1"
+    >
+      <Button
+        variant="outline"
+        size="icon-sm"
+        aria-label="Увећај мапу"
+        title="Увећај мапу"
+        disabled={!canZoomIn}
+        focusableWhenDisabled
+        onClick={() => {
+          void zoomIn();
+        }}
+      >
+        <Plus aria-hidden="true" />
+      </Button>
+      <Button
+        variant="outline"
+        size="icon-sm"
+        aria-label="Умањи мапу"
+        title="Умањи мапу"
+        disabled={!canZoomOut}
+        focusableWhenDisabled
+        onClick={() => {
+          void zoomOut();
+        }}
+      >
+        <Minus aria-hidden="true" />
+      </Button>
+      <Button
+        ref={fullscreenButton}
+        variant="outline"
+        size="sm"
+        onClick={onToggleFullscreen}
+        aria-pressed={fullscreen}
+      >
+        {fullscreen ? (
+          <Minimize aria-hidden="true" />
+        ) : (
+          <Maximize aria-hidden="true" />
+        )}
+        Цео екран
+      </Button>
+    </div>
+  );
+}
+
+type RegistryMapProps = {
   categories: { name: string; count: number }[];
   records: RegistryRecord[];
   category: string;
   onCategory: (s: string) => void;
-  total: number;
-  page: number;
-  onPage: (n: number) => void;
   returnTo: string;
-}) {
+};
+
+export function RegistryMap(props: RegistryMapProps) {
   const [fullscreen, setFullscreen] = useState(false);
-  useEffect(() => {
-    const onKey = (event: KeyboardEvent) => {
-      if (event.key === "Escape") setFullscreen(false);
-    };
-    document.addEventListener("keydown", onKey);
-    return () => {
-      document.removeEventListener("keydown", onKey);
-    };
-  }, []);
+  const fullscreenButton = useRef<HTMLButtonElement>(null);
   useEffect(() => {
     if (!fullscreen) return;
     const previous = document.body.style.overflow;
     document.body.style.overflow = "hidden";
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setFullscreen(false);
+        fullscreenButton.current?.focus({ preventScroll: true });
+      }
+    };
+    document.addEventListener("keydown", onKey);
     return () => {
+      document.removeEventListener("keydown", onKey);
       document.body.style.overflow = previous;
     };
   }, [fullscreen]);
+  return (
+    <ReactFlowProvider key={props.category}>
+      <RegistryMapContent
+        {...props}
+        fullscreen={fullscreen}
+        onToggleFullscreen={() => setFullscreen((value) => !value)}
+        fullscreenButton={fullscreenButton}
+      />
+    </ReactFlowProvider>
+  );
+}
+
+function RegistryMapContent({
+  categories,
+  records,
+  category,
+  onCategory,
+  returnTo,
+  fullscreen,
+  onToggleFullscreen,
+  fullscreenButton,
+}: RegistryMapProps & MapControlsProps) {
+  const aspectRatio = useStore((state) =>
+    state.width > 0 && state.height > 0 ? state.width / state.height : 2,
+  );
+  const columns =
+    category === "all" ? 4 : fitColumns(records.length, aspectRatio);
   const { nodes, edges } = useMemo(() => {
     const nodes: MapNode[] = [];
     const edges: Edge[] = [];
@@ -167,180 +270,93 @@ export function RegistryMap({
         ariaLabel: data.label,
         focusable: false,
       });
-    if (category === "all") {
-      add(
-        rootId,
-        {
-          label: "Правне области",
-          caption: "КАТЕГОРИЈЕ ЗВАНИЧНОГ РЕГИСТРА",
-          kind: "root",
-          target: "all",
-          sourcePosition: Position.Bottom,
-        },
-        480,
-        0,
-      );
-      categories.forEach((c, i) => {
-        const id = `category-${i}`;
-        add(
-          id,
-          {
-            label: categoryLabel(c.name),
-            caption: `${c.count} ДОКУМЕНАТА`,
-            kind: "category",
-            target: c.name,
-            targetPosition: Position.Left,
-          },
-          (i % 4) * 320,
-          180 + Math.floor(i / 4) * 168,
-        );
-        edges.push({
-          id: `e-${id}`,
-          source: rootId,
-          target: id,
-          type: "membership",
-          data: { overview: true },
-          style: { stroke: "var(--editorial-border)" },
-        });
-      });
-    } else {
-      add(
-        rootId,
-        {
-          label: categoryLabel(category),
-          caption: `ОБЛАСТ · ${total} ДОКУМЕНАТА`,
+    const overview = category === "all";
+    add(
+      rootId,
+      {
+        label: overview ? "Правне области" : categoryLabel(category),
+        caption: overview
+          ? "КАТЕГОРИЈЕ ЗВАНИЧНОГ РЕГИСТРА"
+          : formatDocumentCount(records.length),
+        kind: overview ? "root" : "category",
+        target: "all",
+        sourcePosition: Position.Bottom,
+      },
+      ((columns - 1) * columnStep) / 2,
+      0,
+    );
+    const children: (Data & { id: string })[] = overview
+      ? categories.map(({ name, count }, i) => ({
+          id: `category-${i}`,
+          label: categoryLabel(name),
+          caption: formatDocumentCount(count),
           kind: "category",
-          target: "all",
-          sourcePosition: Position.Right,
-        },
-        0,
-        200,
+          target: name,
+        }))
+      : records.map((r) => ({
+          id: r.id,
+          label: r.title,
+          caption: `${r.documentType.toUpperCase()} · ${r.citation.slice(r.title.length).match(/\d+\/\d{4}/)?.[0] ?? "ПИС"}`,
+          kind: "law",
+          target: lawPath(r),
+        }));
+    children.forEach(({ id, ...data }, i) => {
+      add(
+        id,
+        { ...data, targetPosition: Position.Left },
+        (i % columns) * columnStep,
+        firstRowY + Math.floor(i / columns) * rowStep,
       );
-      records.forEach((r, i) => {
-        add(
-          r.id,
-          {
-            label: r.title,
-            caption: `${r.documentType.toUpperCase()} · ${r.citation.slice(r.title.length).match(/\d+\/\d{4}/)?.[0] ?? "ПИС"}`,
-            kind: "law",
-            target: lawPath(r),
-            targetPosition: Position.Left,
-          },
-          350 + (i % 2) * 310,
-          Math.floor(i / 2) * 168,
-        );
-        edges.push({
-          id: `e-${r.id}`,
-          source: rootId,
-          target: r.id,
-          type: "membership",
-          style: { stroke: "var(--editorial-border)" },
-        });
+      edges.push({
+        id: `e-${id}`,
+        source: rootId,
+        target: id,
+        type: "membership",
+        style: { stroke: "var(--editorial-border)" },
       });
-    }
+    });
     return { nodes, edges };
-  }, [categories, category, records, total, onCategory, returnTo]);
+  }, [categories, category, columns, records, onCategory, returnTo]);
   return (
     <div className={`map-shell${fullscreen ? " is-fullscreen" : ""}`}>
       <div className="map-labels">
-        <span>ИСТРАЖИТЕ ОБЛАСТ</span>
-        <span>ЈЕДАН ЗАКОН · ЈЕДАН ДОКУМЕНТ</span>
-        <span>ПОМЕРИТЕ И УВЕЋАЈТЕ</span>
+        {category !== "all" && (
+          <Button variant="outline" size="sm" onClick={() => onCategory("all")}>
+            <ArrowLeft aria-hidden="true" /> Назад на области
+          </Button>
+        )}
+        <MapControls
+          fullscreen={fullscreen}
+          onToggleFullscreen={onToggleFullscreen}
+          fullscreenButton={fullscreenButton}
+        />
       </div>
       <div className="map-canvas registry-canvas">
         <ReactFlow
-          key={`${category}-${page}-${fullscreen}`}
           nodes={nodes}
           edges={edges}
           nodeTypes={nodeTypes}
           edgeTypes={edgeTypes}
-          ariaLabelConfig={{
-            "controls.fitView.ariaLabel": "Прикажи целу мапу",
-            "controls.zoomIn.ariaLabel": "Увећај мапу",
-            "controls.zoomOut.ariaLabel": "Умањи мапу",
-          }}
           fitView
           fitViewOptions={{ padding: 0.12 }}
-          minZoom={0.25}
+          minZoom={0.05}
           maxZoom={1.5}
+          zoomOnScroll={false}
+          preventScrolling={false}
           nodesDraggable={false}
           nodesConnectable={false}
         >
-          <FitCanvas />
+          <FitCanvas columns={columns} />
           <Background color="var(--border)" gap={20} size={1} />
-          <Panel position="top-right">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => setFullscreen((value) => !value)}
-              aria-pressed={fullscreen}
-            >
-              {fullscreen ? <Minimize size={16} /> : <Maximize size={16} />}
-              {fullscreen ? "Смањи приказ" : "Цео екран"}
-            </Button>
-          </Panel>
-          {category !== "all" && (
-            <Panel position="top-left">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => onCategory("all")}
-              >
-                <ArrowLeft size={16} /> Назад на области
-              </Button>
-            </Panel>
-          )}
-          <Controls showInteractive={false} />
         </ReactFlow>
       </div>
       <div className="map-footer">
         <span>
-          <i /> Изаберите област, затим закон. Везе означавају припадност
-          категорији.
+          <i />{" "}
+          {category === "all" ? "Изаберите област." : "Изаберите документ."}
         </span>
-        <span>
-          {category === "all"
-            ? `${categories.length} области`
-            : `${page * 8 + 1}–${Math.min((page + 1) * 8, total)} од ${total}`}
-        </span>
+        {category === "all" && <span>{categories.length} области</span>}
       </div>
-      {category !== "all" && total > 8 && (
-        <MapPager page={page} total={total} onPage={onPage} />
-      )}
-    </div>
-  );
-}
-import { Button } from "@/components/ui/button";
-function MapPager({
-  page,
-  total,
-  onPage,
-}: {
-  page: number;
-  total: number;
-  onPage: (n: number) => void;
-}) {
-  return (
-    <div className="catalog-pagination">
-      <Button
-        variant="outline"
-        size="sm"
-        disabled={!page}
-        onClick={() => onPage(page - 1)}
-      >
-        Претходни закони
-      </Button>
-      <span>
-        {page + 1} / {Math.ceil(total / 8)}
-      </span>
-      <Button
-        variant="outline"
-        size="sm"
-        disabled={(page + 1) * 8 >= total}
-        onClick={() => onPage(page + 1)}
-      >
-        Следећи закони
-      </Button>
     </div>
   );
 }
