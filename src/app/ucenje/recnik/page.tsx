@@ -2,10 +2,10 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { GlossaryBrowser } from "@/components/learning/glossary-browser";
 import { getGlossaryCatalog } from "@/lib/glossary-content";
-import { socialMetadata } from "@/lib/social-metadata";
+import { siteMetadata } from "@/lib/social-metadata";
 
 export const metadata: Metadata = {
-  ...socialMetadata("/ucenje/recnik"),
+  ...siteMetadata("/ucenje/recnik"),
   title: "Речник правних и грађанских појмова",
   description:
     "Правни и грађански појмови објашњени једноставним језиком, са примерима и изворима.",

@@ -3,7 +3,14 @@ import data from "../../../../../content/assembly-directory.json";
 import { AssemblyShell } from "../assembly-shell";
 import { buttonVariants } from "@/components/ui/button";
 
-export const metadata = { title: "Одбори" };
+import { siteMetadata } from "@/lib/social-metadata";
+
+export const metadata = {
+  ...siteMetadata("/institucije/skupstina/odbori"),
+  title: "Одбори",
+  description:
+    "Преглед одбора Народне скупштине Србије, њихових надлежности и састава, са везама ка одговарајућим члановима Пословника.",
+};
 const members = new Map(data.members.map((member) => [member.id, member.name]));
 
 export default function CommitteesPage() {

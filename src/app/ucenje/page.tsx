@@ -5,10 +5,10 @@ import { BookOpen } from "lucide-react";
 import { LearningWorkspace } from "@/components/learning/learning-workspace";
 import { buttonVariants } from "@/components/ui/button";
 import { getLearningCatalog } from "@/lib/learning-content";
-import { socialMetadata } from "@/lib/social-metadata";
+import { siteMetadata } from "@/lib/social-metadata";
 
 export const metadata: Metadata = {
-  ...socialMetadata("/ucenje"),
+  ...siteMetadata("/ucenje"),
   title: "Учи и провери знање",
   description:
     "Потражите правни појам у Речнику или упознајте своја права кроз кратке вежбе и измишљене животне ситуације.",

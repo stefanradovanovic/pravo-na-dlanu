@@ -4,7 +4,7 @@ import { BackToTop } from "@/components/back-to-top";
 import { MobileNavigation } from "@/components/mobile-navigation";
 import { SiteAnalytics } from "@/components/site-analytics";
 import { UIAgentBridge } from "@/components/ui/agent-bridge";
-import { siteName, socialMetadata } from "@/lib/social-metadata";
+import { siteName, siteMetadata } from "@/lib/social-metadata";
 import { initializeTheme } from "@/lib/theme";
 import Link from "next/link";
 import "./globals.css";
@@ -14,7 +14,7 @@ export const viewport: Viewport = {
   viewportFit: "cover",
 };
 export const metadata: Metadata = {
-  ...socialMetadata(),
+  ...siteMetadata(),
   title: {
     default: `${siteName} — разумите своја права`,
     template: `%s | ${siteName}`,

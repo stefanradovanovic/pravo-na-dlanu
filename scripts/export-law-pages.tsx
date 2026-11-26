@@ -15,8 +15,9 @@ import {
   findLearningLaw,
 } from "../src/lib/registry";
 import { getLibrary } from "../src/lib/content";
-import { lawPath } from "../src/lib/registry-types";
-import { siteName, siteOrigin } from "../src/lib/social-metadata";
+import { lawMetadata } from "../src/lib/law-metadata";
+import { lawPath, type RegistryRecord } from "../src/lib/registry-types";
+import { siteName, siteUrl } from "../src/lib/social-metadata";
 import { MobileNavigationLinks } from "../src/components/mobile-navigation-links";
 import { HeaderSearch } from "../src/components/header-search";
 import { ThemeToggle } from "../src/components/theme-toggle";
@@ -41,13 +42,16 @@ assert.equal(
 $(
   "script:not(#site-theme-init), link[as=script], link[rel=modulepreload]",
 ).remove();
-$("title").text("LAW_PAGE_TITLE_PLACEHOLDER");
-$('link[rel="canonical"]').attr("href", "LAW_PAGE_PATH_PLACEHOLDER");
-$('meta[property="og:title"], meta[name="twitter:title"]').attr(
+$("head title").text("LAW_PAGE_TITLE_PLACEHOLDER");
+$('head link[rel="canonical"]').attr("href", "LAW_PAGE_URL_PLACEHOLDER");
+$('head meta[property="og:title"], head meta[name="twitter:title"]').attr(
   "content",
   "LAW_PAGE_TITLE_PLACEHOLDER",
 );
-$('meta[property="og:url"]').attr("content", "LAW_PAGE_SOCIAL_URL_PLACEHOLDER");
+$(
+  'head meta[name="description"], head meta[property="og:description"], head meta[name="twitter:description"]',
+).attr("content", "LAW_PAGE_DESCRIPTION_PLACEHOLDER");
+$('head meta[property="og:url"]').attr("content", "LAW_PAGE_URL_PLACEHOLDER");
 const socialTags = $('head meta[property^="og:"], head meta[name^="twitter:"]')
   .map((_, tag) => $.html(tag))
   .get()
@@ -145,20 +149,24 @@ function island(
 function renderControl(props: ReaderControlProps) {
   return island(`reader-${props.kind}`, props, <ReaderControl {...props} />);
 }
-function fillLawMetadata(html: string, title: string, href: string) {
+function fillLawMetadata(html: string, record: RegistryRecord) {
+  const { title, description } = lawMetadata(record);
   return html
     .replaceAll("LAW_PAGE_TITLE_PLACEHOLDER", () =>
       escapeHtml(`${title} | ${siteName}`),
     )
-    .replace("LAW_PAGE_PATH_PLACEHOLDER", () => escapeHtml(href))
-    .replace("LAW_PAGE_SOCIAL_URL_PLACEHOLDER", () =>
-      escapeHtml(new URL(href, siteOrigin).href),
+    .replaceAll("LAW_PAGE_DESCRIPTION_PLACEHOLDER", () =>
+      escapeHtml(description),
+    )
+    .replaceAll("LAW_PAGE_URL_PLACEHOLDER", () =>
+      escapeHtml(siteUrl(lawPath(record))),
     );
 }
 
-async function writeRedirect(file: string, href: string, title: string) {
-  const metadata = fillLawMetadata(socialTags, title, href);
-  const html = `<!doctype html><html lang="sr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Пропис је премештен</title><link rel="canonical" href="${escapeHtml(href)}">${metadata}</head><body><main><p>Пропис је премештен на читљиву адресу.</p><a data-law-redirect href="${escapeHtml(href)}">Отворите пропис →</a></main><script type="module" src="${redirectUrl}"></script></body></html>`;
+async function writeRedirect(file: string, record: RegistryRecord) {
+  const href = lawPath(record);
+  const metadata = fillLawMetadata(socialTags, record);
+  const html = `<!doctype html><html lang="sr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Пропис је премештен</title><link rel="canonical" href="${escapeHtml(siteUrl(href))}">${metadata}</head><body><main><p>Пропис је премештен на читљиву адресу.</p><a data-law-redirect href="${escapeHtml(href)}">Отворите пропис →</a></main><script type="module" src="${redirectUrl}"></script></body></html>`;
   await fs.writeFile(file, html);
 }
 
@@ -180,28 +188,20 @@ for (const [index, record] of records.entries()) {
     />,
   );
   const href = lawPath(record);
-  const html = fillLawMetadata(template, record.title, href)
+  const html = fillLawMetadata(template, record)
     .replace("LAW_PAGE_BODY_PLACEHOLDER", () => body)
     .replace("LAW_PAGE_NAVIGATION_PLACEHOLDER", () =>
       renderToStaticMarkup(<MobileNavigationLinks pathname={href} />),
     );
   await fs.writeFile(path.join(root, "propisi", `${record.slug}.html`), html);
-  await writeRedirect(
-    path.join(root, "propisi", `${record.id}.html`),
-    href,
-    record.title,
-  );
+  await writeRedirect(path.join(root, "propisi", `${record.id}.html`), record);
   if ((index + 1) % 100 === 0)
     console.log(`Exported ${index + 1}/${records.length} standalone law pages`);
 }
 for (const law of getLibrary().laws) {
   const record = findLearningLaw(law.id);
   assert.ok(record, `Missing learning-law redirect: ${law.id}`);
-  await writeRedirect(
-    path.join(root, "zakoni", `${law.id}.html`),
-    lawPath(record),
-    record.title,
-  );
+  await writeRedirect(path.join(root, "zakoni", `${law.id}.html`), record);
 }
 console.log(
   `Exported all ${records.length} laws from Markdown with isolated reader controls.`,

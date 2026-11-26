@@ -2,14 +2,14 @@ import type { Metadata } from "next";
 import { getCourtDirectory } from "@/lib/court-directory";
 import { institutionGroups } from "@/lib/institution-directory";
 import { getProsecutionDirectory } from "@/lib/prosecution-directory";
-import { socialMetadata } from "@/lib/social-metadata";
+import { siteMetadata } from "@/lib/social-metadata";
 import { InstitutionDirectory } from "./institution-directory";
 import "./institutions.css";
 import "./institution-directory.css";
 import "./court-directory.css";
 
 export const metadata: Metadata = {
-  ...socialMetadata("/institucije"),
+  ...siteMetadata("/institucije"),
   title: "Мапа институција Србије",
   description:
     "Преглед институција Србије, са списковима министарстава, судова и јавних тужилаштава, њиховим надлежностима и везама ка прописима.",
