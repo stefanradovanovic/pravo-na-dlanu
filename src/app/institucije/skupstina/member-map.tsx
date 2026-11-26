@@ -259,9 +259,10 @@ const seatObservations = new Map(
 );
 
 // Officers elected on 19 November 2026. The display order is schematic.
+const daisY = -131;
 const dais = Array.from({ length: 11 }, (_, i) => ({
   x: (i - 5) * 20,
-  y: -131,
+  y: daisY,
   rotation: 0,
 }));
 const speakerId = "1487";
@@ -525,16 +526,14 @@ export function MemberMap({
       <div
         className="member-map-chamber"
         data-zoomed={zoom > minZoom || undefined}
+        style={
+          {
+            "--chamber-aspect-ratio": chamber.width / chamber.height,
+            "--dais-center-offset": `${((daisY - chamber.top) / chamber.width) * 100}cqw`,
+          } as CSSProperties
+        }
       >
-        <div
-          className="member-map-viewport"
-          ref={viewportRef}
-          style={
-            {
-              "--chamber-aspect-ratio": chamber.width / chamber.height,
-            } as CSSProperties
-          }
-        >
+        <div className="member-map-viewport" ref={viewportRef}>
           <div className="member-map-stage" style={{ width: `${zoom * 100}%` }}>
             <div className="member-map-floor">
               <svg

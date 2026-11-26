@@ -126,7 +126,19 @@ test("show an official portrait and profile at a filtered Assembly seat", async 
     .getByText("Чупић Александар", { exact: true })
     .boundingBox())!;
   if (floor.width >= 768) {
+    const daisSeat = (await map
+      .locator(".member-hemicycle > g:first-of-type rect")
+      .first()
+      .boundingBox())!;
+    const zoomOut = (await map
+      .getByRole("button", { name: "Умањи мапу" })
+      .boundingBox())!;
     expect(card.x + card.width / 2).toBeCloseTo(floor.x + floor.width / 2, 0);
+    expect(photo.y - (daisSeat.y + daisSeat.height)).toBeCloseTo(
+      daisSeat.y - (zoomOut.y + zoomOut.height),
+      0,
+    );
+    expect(name.y - (photo.y + photo.height)).toBeCloseTo(8, 0);
     expect(card.y).toBeGreaterThan(floor.y);
     expect(card.y + card.height).toBeLessThan(floor.y + floor.height * 0.55);
     expect(card.height).toBeGreaterThan(card.width);
@@ -142,7 +154,7 @@ test("show an official portrait and profile at a filtered Assembly seat", async 
   expect(photo.y + photo.height).toBeLessThan(name.y);
   await expect(profile.getByText("доцент · Сопот")).toHaveCSS(
     "text-align",
-    floor.width >= 768 ? "start" : "center",
+    "center",
   );
 
   await profile.getByText("доцент · Сопот").click();
@@ -246,7 +258,7 @@ test("group the Assembly roster and open portraits from its links", async ({
   ).toBeInViewport();
 });
 
-test("highlight hovered and selected seats while respecting reduced motion", async ({
+test("highlight seats without moving them on hover or selection", async ({
   page,
   hasTouch,
 }) => {
@@ -257,7 +269,14 @@ test("highlight hovered and selected seats while respecting reduced motion", asy
   const dot = chair.locator("span");
   const fill = () =>
     dot.evaluate((element) => getComputedStyle(element).backgroundColor);
+  const markerOffset = () =>
+    dot.evaluate(
+      (element) =>
+        element.getBoundingClientRect().top -
+        element.closest(".member-map-floor")!.getBoundingClientRect().top,
+    );
   const initialColor = await fill();
+  const initialOffset = await markerOffset();
   let hoverColor: string | undefined;
 
   const supportsHover = await page.evaluate(
@@ -266,14 +285,16 @@ test("highlight hovered and selected seats while respecting reduced motion", asy
   if (supportsHover) {
     await chair.hover();
     await expect.poll(fill).not.toBe(initialColor);
-    await expect(dot).toHaveCSS("translate", "0px -1px");
+    await expect(dot).toHaveCSS("translate", "none");
+    expect(await markerOffset()).toBeCloseTo(initialOffset, 1);
     hoverColor = await fill();
   }
   if (hasTouch) await chair.tap();
   else await chair.click();
   await expect(seat).toBeChecked();
   await expect.poll(fill).not.toBe(initialColor);
-  await expect(dot).toHaveCSS("translate", supportsHover ? "0px -2px" : "none");
+  await expect(dot).toHaveCSS("translate", "none");
+  expect(await markerOffset()).toBeCloseTo(initialOffset, 1);
   await expect(dot).toHaveCSS("outline-style", "none");
   const selectedStyle = await dot.evaluate((element) => {
     const highlight = getComputedStyle(element);

@@ -1,4 +1,5 @@
 .member-map {
+  --map-controls-clearance: var(--space-4);
   padding: clamp(var(--space-3), 2vw, var(--space-6));
   margin-bottom: var(--space-6);
   background: var(--card);
@@ -34,8 +35,7 @@
   flex-wrap: wrap;
   justify-content: center;
   gap: var(--space-2);
-  padding-block: var(--space-1);
-  margin-block-end: var(--space-3);
+  padding-block: var(--space-1) var(--map-controls-clearance);
 }
 .member-map-controls .ui-button {
   min-block-size: calc(var(--space-6) + var(--space-1));
@@ -43,9 +43,12 @@
   padding: var(--space-1) 0;
 }
 @media (pointer: coarse) {
+  .member-map {
+    --map-controls-clearance: calc(var(--space-2) + var(--space-3));
+  }
   .member-map-controls {
     gap: var(--space-4);
-    padding-block: var(--space-2);
+    padding-block-start: var(--space-2);
   }
   .member-map-controls .ui-button {
     position: relative;
@@ -86,6 +89,7 @@
   position: relative;
 }
 .member-map-chamber {
+  --map-floor-top-space: var(--space-1);
   position: relative;
   container-type: inline-size;
 }
@@ -136,27 +140,6 @@
 @media (hover: hover) and (pointer: fine) {
   .member-seat:hover input:enabled + span {
     background: var(--seat-highlight-color);
-  }
-}
-@media (min-width: 48rem) and (hover: hover) and (pointer: fine) {
-  .member-seat:has(input:checked) {
-    z-index: 1;
-  }
-  @media (prefers-reduced-motion: no-preference) {
-    .member-map:not(:has(.member-seat input:focus-visible)) {
-      .member-seat span {
-        transition: translate var(--motion-duration-feedback)
-          var(--motion-ease-out);
-      }
-      .member-seat:hover input:enabled:not(:checked) + span {
-        translate: 0 -1px;
-      }
-    }
-    .member-map:not(:focus-visible, :has(.member-seat input:focus-visible)) {
-      .member-seat input:checked + span {
-        translate: 0 -2px;
-      }
-    }
   }
 }
 .member-seat[data-preview] {
@@ -257,10 +240,17 @@
   }
 }
 @container (min-width: 48rem) {
+  .member-map-chamber:not([data-zoomed]) > .member-map-viewport {
+    margin-block-start: var(--map-floor-top-space);
+  }
   .member-map-chamber:not([data-zoomed]) > .member-map-selection:not(:empty) {
     position: absolute;
     z-index: 2;
-    inset-block-start: 11%;
+    /* The controls and portrait sit equally far from the presiding row. */
+    inset-block-start: calc(
+      var(--map-controls-clearance) + 2 *
+        (var(--map-floor-top-space) + var(--dais-center-offset))
+    );
     inset-inline-start: 50%;
     transform: translateX(-50%);
     inline-size: min(24%, 15rem);
@@ -275,8 +265,10 @@
     flex-direction: column;
     min-block-size: 0;
     gap: var(--space-2);
-    padding: var(--space-2) 0;
+    padding: 0 0 var(--space-2);
     border-color: transparent;
+    border-block-start: 0;
+    text-align: center;
   }
   .member-map-chamber:not([data-zoomed]) .member-map-portrait {
     align-self: center;
@@ -297,6 +289,7 @@
   }
   .member-map-chamber:not([data-zoomed]) .member-map-profile-copy {
     flex-shrink: 0;
+    row-gap: 0;
   }
 }
 .member-map-key ul {
