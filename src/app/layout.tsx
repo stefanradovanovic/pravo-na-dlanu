@@ -5,13 +5,13 @@ import { MobileNavigation } from "@/components/mobile-navigation";
 import { SiteAnalytics } from "@/components/site-analytics";
 import { UIAgentBridge } from "@/components/ui/agent-bridge";
 import { siteName, socialMetadata } from "@/lib/social-metadata";
+import { initializeTheme } from "@/lib/theme";
 import Link from "next/link";
 import "./globals.css";
 import "./site.css";
 import "./reading-desk.css";
 export const viewport: Viewport = {
   viewportFit: "cover",
-  themeColor: "#fffefa",
 };
 export const metadata: Metadata = {
   ...socialMetadata(),
@@ -28,7 +28,13 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="sr">
+    <html lang="sr" suppressHydrationWarning>
+      <head>
+        <script
+          id="site-theme-init"
+          dangerouslySetInnerHTML={{ __html: initializeTheme }}
+        />
+      </head>
       <body>
         {process.env.NODE_ENV === "development" && <UIAgentBridge />}
         <a className="skip-link" href="#main">

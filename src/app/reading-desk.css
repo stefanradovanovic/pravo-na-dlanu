@@ -510,7 +510,7 @@ html {
   font-size: 0.875rem;
 }
 @media (hover: hover) and (pointer: fine) {
-  .site-header nav a:hover {
+  .site-header nav a:hover:not([aria-current="page"]) {
     color: var(--chrome-foreground);
   }
   .article-navigation li a:hover {

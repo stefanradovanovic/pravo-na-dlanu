@@ -1,55 +1,58 @@
 /* Reading Desk · shared by the component facade, UI SDK and static readers.
    Source of truth for the living system at /dizajn-sistem. */
-:root {
-  color-scheme: light;
-  --background: #faf9f6;
-  --foreground: #282824;
-  --card: #fffefa;
+:root,
+[data-theme] {
+  --background: light-dark(#faf9f6, #0d0d0d);
+  --foreground: light-dark(#282824, #f2f2f2);
+  --card: light-dark(#fffefa, #171717);
   --card-foreground: var(--foreground);
-  --popover: #fffefa;
+  --popover: var(--card);
   --popover-foreground: var(--foreground);
-  --primary: #292d28;
-  --primary-foreground: #fffefa;
-  --secondary: #eeede8;
-  --secondary-foreground: #282824;
-  --muted: #eeede8;
-  --muted-foreground: #686b60;
-  --accent: #efede6;
-  --accent-foreground: #292d28;
-  --destructive: #b3261e;
-  --border: #e3e1d9;
-  --input: #dbd9d1;
-  --ring: #963e35;
-  --brand: #963e35;
-  --brand-foreground: #fff9ee;
+  --primary: light-dark(#292d28, #83d3c5);
+  --primary-foreground: light-dark(#fffefa, #122e2a);
+  --secondary: light-dark(#eeede8, #252525);
+  --secondary-foreground: light-dark(#282824, #e4e4e4);
+  --muted: var(--secondary);
+  --muted-foreground: light-dark(#686b60, #ababab);
+  --accent: light-dark(#efede6, #2a2a2a);
+  --accent-foreground: light-dark(#292d28, #a6dfd4);
+  --destructive: light-dark(#b3261e, #ffb4a9);
+  --border: light-dark(#e3e1d9, #383838);
+  --input: light-dark(#dbd9d1, #707070);
+  --ring: var(--brand);
+  --brand: light-dark(#963e35, #83d3c5);
+  --brand-foreground: light-dark(#fff9ee, #122e2a);
   --chrome: var(--card);
   --chrome-foreground: var(--foreground);
   --chrome-muted: var(--muted-foreground);
   --chrome-active: var(--ring);
   --chrome-selected: var(--brand);
-  --surface-subtle: #f5f4ee;
-  --surface-map: #f6f5f0;
-  --editorial: #eff0e7;
-  --editorial-foreground: #536145;
-  --editorial-border: #969f7c;
-  --warning: #f8eee3;
-  --warning-foreground: #80502e;
-  --highlight: #f2dfb1;
-  --highlight-foreground: #282824;
-  --chart-1: #963e35;
-  --chart-2: #698454;
-  --chart-3: #234570;
+  --surface-subtle: light-dark(#f5f4ee, #171717);
+  --surface-map: light-dark(#f6f5f0, #121212);
+  --editorial: light-dark(#eff0e7, #1b211e);
+  --editorial-foreground: light-dark(#536145, #b0d4c9);
+  --editorial-border: light-dark(#969f7c, #698f81);
+  --warning: light-dark(#f8eee3, #2a2117);
+  --warning-foreground: light-dark(#80502e, #edd29d);
+  --highlight: light-dark(#f2dfb1, #70551b);
+  --highlight-foreground: light-dark(#282824, #fff1c9);
+  --chart-1: light-dark(#bd493c, #e16053);
+  --chart-2: light-dark(#5f903f, #7db64e);
+  --chart-3: light-dark(#2d6eac, #529ae8);
   --chart-4: #686b60;
   --chart-5: #292d28;
-  --sidebar: #fffefa;
-  --sidebar-foreground: #282824;
+  --sidebar: var(--card);
+  --sidebar-foreground: var(--secondary-foreground);
   --sidebar-primary: var(--primary);
   --sidebar-primary-foreground: var(--primary-foreground);
-  --sidebar-accent: #eeede8;
-  --sidebar-accent-foreground: #292d28;
-  --sidebar-border: #e3e1d9;
+  --sidebar-accent: light-dark(#eeede8, #2a2a2a);
+  --sidebar-accent-foreground: var(--accent-foreground);
+  --sidebar-border: var(--border);
   --sidebar-ring: var(--ring);
+}
 
+:root {
+  color-scheme: light;
   --type-ui: "IBM Plex Sans Variable", Arial, sans-serif;
   --type-editorial: "Literata Variable", Georgia, serif;
   --type-code: Consolas, "Liberation Mono", monospace;
@@ -81,41 +84,16 @@
   --motion-ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);
 }
 
-/* Isolated component preview; the reading workspace has one light theme. */
-.dark {
-  color-scheme: dark;
-  --background: #18252d;
-  --foreground: #f1f6f5;
-  --card: #21323a;
-  --card-foreground: #f1f6f5;
-  --popover: #21323a;
-  --popover-foreground: #f1f6f5;
-  --primary: #83d3c5;
-  --primary-foreground: #122e2a;
-  --secondary: #2d4149;
-  --secondary-foreground: #e2edeb;
-  --muted: #2d4149;
-  --muted-foreground: #b9c9cb;
-  --accent: #254a44;
-  --accent-foreground: #a6dfd4;
-  --destructive: #ffb4a9;
-  --border: #435a63;
-  --input: #6a838a;
-  --ring: #83d3c5;
-  --brand: #83d3c5;
-  --brand-foreground: #122e2a;
-  --surface-subtle: #21323a;
-  --surface-map: #21323a;
-  --editorial: #254039;
-  --editorial-foreground: #b0d4c9;
-  --editorial-border: #698f81;
-  --warning: #453a25;
-  --warning-foreground: #edd29d;
-  --highlight: #70551b;
-  --highlight-foreground: #fff1c9;
-  --sidebar: #21323a;
-  --sidebar-foreground: #e2edeb;
-  --sidebar-accent: #254a44;
-  --sidebar-accent-foreground: #a6dfd4;
-  --sidebar-border: #435a63;
+@media screen {
+  :root {
+    color-scheme: light dark;
+  }
+
+  [data-theme="light"] {
+    color-scheme: light;
+  }
+
+  [data-theme="dark"] {
+    color-scheme: dark;
+  }
 }

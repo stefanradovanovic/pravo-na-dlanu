@@ -66,7 +66,7 @@
   }
   .ui-button-destructive {
     background: var(--destructive);
-    color: #fff;
+    color: light-dark(#fff, var(--background));
   }
   .ui-button-link {
     background: transparent;
@@ -221,7 +221,7 @@
   .ui-overlay {
     position: fixed;
     inset: 0;
-    background: #18252d66;
+    background: light-dark(#18252d66, #0009);
     transition: opacity var(--motion-duration-panel) var(--motion-ease-out);
   }
   .ui-overlay[data-starting-style],
@@ -401,7 +401,7 @@
 
   @media (hover: hover) and (pointer: fine) {
     .ui-button-primary:hover:not(:disabled) {
-      background: #0b5b54;
+      background: light-dark(#0b5b54, var(--accent-foreground));
     }
     .ui-button-outline:hover:not(:disabled),
     .ui-button-ghost:hover:not(:disabled),

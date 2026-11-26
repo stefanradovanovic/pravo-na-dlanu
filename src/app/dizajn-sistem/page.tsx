@@ -99,7 +99,7 @@ export default function DesignSystemPage() {
         <div className="ds-content">
           <section id="boje" className="ds-section">
             <SectionHeading number="01" title="Боје и површине">
-              Бела површина за читање, тамно заглавље и тиркизне радње.
+              Заједнички токени боја за светлу и тамну тему.
             </SectionHeading>
             <div className="ds-palette">
               {colors.map(([token, name, use]) => (
@@ -119,15 +119,15 @@ export default function DesignSystemPage() {
               себи не значи да је пропис правно проверен.
             </div>
             <div className="ds-theme-samples">
-              <div className="ds-theme-sample">
+              <div className="ds-theme-sample" data-theme="light">
                 <Badge variant="secondary">Светла тема</Badge>
                 <strong>Простор за читање.</strong>
-                <p>Основна тема каталога и читача.</p>
+                <p>Светли приказ каталога и читача.</p>
               </div>
-              <div className="dark ds-theme-sample">
-                <Badge variant="secondary">Тамна тема компоненти</Badge>
+              <div className="ds-theme-sample" data-theme="dark">
+                <Badge variant="secondary">Тамна тема</Badge>
                 <strong>Исти језик, друга подлога.</strong>
-                <p>Узорак токена; није прекидач теме сајта.</p>
+                <p>Тамни приказ каталога и читача.</p>
               </div>
             </div>
           </section>
