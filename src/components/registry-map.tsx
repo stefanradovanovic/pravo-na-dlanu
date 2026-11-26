@@ -54,11 +54,14 @@ type Data = {
   onFocusChange?: (id: string | null) => void;
 };
 type MapNode = Node<Data>;
-type MapEdge = Edge<{ railX: number }>;
+type MapEdge = Edge<{ railX: number; firstRowY: number }>;
 const nodeWidth = 260;
 const columnStep = 320;
-const gutterCenterOffset = (columnStep - nodeWidth) / 2;
 const rowStep = 168;
+const compactRowGap = 16;
+const compactRootGap = 32;
+const compactGutter = 22;
+const compactHorizontalPadding = 20;
 const firstRowY = 180;
 const minZoom = 0.05;
 const maxZoom = 1.5;
@@ -70,6 +73,13 @@ const fitOptions = {
     left: `${leftPadding}px`,
     right: `${rightPadding}px`,
     y: `${verticalPadding}px`,
+  },
+} as const;
+const compactFitOptions = {
+  padding: {
+    ...fitOptions.padding,
+    left: `${compactHorizontalPadding}px`,
+    right: `${compactHorizontalPadding}px`,
   },
 } as const;
 const coarsePointerQuery = "(pointer: coarse)";
@@ -155,7 +165,7 @@ function MembershipEdge({
   targetY,
 }: EdgeProps<MapEdge>) {
   if (!data) return null;
-  const busY = (sourceY + firstRowY) / 2;
+  const busY = (sourceY + data.firstRowY) / 2;
   const path = `M ${sourceX} ${sourceY} V ${busY} H ${data.railX} V ${targetY} H ${targetX}`;
   return <BaseEdge id={id} path={path} interactionWidth={0} />;
 }
@@ -163,9 +173,15 @@ const edgeTypes = { membership: MembershipEdge };
 function FitCanvas({
   columns,
   fullscreen,
+  graphHeight,
+  minimumZoom,
+  options,
 }: {
   columns: number;
   fullscreen: boolean;
+  graphHeight: number;
+  minimumZoom: number;
+  options: typeof fitOptions | typeof compactFitOptions;
 }) {
   const { getNodes, getNodesBounds, setViewport } = useReactFlow();
   const ready = useStore(
@@ -187,9 +203,9 @@ function FitCanvas({
           bounds,
           width,
           height,
-          minZoom,
+          minimumZoom,
           maxZoom,
-          fitOptions.padding,
+          options.padding,
         ),
       );
     });
@@ -197,8 +213,11 @@ function FitCanvas({
   }, [
     columns,
     fullscreen,
+    graphHeight,
+    minimumZoom,
     width,
     height,
+    options,
     ready,
     getNodes,
     getNodesBounds,
@@ -221,7 +240,7 @@ function MapControls({
   const { getViewport, setViewport, zoomIn, zoomOut } = useReactFlow();
   const width = useStore((state) => state.width);
   const canZoomIn = useStore((state) => state.transform[2] < maxZoom);
-  const canZoomOut = useStore((state) => state.transform[2] > minZoom);
+  const canZoomOut = useStore((state) => state.transform[2] > state.minZoom);
   function zoom(increase: boolean) {
     if (fullscreen) {
       void (increase ? zoomIn() : zoomOut());
@@ -359,7 +378,25 @@ function RegistryMapContent({
     () => false,
   );
   const overview = category === "all";
-  const count = overview ? categories.length : records.length;
+  const children = useMemo<(Data & { id: string })[]>(
+    () =>
+      overview
+        ? categories.map(({ name, count }, i) => ({
+            id: `category-${i}`,
+            label: categoryLabel(name),
+            caption: formatDocumentCount(count),
+            kind: "category",
+            target: name,
+          }))
+        : records.map((record) => ({
+            id: record.id,
+            label: record.title,
+            kind: "law",
+            target: lawPath(record),
+          })),
+    [categories, overview, records],
+  );
+  const count = children.length;
   const availableWidth = Math.max(0, width - leftPadding - rightPadding);
   const inlineColumns = Math.max(
     1,
@@ -381,17 +418,72 @@ function RegistryMapContent({
   );
   const useFiveColumns =
     !overview && count > 50 && (fullscreen || inlineColumns >= 3);
-  const columns = useFiveColumns ? 5 : fittedColumns;
-  const graphWidth = nodeWidth + (columns - 1) * columnStep;
-  const inlineZoom = Math.min(maxZoom, availableWidth / graphWidth);
-  const rows = Math.ceil(count / columns);
+  const compactLayout = count > 1 && width > 0 && inlineColumns === 1;
+  const columns = compactLayout ? 2 : useFiveColumns ? 5 : fittedColumns;
+  const fitWidth = compactLayout
+    ? width - 2 * compactHorizontalPadding
+    : availableWidth;
+  const childWidth = compactLayout
+    ? Math.max(1, (fitWidth - compactGutter) / columns)
+    : nodeWidth;
+  const xStep = compactLayout ? childWidth + compactGutter : columnStep;
+  const gutterCenterOffset = (xStep - childWidth) / 2;
+  const graphWidth = childWidth + (columns - 1) * xStep;
+  const rootWidth = Math.min(nodeWidth, graphWidth);
+  const options = compactLayout ? compactFitOptions : fitOptions;
+  const inlineZoom = Math.min(maxZoom, fitWidth / graphWidth);
+  const nodeSizes = useStore(
+    ({ nodeLookup }) => [
+      nodeLookup.get("root")?.measured,
+      ...children.map(({ id }) => nodeLookup.get(id)?.measured),
+    ],
+    (a, b) =>
+      a.length === b.length &&
+      a.every(
+        (size, i) =>
+          size?.width === b[i]?.width && size?.height === b[i]?.height,
+      ),
+  );
+  const startY = compactLayout
+    ? (nodeSizes[0]?.height ?? 100) + compactRootGap
+    : firstRowY;
+  const compactRowOffsets = useMemo(() => {
+    if (!compactLayout) return null;
+    const offsets = [startY];
+    let y = startY;
+    for (let i = 0; i < count; i += columns) {
+      const left = nodeSizes[i + 1]?.height;
+      const right = nodeSizes[i + 2]?.height;
+      y +=
+        Math.max(left ?? rowStep - compactRowGap, right ?? 0) + compactRowGap;
+      offsets.push(y);
+    }
+    return offsets;
+  }, [columns, compactLayout, count, nodeSizes, startY]);
+  const graphHeight =
+    compactRowOffsets?.at(-1) ??
+    firstRowY + Math.ceil(count / columns) * rowStep;
+  const minimumZoom =
+    compactLayout && fullscreenHeight > 2 * verticalPadding
+      ? Math.min(
+          minZoom,
+          (fullscreenHeight - 2 * verticalPadding) / graphHeight,
+        )
+      : minZoom;
   const inlineHeight =
-    Math.ceil((firstRowY + rows * rowStep) * inlineZoom) + 2 * verticalPadding;
+    Math.ceil(graphHeight * inlineZoom) + 2 * verticalPadding;
   const { nodes, edges } = useMemo(() => {
     const nodes: MapNode[] = [];
     const edges: MapEdge[] = [];
     const rootId = "root";
-    const add = (id: string, data: Data, x: number, y: number) =>
+    const add = (
+      id: string,
+      data: Data,
+      x: number,
+      y: number,
+      width: number,
+      measured: MapNode["measured"],
+    ) =>
       nodes.push({
         id,
         type: "document",
@@ -404,7 +496,8 @@ function RegistryMapContent({
           },
         },
         position: { x, y },
-        width: nodeWidth,
+        width,
+        measured,
         ariaLabel: data.label,
         focusable: false,
       });
@@ -419,46 +512,60 @@ function RegistryMapContent({
         target: "all",
         sourcePosition: Position.Bottom,
       },
-      ((columns - 1) * columnStep) / 2,
+      (graphWidth - rootWidth) / 2,
       0,
+      rootWidth,
+      nodeSizes[0],
     );
-    const children: (Data & { id: string })[] = overview
-      ? categories.map(({ name, count }, i) => ({
-          id: `category-${i}`,
-          label: categoryLabel(name),
-          caption: formatDocumentCount(count),
-          kind: "category",
-          target: name,
-        }))
-      : records.map((r) => ({
-          id: r.id,
-          label: r.title,
-          kind: "law",
-          target: lawPath(r),
-        }));
     children.forEach(({ id, ...data }, i) => {
-      const x = (i % columns) * columnStep;
+      const x = (i % columns) * xStep;
+      const row = Math.floor(i / columns);
+      const connectsOnRight = compactLayout && i % columns === 1;
       add(
         id,
         {
           ...data,
-          targetPosition: Position.Left,
+          targetPosition: connectsOnRight ? Position.Right : Position.Left,
           onHoverChange: setHoveredNodeId,
           onFocusChange: setFocusedNodeId,
         },
         x,
-        firstRowY + Math.floor(i / columns) * rowStep,
+        compactRowOffsets?.[row] ?? startY + row * rowStep,
+        childWidth,
+        nodeSizes[i + 1],
       );
       edges.push({
         id: `e-${id}`,
         source: rootId,
         target: id,
         type: "membership",
-        data: { railX: x - gutterCenterOffset },
+        data: {
+          railX: connectsOnRight
+            ? x + childWidth + gutterCenterOffset
+            : x - gutterCenterOffset,
+          firstRowY: startY,
+        },
       });
     });
     return { nodes, edges };
-  }, [categories, category, columns, overview, records, onCategory, returnTo]);
+  }, [
+    category,
+    children,
+    childWidth,
+    columns,
+    compactLayout,
+    compactRowOffsets,
+    graphWidth,
+    gutterCenterOffset,
+    overview,
+    nodeSizes,
+    records.length,
+    onCategory,
+    returnTo,
+    rootWidth,
+    startY,
+    xStep,
+  ]);
   const highlightedNodeId = hoveredNodeId ?? focusedNodeId;
   const displayEdges = useMemo(
     () =>
@@ -487,6 +594,7 @@ function RegistryMapContent({
       </div>
       <div
         className="map-canvas registry-canvas"
+        data-compact-layout={compactLayout || undefined}
         style={
           {
             "--registry-fit-height": `${inlineHeight}px`,
@@ -499,8 +607,8 @@ function RegistryMapContent({
           nodeTypes={nodeTypes}
           edgeTypes={edgeTypes}
           fitView
-          fitViewOptions={fitOptions}
-          minZoom={minZoom}
+          fitViewOptions={options}
+          minZoom={minimumZoom}
           maxZoom={maxZoom}
           zoomOnScroll={false}
           preventScrolling={false}
@@ -508,7 +616,13 @@ function RegistryMapContent({
           nodesDraggable={false}
           nodesConnectable={false}
         >
-          <FitCanvas columns={columns} fullscreen={fullscreen} />
+          <FitCanvas
+            columns={columns}
+            fullscreen={fullscreen}
+            graphHeight={graphHeight}
+            minimumZoom={minimumZoom}
+            options={options}
+          />
           <Background color="var(--border)" gap={20} size={1} />
         </ReactFlow>
       </div>

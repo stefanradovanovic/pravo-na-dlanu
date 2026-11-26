@@ -1138,10 +1138,11 @@ a {
   overflow: hidden;
 }
 .law-list-row {
+  --law-list-line-height: calc(var(--text-body) * var(--leading-body));
   display: flex;
-  gap: var(--space-4);
-  align-items: center;
-  padding: var(--space-6);
+  gap: var(--space-3);
+  align-items: flex-start;
+  padding: var(--space-3) var(--space-4);
   background: var(--card);
   border-bottom: 1px solid var(--border);
 }
@@ -1151,11 +1152,8 @@ a {
 .law-list-row:hover {
   background: var(--surface-subtle);
 }
-.law-index {
-  font-size: var(--text-caption);
-  color: var(--muted-foreground);
-}
 .law-list-row > svg {
+  block-size: var(--law-list-line-height);
   color: var(--muted-foreground);
   flex-shrink: 0;
 }
@@ -1163,19 +1161,9 @@ a {
   margin-left: auto;
 }
 .law-list-row h3 {
-  font-size: var(--text-reading);
+  font-size: var(--text-body);
+  line-height: var(--law-list-line-height);
   font-weight: 500;
-}
-.law-list-row p {
-  font-size: var(--text-caption);
-  margin-top: 6px;
-  color: var(--muted-foreground);
-}
-.law-list-row small {
-  display: block;
-  font-size: var(--text-caption);
-  margin-top: 9px;
-  color: var(--muted-foreground);
 }
 .search-results {
   border: 1px solid var(--border);
@@ -1923,16 +1911,6 @@ a {
   .about-page h1 {
     font-size: 2rem;
   }
-  .law-list-row {
-    padding: 18px 14px;
-    gap: var(--space-3);
-  }
-  .law-index {
-    display: none;
-  }
-  .law-list-row h3 {
-    font-size: var(--text-reading);
-  }
   .search-result {
     padding: 20px 15px;
     gap: var(--space-3);
@@ -1984,6 +1962,31 @@ a {
 }
 .registry-canvas {
   height: max(600px, var(--registry-fit-height, 0px));
+}
+.registry-canvas[data-compact-layout] .registry-node:has(.react-flow__handle.target) {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: var(--space-1);
+  min-height: var(--control-height);
+  padding: var(--space-2) !important;
+  overflow-wrap: anywhere;
+  & .node-icon {
+    inline-size: var(--space-4);
+    block-size: var(--space-4);
+  }
+  & .node-icon svg {
+    inline-size: var(--space-3);
+    block-size: var(--space-3);
+  }
+  & > svg {
+    grid-area: 1 / 2;
+  }
+  & > div {
+    grid-area: 2 / 1 / 3 / -1;
+  }
+}
+.registry-canvas[data-compact-layout] .registry-node.category strong {
+  display: block;
 }
 .registry-canvas .react-flow__edge-path {
   stroke: color-mix(in srgb, var(--brand) 45%, var(--surface-map));
@@ -2205,6 +2208,7 @@ a {
   overflow-wrap: anywhere;
 }
 .law-list-row .search-snippet p {
+  margin-top: 6px;
   font-size: inherit;
   color: inherit;
 }

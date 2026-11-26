@@ -35,6 +35,7 @@ import {
 } from "@/lib/full-text-search";
 import {
   categoryLabel,
+  featuredDocuments,
   formatDocumentCount,
   lawPath,
   type Registry,
@@ -42,13 +43,6 @@ import {
 import { useExplorerLocation } from "./explorer-location";
 import { documentUrl, explorerUrl } from "@/lib/explorer-url";
 import { SearchSnippet } from "./search-snippet";
-
-const constitutionTitle = "Устав Републике Србије";
-const featuredDocuments = [
-  { title: constitutionTitle, label: "Устав" },
-  { title: "Пословник Народне скупштине" },
-  { title: "Кривични законик" },
-];
 const titleSearchExamples = lawSearchExamples.map(({ phrases, title }) => ({
   label: phrases[0],
   query: title,
@@ -327,7 +321,7 @@ export function RegistryExplorer({ registry }: { registry: Registry }) {
                   onFocus={() => setSearchFocused(true)}
                   onBlur={() => setSearchFocused(false)}
                 />
-                <LawSuggestions matches={suggestions} query={draft} />
+                <LawSuggestions matches={suggestions} />
               </Autocomplete>
               {draft && (
                 <Button
@@ -480,32 +474,15 @@ export function RegistryExplorer({ registry }: { registry: Registry }) {
                 <>
                   <div className="law-list">
                     {visible.length ? (
-                      visible.map((r, i) => (
+                      visible.map((r) => (
                         <div className="law-list-row" key={r.id}>
-                          <span className="law-index">
-                            {currentPage * size + i + 1}
-                          </span>
-                          <BookOpen size={21} />
+                          <BookOpen size={18} aria-hidden="true" />
                           <div>
                             <h3>
                               <a href={documentUrl(lawPath(r), returnTo)}>
                                 {r.title}
                               </a>
                             </h3>
-                            <p>{r.categories.map(categoryLabel).join(" · ")}</p>
-                            <small>
-                              {r.citation
-                                .slice(r.title.length)
-                                .replace(/^:\s*/, "")}{" "}
-                              ·{" "}
-                              {r.textStatus === "complete"
-                                ? "Цео текст ПИС-а"
-                                : r.textStatus === "facsimile"
-                                  ? "Цео закон у факсимилу"
-                                  : r.sourceIssue
-                                    ? "Потребна провера извора"
-                                    : "Изворни PDF"}
-                            </small>
                             {mode === "full" && searching && (
                               <SearchSnippet
                                 id={r.id}
@@ -515,7 +492,7 @@ export function RegistryExplorer({ registry }: { registry: Registry }) {
                               />
                             )}
                           </div>
-                          <ArrowUpRight size={19} />
+                          <ArrowUpRight size={16} aria-hidden="true" />
                         </div>
                       ))
                     ) : (

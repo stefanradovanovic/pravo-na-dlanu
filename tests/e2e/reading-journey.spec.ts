@@ -8,6 +8,26 @@ test.beforeEach(async ({ page }) => {
   });
 });
 
+test("law list rows show the title with icons aligned to its first line", async ({
+  page,
+}) => {
+  await page.goto("/?view=list");
+  const row = page.locator(".law-list-row").first();
+  const title = row.getByRole("heading");
+  await expect(title.getByRole("link")).toBeVisible();
+  await expect(row).toHaveText((await title.textContent()) ?? "");
+  const { y, lineHeight } = await title.evaluate((element) => ({
+    y: element.getBoundingClientRect().y,
+    lineHeight: parseFloat(getComputedStyle(element).lineHeight),
+  }));
+  const icons = await row.locator(":scope > svg").all();
+  expect(icons).toHaveLength(2);
+  for (const icon of icons) {
+    const bounds = (await icon.boundingBox())!;
+    expect(bounds.y + bounds.height / 2).toBeCloseTo(y + lineHeight / 2, 0);
+  }
+});
+
 test("exact title search excludes unrelated laws and survives reload", async ({
   page,
 }) => {
@@ -294,11 +314,15 @@ test("the full-width catalog map fits every category document without paging", a
   const iconOffsets = await stateStructureCard.evaluate((card) => {
     const titleTop = card.querySelector("strong")!.getBoundingClientRect().top;
     return [...card.querySelectorAll(":scope > .node-icon, :scope > svg")].map(
-      (icon) => Math.abs(icon.getBoundingClientRect().top - titleTop),
+      (icon) => icon.getBoundingClientRect().top - titleTop,
     );
   });
   expect(iconOffsets).toHaveLength(2);
-  expect(iconOffsets.every((offset) => offset < 1)).toBe(true);
+  expect(
+    iconOffsets.every((offset) =>
+      isMobile ? offset < 0 : Math.abs(offset) < 1,
+    ),
+  ).toBe(true);
   await expect(
     map.getByRole("button", { name: "Прикажи целу мапу" }),
   ).toHaveCount(0);

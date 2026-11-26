@@ -26,6 +26,64 @@ async function expectActive(page: Page, name: string) {
   ).toHaveCount(1);
 }
 
+test("mobile search expands in place across the header", async ({ page }) => {
+  for (const { width, path, reducedMotion } of [
+    { width: 320, path: "/ucenje", reducedMotion: "no-preference" },
+    { width: 390, path: "/", reducedMotion: "no-preference" },
+    {
+      width: 390,
+      path: "/propisi/ustav-republike-srbije",
+      reducedMotion: "reduce",
+    },
+  ] as const) {
+    await page.setViewportSize({ width, height: 844 });
+    await page.emulateMedia({ reducedMotion });
+    await page.goto(path);
+    const url = page.url();
+    const navigation = page.locator(".mobile-navigation");
+    const link = navigation.locator('a[href="/#pretraga"]');
+    const input = page.getByRole("combobox", { name: "Претрага из заглавља" });
+    await expect(input).toBeHidden();
+    await link.click();
+    await expect(page).toHaveURL(url);
+    await expect(input).toBeFocused();
+    await expect(link).toHaveAttribute("aria-expanded", "true");
+    const form = page.locator(".header-search");
+    await expect(form).toHaveCSS(
+      "animation-name",
+      reducedMotion === "reduce" ? "none" : "mobile-law-search-expand",
+    );
+    await expect(
+      page.getByRole("option", { name: "Устав Републике Србије", exact: true }),
+    ).toBeVisible();
+    const popup = page.locator(".header-search-suggestions");
+    await expect(async () => {
+      const expanded = (await form.boundingBox())!;
+      const bar = (await page.locator(".site-header").boundingBox())!;
+      const field = (await input.boundingBox())!;
+      const suggestions = (await popup.boundingBox())!;
+      expect(expanded).toEqual(bar);
+      expect(field.width).toBeGreaterThanOrEqual(width - 32);
+      expect(suggestions.x).toBeCloseTo(field.x, 0);
+      expect(suggestions.width).toBeCloseTo(field.width, 0);
+      expect(suggestions.y).toBeGreaterThanOrEqual(field.y + field.height);
+    }).toPass({ timeout: 10_000 });
+    await input.press("Escape");
+    await expect(popup).toBeHidden();
+    await form.getByRole("button", { name: "Затвори претрагу" }).click();
+    await expect(input).toBeHidden();
+    await expect(link).toBeFocused();
+    await link.click();
+    await expect(popup).toBeVisible();
+    await input.fill("zakon o radu");
+    await expect(
+      page.getByRole("option", { name: "Закон о раду", exact: true }),
+    ).toBeVisible();
+  }
+  await page.getByRole("option", { name: "Закон о раду", exact: true }).click();
+  await expect(page).toHaveURL(/\/propisi\/zakon-o-radu/);
+});
+
 test("bottom navigation crosses app and standalone law pages with correct history selection", async ({
   page,
 }) => {
@@ -35,7 +93,9 @@ test("bottom navigation crosses app and standalone law pages with correct histor
   await expect(page.locator(".mobile-navigation a")).toHaveText(
     destinations.map(({ name }) => name),
   );
-  for (const destination of destinations.slice(1)) {
+  for (const destination of destinations
+    .slice(1)
+    .filter(({ name }) => name !== "Претрага")) {
     await page
       .locator(".mobile-navigation")
       .getByRole("link", {
@@ -49,16 +109,11 @@ test("bottom navigation crosses app and standalone law pages with correct histor
         return url.pathname + url.hash;
       })
       .toBe(destination.href);
-    await expectActive(
-      page,
-      destination.href === "/#pretraga" ? "Почетак" : destination.name,
-    );
+    await expectActive(page, destination.name);
     if (destination.href === "/institucije")
       await expect(
         page.getByRole("heading", { name: "Мапа институција Србије" }),
       ).toBeVisible();
-    if (destination.href === "/#pretraga")
-      await expect(page.locator("#pretraga")).toBeInViewport();
   }
   await page.goto("/propisi/ustav-republike-srbije");
   await expectActive(page, "Претрага");

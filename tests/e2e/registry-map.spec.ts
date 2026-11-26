@@ -1,4 +1,33 @@
-import { expect, test } from "@playwright/test";
+import { expect, test, type Locator } from "@playwright/test";
+
+async function expectMirroredGuides(canvas: Locator, cards: Locator) {
+  const ids = await cards.evaluateAll((elements) =>
+    elements
+      .slice(0, 2)
+      .map((element) =>
+        element.closest(".react-flow__node")!.getAttribute("data-id"),
+      ),
+  );
+  expect(ids).toHaveLength(2);
+  const connectors = await Promise.all(
+    ids.map(async (id) => {
+      const path = await canvas.locator(`path[id="e-${id}"]`).getAttribute("d");
+      const match = path?.match(
+        /^M ([^ ]+) [^ ]+ V ([^ ]+) H ([^ ]+) V [^ ]+ H ([^ ]+)$/,
+      );
+      expect(match).not.toBeNull();
+      return match!.slice(1).map(Number);
+    }),
+  );
+  const [leftStart, leftBus, leftRail, leftTarget] = connectors[0];
+  const [rightStart, rightBus, rightRail, rightTarget] = connectors[1];
+  expect(leftStart).toBeCloseTo(rightStart, 0);
+  expect(leftBus).toBeCloseTo(rightBus, 0);
+  expect(leftRail).toBeLessThan(leftTarget);
+  expect(rightRail).toBeGreaterThan(rightTarget);
+  expect(leftStart - leftRail).toBeCloseTo(rightRail - rightStart, 0);
+  expect(leftStart - leftTarget).toBeCloseTo(rightTarget - rightStart, 0);
+}
 
 test("the regulations map links to its source beside the category count", async ({
   page,
@@ -48,14 +77,66 @@ test("the registry map fills its width and grows to fit every card", async ({
   }).toPass({ timeout: 15_000 });
 });
 
-test("large categories show title-only cards in five columns on desktop", async ({
+test("mobile legal areas fit two cards per row with readable titles", async ({
+  page,
+  isMobile,
+}) => {
+  test.skip(!isMobile, "Requires a mobile viewport.");
+  await page.goto("/");
+  const canvas = page.locator(".registry-canvas");
+  const cards = canvas.locator(".registry-node.category");
+  await expect(cards).toHaveCount(16);
+
+  for (const width of [390, 320]) {
+    await page.setViewportSize({ width, height: 844 });
+    await expect(async () => {
+      const { x: left, width: canvasWidth } = (await canvas.boundingBox())!;
+      const bounds = await cards.evaluateAll((elements) =>
+        elements.map((element) => {
+          const { x, y, width, height } = element.getBoundingClientRect();
+          const title = element.querySelector("strong")!;
+          return {
+            x,
+            y,
+            width,
+            height,
+            titleFits:
+              title.scrollHeight <= title.clientHeight + 1 &&
+              title.scrollWidth <= title.clientWidth + 1,
+          };
+        }),
+      );
+      expect(bounds.every((card) => card.titleFits && card.height >= 44)).toBe(
+        true,
+      );
+      for (let i = 0; i < bounds.length; i += 2) {
+        const a = bounds[i];
+        const b = bounds[i + 1];
+        expect(a.y).toBeCloseTo(b.y, 0);
+        expect(a.x).toBeGreaterThan(left);
+        expect(a.x + a.width).toBeLessThan(b.x);
+        expect(b.x + b.width).toBeLessThan(left + canvasWidth);
+        if (i + 2 < bounds.length) {
+          const gap =
+            bounds[i + 2].y - Math.max(a.y + a.height, b.y + b.height);
+          expect(gap).toBeGreaterThan(0);
+          expect(gap).toBeLessThan(17);
+        }
+      }
+      await expectMirroredGuides(canvas, cards);
+    }).toPass({ timeout: 15_000 });
+  }
+});
+
+test("law maps show two columns with mirrored guides on mobile and five columns on desktop", async ({
   page,
   isMobile,
 }) => {
   await page.goto("/");
   await page.getByRole("button", { name: /Монетарни систем/ }).click();
 
-  const cards = page.locator(".registry-node.law");
+  const canvas = page.locator(".registry-canvas");
+  const cards = canvas.locator(".registry-node.law");
   await expect(cards.nth(50)).toBeAttached();
   await expect(cards.locator("small")).toHaveCount(0);
   await expect
@@ -67,7 +148,13 @@ test("large categories show title-only cards in five columns on desktop", async 
         ).length;
       }),
     )
-    .toBe(isMobile ? 1 : 5);
+    .toBe(isMobile ? 2 : 5);
+
+  if (isMobile) {
+    await expect(async () => expectMirroredGuides(canvas, cards)).toPass({
+      timeout: 15_000,
+    });
+  }
 });
 
 test("the overview's center rail lines up with the root connector", async ({
@@ -104,7 +191,10 @@ test("hover and keyboard focus highlight a law's path", async ({
   await expect(path).toHaveCSS("stroke-width", "1.5px");
   await expect(highlighted).toHaveCount(1);
 
-  await page.getByRole("group", { name: "Контроле мапе" }).hover();
+  await page
+    .getByRole("tabpanel", { name: "Мапа" })
+    .getByRole("group", { name: "Контроле мапе" })
+    .hover();
   await expect(path).toHaveCSS("stroke-width", "1px");
 
   await page.locator(".registry-node.category").focus();
