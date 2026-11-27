@@ -12,6 +12,7 @@ import {
 import {
   isRatingScore,
   minimumPublishedRatings,
+  ratingCooldownHours,
   type PrivateRating,
   type RatingResponse,
 } from "./ratingContract";
@@ -20,6 +21,7 @@ const memberIds = new Set(directory.members.map(({ id }) => id));
 const target = { term: v.number(), memberId: v.string() };
 const publicationDelay = 5 * MINUTE;
 const minimumChangedGuests = 3;
+const ratingCooldownMs = ratingCooldownHours * 60 * MINUTE;
 const limiter = new RateLimiter(components.rateLimiter, {
   guestChecks: {
     kind: "token bucket",
@@ -53,6 +55,13 @@ function findRating(
       q.eq("term", term).eq("memberId", memberId).eq("guestId", guestId),
     )
     .unique();
+}
+
+function nextVoteAt(rating: Doc<"deputyRatings"> | null, now: number) {
+  if (!rating) return null;
+  const endsAt =
+    (rating.lastVotedAt ?? rating._creationTime) + ratingCooldownMs;
+  return endsAt > now ? endsAt : null;
 }
 
 function findResult(ctx: QueryCtx, term: number, memberId: string) {
@@ -147,15 +156,19 @@ export const backfillPublishedSums = internalMutation({
 });
 
 export const privateRating = internalQuery({
-  args: { ...target, credentialHash: v.string() },
+  args: { ...target, credentialHash: v.string(), now: v.number() },
   handler: async (
     ctx,
-    { term, memberId, credentialHash },
+    { term, memberId, credentialHash, now },
   ): Promise<PrivateRating> => {
     const guest = await findGuest(ctx, credentialHash);
-    if (!guest) return { registered: false, score: null };
+    if (!guest) return { registered: false, score: null, nextVoteAt: null };
     const rating = await findRating(ctx, term, memberId, guest._id);
-    return { registered: true, score: rating?.score ?? null };
+    return {
+      registered: true,
+      score: rating?.score ?? null,
+      nextVoteAt: nextVoteAt(rating, now),
+    };
   },
 });
 
@@ -169,11 +182,12 @@ export const saveRating = internalMutation({
     ...target,
     credentialHash: v.string(),
     score: v.union(v.number(), v.null()),
+    now: v.number(),
     verifiedChallenge: v.optional(v.object({ hash: v.optional(v.string()) })),
   },
   handler: async (
     ctx,
-    { term, memberId, credentialHash, score, verifiedChallenge },
+    { term, memberId, credentialHash, score, now, verifiedChallenge },
   ): Promise<RatingResponse> => {
     if (
       !isCurrentDeputy(term, memberId) ||
@@ -210,20 +224,45 @@ export const saveRating = internalMutation({
       };
 
     const oldRating = await findRating(ctx, term, memberId, guestId);
-    const previous = oldRating?.score ?? null;
-    if (previous === score)
-      return { status: "ok", rating: { registered: true, score } };
+    const cooldown = nextVoteAt(oldRating, now);
+    if (score !== null && cooldown !== null) {
+      return { status: "cooldown", nextVoteAt: cooldown };
+    }
+    // Existing rows each represent one vote. Preserve the original 24-hour
+    // window on withdrawal by keeping its timestamp.
+    const previousCount =
+      oldRating?.voteCount ?? Number(oldRating?.score != null);
+    const previousSum = oldRating?.voteSum ?? oldRating?.score ?? 0;
+    const rating = {
+      registered: true,
+      score,
+      nextVoteAt: score === null ? cooldown : now + ratingCooldownMs,
+    };
+    if (score === null && previousCount === 0) return { status: "ok", rating };
 
-    if (oldRating && score === null) await ctx.db.delete(oldRating._id);
-    else if (oldRating && score !== null)
-      await ctx.db.patch(oldRating._id, { score });
-    else if (score !== null)
-      await ctx.db.insert("deputyRatings", { term, memberId, guestId, score });
+    const countChange = score === null ? -previousCount : 1;
+    const sumChange = score ?? -previousSum;
+    const guestUpdate = {
+      score,
+      lastVotedAt:
+        score === null
+          ? (oldRating?.lastVotedAt ?? oldRating?._creationTime)
+          : now,
+      voteCount: previousCount + countChange,
+      voteSum: previousSum + sumChange,
+    };
+    if (oldRating) await ctx.db.patch(oldRating._id, guestUpdate);
+    else
+      await ctx.db.insert("deputyRatings", {
+        term,
+        memberId,
+        guestId,
+        ...guestUpdate,
+      });
 
     const totals = await findTotals(ctx, term, memberId);
-    const count =
-      (totals?.count ?? 0) + Number(score !== null) - Number(previous !== null);
-    const sum = (totals?.sum ?? 0) + (score ?? 0) - (previous ?? 0);
+    const count = (totals?.count ?? 0) + countChange;
+    const sum = (totals?.sum ?? 0) + sumChange;
     const changedGuests = totals?.changedGuests ?? [];
     if (
       changedGuests.length < minimumChangedGuests &&
@@ -257,7 +296,7 @@ export const saveRating = internalMutation({
     if (totals) await ctx.db.patch(totals._id, update);
     else
       await ctx.db.insert("deputyRatingTotals", { term, memberId, ...update });
-    return { status: "ok", rating: { registered: true, score } };
+    return { status: "ok", rating };
   },
 });
 

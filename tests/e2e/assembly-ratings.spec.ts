@@ -182,7 +182,11 @@ test("homepage, Assembly and ranking share live vote totals", async ({
     else await scoreOption(6).click();
     visitorCredential = (await writeRequest).postDataJSON().credential;
     const popup = page.locator("[data-assembly-rating-dialog]");
-    await expect(popup).toHaveText("Ваш глас је забележен.");
+    await expect(
+      popup.getByRole("heading", { name: "Ваш глас је забележен." }),
+    ).toBeVisible();
+    const cooldownNotice = "Поново можете да гласате за 24 сата.";
+    await expect(popup.getByText(cooldownNotice)).toBeVisible();
     await expect(popup.getByRole("button")).toHaveCount(0);
     const closingRating = page.locator(
       '[data-assembly-rating-dialog][data-rating-feedback="saved"][data-ending-style]',
@@ -201,11 +205,17 @@ test("homepage, Assembly and ranking share live vote totals", async ({
       transitionProperty: "opacity",
       transitionDuration: "0.5s",
       scale: "1",
-      content: "Ваш глас је забележен.",
+      content: expect.stringContaining(cooldownNotice),
     });
     await expect(popup).not.toBeAttached();
     const trigger = page.getByRole("button", { name: "Оцените рад" });
     await expect(trigger).toBeFocused();
+    await expect(deputyTotals).toHaveText(["6", "1"]);
+    const duplicate = await write(visitorCredential!, 10);
+    expect(duplicate.status()).toBe(429);
+    const cooldown = await duplicate.json();
+    expect(cooldown.status).toBe("cooldown");
+    expect(cooldown.nextVoteAt).toBeGreaterThan(Date.now());
     await expect(deputyTotals).toHaveText(["6", "1"]);
 
     for (const credential of fixtureCredentials) {
@@ -240,7 +250,12 @@ test("homepage, Assembly and ranking share live vote totals", async ({
     await expect(page).toHaveURL(assemblyPath);
     await selectDeputy(page, deputy);
     await trigger.click();
-    await expect(popup).toHaveText("Ваш глас је већ забележен.");
+    await expect(
+      popup.getByRole("heading", { name: "Ваш глас је већ забележен." }),
+    ).toBeVisible();
+    await expect(
+      popup.getByText(/^Поново можете да гласате од /),
+    ).toBeVisible();
     await expect(popup.getByRole("button")).toHaveCount(0);
     await expect(popup).not.toBeAttached();
     await expect(trigger).toBeFocused();

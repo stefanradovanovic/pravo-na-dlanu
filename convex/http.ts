@@ -36,6 +36,7 @@ function cors(origin: string) {
 function respond(origin: string, response: RatingResponse) {
   const statuses = {
     ok: 200,
+    cooldown: 429,
     limited: 429,
     challenge: 403,
     invalid: 400,
@@ -97,7 +98,10 @@ async function verifyChallenge(challenge: string, origin: string) {
     secret === localTestSecret &&
     loopback(origin) &&
     loopback(process.env.CONVEX_SITE_URL ?? "https://convex.site");
-  if (secret === localTestSecret && (!localTest || challenge !== localTestToken)) {
+  if (
+    secret === localTestSecret &&
+    (!localTest || challenge !== localTestToken)
+  ) {
     return null;
   }
   const response = await fetch(turnstileVerifyUrl, {
@@ -169,10 +173,10 @@ http.route({
         credentialHash: await hash(input.credential),
       };
       if (input.operation === "read") {
-        const rating = await ctx.runQuery(
-          internal.ratings.privateRating,
-          target,
-        );
+        const rating = await ctx.runQuery(internal.ratings.privateRating, {
+          ...target,
+          now: Date.now(),
+        });
         return respond(origin, { status: "ok", rating });
       }
 
@@ -193,6 +197,7 @@ http.route({
       const result = await ctx.runMutation(internal.ratings.saveRating, {
         ...target,
         score: input.score,
+        now: Date.now(),
         verifiedChallenge,
       });
       return respond(origin, result);

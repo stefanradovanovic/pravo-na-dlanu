@@ -1,6 +1,7 @@
 export const assemblyRatingPath = "/assembly-ratings";
 export const assemblyRatingAction = "assembly_rating";
 export const minimumPublishedRatings = 10;
+export const ratingCooldownHours = 24;
 export const ratingScores = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10] as const;
 
 export function isRatingScore(value: unknown): value is number {
@@ -12,7 +13,11 @@ export function isRatingScore(value: unknown): value is number {
   );
 }
 
-export type PrivateRating = { registered: boolean; score: number | null };
+export type PrivateRating = {
+  registered: boolean;
+  score: number | null;
+  nextVoteAt: number | null;
+};
 
 type RatingTarget = { term: number; memberId: string; credential: string };
 
@@ -24,5 +29,6 @@ export type RatingRequest = RatingTarget &
 
 export type RatingResponse =
   | { status: "ok"; rating: PrivateRating }
+  | { status: "cooldown"; nextVoteAt: number }
   | { status: "limited"; retryAfter: number }
   | { status: "challenge" | "invalid" | "unavailable" };
