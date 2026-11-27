@@ -10,7 +10,7 @@
 .member-map header {
   max-width: var(--measure-reading);
   margin-inline: auto;
-  margin-bottom: var(--space-4);
+  margin-block-end: var(--space-4);
   text-align: center;
 }
 .member-map :is(h2, h3) {
@@ -30,12 +30,17 @@
   gap: var(--space-6);
   align-items: center;
 }
+.member-map-ranking {
+  display: flex;
+  justify-content: center;
+  margin-block-end: var(--space-3);
+}
 .member-map-controls {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
   gap: var(--space-2);
-  padding-block: var(--space-1) var(--map-controls-clearance);
+  padding-block-end: var(--map-controls-clearance);
 }
 .member-map-controls .ui-button {
   min-block-size: calc(var(--space-6) + var(--space-1));
@@ -48,7 +53,6 @@
   }
   .member-map-controls {
     gap: var(--space-4);
-    padding-block-start: var(--space-2);
   }
   .member-map-controls .ui-button {
     position: relative;

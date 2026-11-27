@@ -49,9 +49,11 @@ function MemberList({
 export function MemberDirectory({
   members,
   groups,
+  term,
 }: {
   members: Member[];
   groups: Groups;
+  term: number;
 }) {
   const [query, setQuery] = useState("");
   const [group, setGroup] = useState("all");
@@ -111,6 +113,7 @@ export function MemberDirectory({
       <MemberMap
         members={members}
         groups={groups}
+        term={term}
         visible={visible}
         selectedId={selectedId}
         onSelect={setSelectedId}

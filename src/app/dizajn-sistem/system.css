@@ -11,7 +11,7 @@
   display: flex;
   align-items: center;
   gap: var(--space-2);
-  color: var(--brand);
+  color: light-dark(var(--brand), var(--primary));
   font-size: 12px;
   font-weight: 600;
   letter-spacing: 0.1em;
@@ -68,7 +68,7 @@
   font-size: 13px;
 }
 .ds-sidebar nav a:hover {
-  color: var(--brand);
+  color: light-dark(var(--brand), var(--primary));
 }
 .ds-sidebar nav a span {
   color: var(--muted-foreground);
@@ -99,7 +99,7 @@
 }
 .ds-number {
   padding-top: 6px;
-  color: var(--brand);
+  color: light-dark(var(--brand), var(--primary));
   font: var(--text-caption)/1.6 var(--type-code);
 }
 .ds-section-heading h2 {
@@ -335,7 +335,7 @@
   line-height: var(--leading-body);
 }
 .ds-demo-results a:hover {
-  color: var(--brand);
+  color: light-dark(var(--brand), var(--primary));
 }
 .ds-demo-results a svg {
   flex-shrink: 0;
@@ -368,7 +368,7 @@
   background: var(--card);
 }
 .ds-content-pattern > svg {
-  color: var(--brand);
+  color: light-dark(var(--brand), var(--primary));
 }
 .ds-content-pattern h3 {
   font: 400 21px/1.35 var(--type-editorial);
@@ -391,7 +391,7 @@
   line-height: 1.75;
 }
 .ds-paragraph a {
-  color: var(--brand);
+  color: light-dark(var(--brand), var(--primary));
   text-decoration: underline;
   text-underline-offset: 3px;
 }
@@ -407,7 +407,7 @@
   line-height: var(--leading-body);
 }
 .ds-steps li::marker {
-  color: var(--brand);
+  color: light-dark(var(--brand), var(--primary));
 }
 .ds-steps strong {
   display: block;

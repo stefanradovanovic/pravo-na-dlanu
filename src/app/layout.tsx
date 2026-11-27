@@ -8,6 +8,8 @@ import { siteName, siteMetadata } from "@/lib/social-metadata";
 import { initializeTheme } from "@/lib/theme";
 import Link from "next/link";
 import "./globals.css";
+import "./design-tokens.css";
+import "./components.css";
 import "./site.css";
 import "./reading-desk.css";
 export const viewport: Viewport = {

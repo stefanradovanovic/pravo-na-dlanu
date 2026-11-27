@@ -25,6 +25,7 @@
 
 # production
 /build
+/.convex/
 
 # misc
 .DS_Store

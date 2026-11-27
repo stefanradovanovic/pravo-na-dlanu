@@ -18,7 +18,11 @@ export default function MembersPage() {
       description={`Број посланика: ${data.members.length}`}
       accessedAt={data.accessedAt}
     >
-      <MemberDirectory members={data.members} groups={data.groups} />
+      <MemberDirectory
+        members={data.members}
+        groups={data.groups}
+        term={data.term}
+      />
       <p className="assembly-links">
         <a className="text-link" href={data.memberSource}>
           Скупштински именик посланика

@@ -114,7 +114,7 @@ test("show an official portrait and profile at a filtered Assembly seat", async 
     ),
   ).toBeGreaterThan(0);
   await expect(profile.getByRole("link")).toHaveCount(0);
-  await expect(profile.getByRole("button")).toHaveCount(0);
+  await expect(profile.getByRole("button").filter({ hasNotText: "Оцените рад" })).toHaveCount(0);
   const floor = (await map.locator(".member-map-floor").boundingBox())!;
   const selection = map.locator(".member-map-selection");
   expect(await selection.evaluate((panel) => panel.scrollHeight)).toBe(

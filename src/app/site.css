@@ -195,7 +195,7 @@
   border-radius: var(--radius);
 }
 .learning-topic-card > .learning-row:first-child {
-  color: var(--brand);
+  color: light-dark(var(--brand), var(--primary));
 }
 .learning-topic-card > p {
   color: var(--muted-foreground);
@@ -694,7 +694,7 @@ a {
   white-space: nowrap;
 }
 .site-header nav a:hover {
-  color: var(--brand);
+  color: light-dark(var(--brand), var(--primary));
 }
 .mobile-navigation {
   display: none;
@@ -722,7 +722,7 @@ a {
   font-size: var(--text-caption);
   font-weight: 700;
   letter-spacing: 0.1em;
-  color: var(--brand);
+  color: light-dark(var(--brand), var(--primary));
 }
 .page-intro > .eyebrow {
   justify-content: center;
@@ -916,7 +916,7 @@ a {
   transition: border-color 0.2s;
 }
 .legal-node:hover,
-.legal-node.is-active {
+.react-flow__node.is-highlighted .legal-node {
   border-color: var(--node-color);
   box-shadow: 0 0 0 2px color-mix(in srgb, var(--node-color) 12%, transparent);
 }
@@ -948,9 +948,10 @@ a {
   flex-shrink: 0;
 }
 .legal-node.root {
+  --node-color: light-dark(var(--brand), var(--primary));
   width: 285px;
   background: var(--warning);
-  border-color: var(--editorial-border);
+  border-color: light-dark(var(--editorial-border), var(--brand));
   padding-top: 23px;
   padding-bottom: 23px;
 }
@@ -975,7 +976,7 @@ a {
   background: var(--node-color);
 }
 .react-flow__node:focus-visible {
-  outline: 2px solid var(--brand);
+  outline: 2px solid var(--ring);
   border-radius: var(--radius-lg);
   outline-offset: 3px;
 }
@@ -1045,7 +1046,7 @@ a {
   align-items: center;
   gap: 6px;
   font-size: var(--text-caption);
-  color: var(--brand);
+  color: light-dark(var(--brand), var(--primary));
 }
 .text-link:hover {
   text-decoration: underline;
@@ -1417,7 +1418,7 @@ a {
   padding: 10px 0;
 }
 .reader-toc > a:hover {
-  color: var(--brand);
+  color: light-dark(var(--brand), var(--primary));
 }
 .reader-toc > a > span {
   font-family: var(--type-editorial);
@@ -1931,6 +1932,7 @@ a {
   }
 }
 .registry-node {
+  --node-color: light-dark(var(--editorial-foreground), var(--primary));
   align-items: flex-start;
   height: auto;
   min-height: 100px;
@@ -1961,7 +1963,14 @@ a {
   min-width: 0;
 }
 .registry-canvas {
+  --registry-path-highlight: light-dark(
+    var(--chart-1),
+    oklch(from var(--chart-1) calc(l + 0.08) calc(c + 0.013) h)
+  );
   height: max(600px, var(--registry-fit-height, 0px));
+}
+.registry-canvas .react-flow__node.is-highlighted .registry-node {
+  --node-color: var(--registry-path-highlight);
 }
 .registry-canvas[data-compact-layout] .registry-node:has(.react-flow__handle.target) {
   display: grid;
@@ -1989,12 +1998,21 @@ a {
   display: block;
 }
 .registry-canvas .react-flow__edge-path {
-  stroke: color-mix(in srgb, var(--brand) 45%, var(--surface-map));
+  stroke: color-mix(
+    in srgb,
+    var(--brand) var(--registry-path-strength, 45%),
+    var(--surface-map)
+  );
   stroke-width: 1;
 }
+.registry-canvas:has(.react-flow__edge.is-highlighted) {
+  --registry-path-strength: 16%;
+}
 .registry-canvas .react-flow__edge.is-highlighted .react-flow__edge-path {
-  stroke: var(--brand);
-  stroke-width: 1.5;
+  stroke: var(--registry-path-highlight);
+  stroke-width: 3;
+  stroke-linecap: round;
+  stroke-linejoin: round;
 }
 @media (pointer: coarse) {
   .map-shell:not(.is-fullscreen) .registry-canvas .react-flow__pane {

@@ -1,0 +1,20 @@
+.assembly-ranking {
+  inline-size: 100%;
+  max-inline-size: 60rem;
+  border-collapse: collapse;
+  font-variant-numeric: tabular-nums;
+}
+
+.assembly-ranking :is(th, td) {
+  padding: var(--space-2);
+  border-block-end: 1px solid var(--border);
+  text-align: start;
+}
+
+.assembly-ranking thead {
+  color: var(--muted-foreground);
+}
+
+.assembly-ranking th[scope="row"] {
+  overflow-wrap: anywhere;
+}

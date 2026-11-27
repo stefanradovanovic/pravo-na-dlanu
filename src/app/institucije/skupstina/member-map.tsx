@@ -1,6 +1,7 @@
 "use client";
 
 import { Maximize, Minimize, Minus, Plus, UserRound } from "lucide-react";
+import Link from "next/link";
 import {
   useCallback,
   useEffect,
@@ -10,7 +11,7 @@ import {
   useState,
   type CSSProperties,
 } from "react";
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import {
   Dialog,
   DialogClose,
@@ -19,6 +20,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { MemberRating } from "./member-rating";
 import "./member-map.css";
 
 export type Member = {
@@ -360,6 +362,7 @@ function MemberPortrait({ member }: { member: Member }) {
 export function MemberMap({
   members,
   groups,
+  term,
   visible,
   selectedId,
   onSelect,
@@ -367,6 +370,7 @@ export function MemberMap({
 }: {
   members: Member[];
   groups: Groups;
+  term: number;
   visible: Member[];
   selectedId: string;
   onSelect: (id: string) => void;
@@ -575,7 +579,10 @@ export function MemberMap({
               className="member-map-profile leading-snug"
               aria-labelledby="member-map-profile-name"
             >
-              <MemberPortrait key={selected.id} member={selected} />
+              <MemberPortrait
+                key={`portrait-${selected.id}`}
+                member={selected}
+              />
               <div className="member-map-profile-copy">
                 <strong id="member-map-profile-name">{selected.name}</strong>
                 {description && <p>{description}</p>}
@@ -585,6 +592,11 @@ export function MemberMap({
                     .join(" · ")}
                 </p>
               </div>
+              <MemberRating
+                key={`${term}:${selected.id}`}
+                member={selected}
+                term={term}
+              />
             </section>
           )}
         </div>
@@ -660,6 +672,21 @@ export function MemberMap({
     );
   }
 
+  const rankingLink = (
+    <div className="member-map-ranking">
+      <Link
+        className={buttonVariants({
+          variant: "outline",
+          size: "sm",
+          className: "assembly-rating-action",
+        })}
+        href="/institucije/skupstina/rang-lista"
+      >
+        Ранг-листа
+      </Link>
+    </div>
+  );
+
   return (
     <Dialog
       open={fullscreen}
@@ -678,7 +705,15 @@ export function MemberMap({
         id="mapa-poslanika"
         tabIndex={-1}
         onKeyDown={(event) => {
-          if (event.key === "Escape" && selected) {
+          if (
+            event.key === "Escape" &&
+            selected &&
+            !event.defaultPrevented &&
+            !(
+              event.target instanceof Element &&
+              event.target.closest("[data-assembly-rating-dialog]")
+            )
+          ) {
             event.preventDefault();
             clearSelection();
           }
@@ -688,6 +723,7 @@ export function MemberMap({
           <Heading id="mapa-sastava">{mapTitle}</Heading>
           <p>{seatingNote}</p>
         </header>
+        {rankingLink}
         {controls(false)}
         {fullscreen ? <div style={{ minHeight: inlineMapHeight }} /> : mapBody}
       </section>
@@ -700,6 +736,7 @@ export function MemberMap({
             <DialogTitle className="sr-only">{mapTitle}</DialogTitle>
             <DialogDescription>{seatingNote}</DialogDescription>
           </header>
+          {rankingLink}
           {controls(true)}
         </div>
         {fullscreen && mapBody}

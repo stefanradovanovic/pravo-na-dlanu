@@ -173,22 +173,41 @@ test("the overview's center rail lines up with the root connector", async ({
     .toBe(0);
 });
 
-test("hover and keyboard focus highlight a law's path", async ({
+test("hover and keyboard focus match a law to its path and dim other paths", async ({
   page,
   isMobile,
 }) => {
   test.skip(isMobile, "Requires a mouse and keyboard");
+  await page.emulateMedia({ colorScheme: "dark" });
   await page.goto("/");
-  await page.getByRole("button", { name: /Монетарни систем/ }).click();
+  const category = page.getByRole("button", { name: /Монетарни систем/ });
+  const brickAccent = "rgb(228, 161, 153)";
+  await expect(category.locator(".node-icon")).toHaveCSS("color", brickAccent);
+  await category.click();
 
   const law = page.locator(".registry-node.law").first();
   const nodeId = await law.locator("..").getAttribute("data-id");
   const path = page.locator(`path[id="e-${nodeId}"]`);
+  const otherPath = page
+    .locator(`.react-flow__edge-path:not([id="e-${nodeId}"])`)
+    .first();
+  const restingStroke = await otherPath.evaluate(
+    (edge) => getComputedStyle(edge).stroke,
+  );
   const highlighted = page.locator(".react-flow__edge.is-highlighted");
 
+  await expect(law.locator(".node-icon")).toHaveCSS("color", brickAccent);
   await expect(path).toHaveCSS("stroke-width", "1px");
   await law.hover();
-  await expect(path).toHaveCSS("stroke-width", "1.5px");
+  await expect(path).toHaveCSS("stroke-width", "3px");
+  const activeAccent = await path.evaluate(
+    (edge) => getComputedStyle(edge).stroke,
+  );
+  expect(activeAccent).not.toBe(restingStroke);
+  expect(activeAccent).not.toBe(brickAccent);
+  await expect(law).toHaveCSS("border-top-color", activeAccent);
+  await expect(law.locator(".node-icon")).toHaveCSS("color", activeAccent);
+  await expect(otherPath).not.toHaveCSS("stroke", restingStroke);
   await expect(highlighted).toHaveCount(1);
 
   await page
@@ -196,9 +215,12 @@ test("hover and keyboard focus highlight a law's path", async ({
     .getByRole("group", { name: "Контроле мапе" })
     .hover();
   await expect(path).toHaveCSS("stroke-width", "1px");
+  await expect(otherPath).toHaveCSS("stroke", restingStroke);
 
   await page.locator(".registry-node.category").focus();
   await page.keyboard.press("Tab");
   await expect(law).toBeFocused();
-  await expect(path).toHaveCSS("stroke-width", "1.5px");
+  await expect(path).toHaveCSS("stroke", activeAccent);
+  await expect(law).toHaveCSS("border-top-color", activeAccent);
+  await expect(otherPath).not.toHaveCSS("stroke", restingStroke);
 });

@@ -6,6 +6,7 @@ import "./assembly.css";
 const root = "/institucije/skupstina";
 const routes = [
   { name: "Народни посланици", href: root },
+  { name: "Ранг-листа", href: root + "/rang-lista" },
   { name: "Одбори", href: root + "/odbori" },
 ];
 

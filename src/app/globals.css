@@ -5,8 +5,6 @@
 @import "@fontsource-variable/literata/wght-italic.css";
 @import "tw-animate-css";
 @import "./vendor/shadcn-tailwind.css";
-@import "./design-tokens.css";
-@import "./components.css";
 
 @theme inline {
   --color-background: var(--background);

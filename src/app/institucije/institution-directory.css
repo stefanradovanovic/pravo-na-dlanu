@@ -439,7 +439,7 @@
   min-block-size: var(--space-8);
   margin-block-start: var(--space-1);
   padding-block: var(--space-1);
-  color: var(--brand);
+  color: light-dark(var(--brand), var(--primary));
   cursor: pointer;
 }
 
