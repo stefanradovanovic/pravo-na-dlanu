@@ -13,7 +13,10 @@ export default defineSchema({
   deputyRatings: defineTable({
     ...deputy,
     guestId: v.id("ratingGuests"),
-    score: v.number(),
+    score: v.union(v.number(), v.null()),
+    lastVotedAt: v.optional(v.number()),
+    voteCount: v.optional(v.number()),
+    voteSum: v.optional(v.number()),
   }).index("by_deputy_guest", ["term", "memberId", "guestId"]),
   deputyRatingTotals: defineTable({
     ...deputy,

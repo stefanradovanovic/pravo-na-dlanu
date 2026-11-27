@@ -101,6 +101,12 @@
   text-align: center;
 }
 
+.assembly-rating-feedback {
+  display: grid;
+  gap: var(--space-2);
+  text-align: center;
+}
+
 @media (prefers-reduced-motion: no-preference) {
   [data-assembly-rating-dialog][data-rating-feedback][data-ending-style],
   .assembly-rating-control:has(> [data-rating-feedback])

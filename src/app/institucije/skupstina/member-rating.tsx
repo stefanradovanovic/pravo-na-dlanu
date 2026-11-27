@@ -14,6 +14,7 @@ import {
 import { Toolbar, ToolbarButton } from "@/components/ui/toolbar";
 import { api } from "../../../../convex/_generated/api";
 import {
+  ratingCooldownHours,
   ratingScores,
   type PrivateRating,
   type RatingRequest,
@@ -28,9 +29,19 @@ import { Turnstile } from "./turnstile";
 import "./member-rating.css";
 
 const storageKey = "assembly-rating-guest";
-const confirmationDuration = 2_000;
-type RatingFeedback = "saved" | "already-voted";
-const newGuest: PrivateRating = { registered: false, score: null };
+const confirmationDuration = 3_000;
+type RatingFeedback =
+  { status: "saved" } | { status: "already-voted"; nextVoteAt: number };
+const newGuest: PrivateRating = {
+  registered: false,
+  score: null,
+  nextVoteAt: null,
+};
+const voteTimeFormat = new Intl.DateTimeFormat("sr-Cyrl-RS", {
+  dateStyle: "medium",
+  timeStyle: "short",
+  timeZone: "Europe/Belgrade",
+});
 
 function readCredential() {
   try {
@@ -135,8 +146,12 @@ function RatingChoices({
       .then((response) => {
         if (controller.signal.aborted) return;
         if (response.status !== "ok") setReadFailed(true);
-        else if (response.rating.score !== null) onRecorded("already-voted");
-        else setCurrent(response.rating);
+        else if (response.rating.nextVoteAt != null) {
+          onRecorded({
+            status: "already-voted",
+            nextVoteAt: response.rating.nextVoteAt,
+          });
+        } else setCurrent(response.rating);
       })
       .catch(() => {
         if (!controller.signal.aborted) setReadFailed(true);
@@ -169,7 +184,11 @@ function RatingChoices({
     ).catch(() => null);
     if (request.signal.aborted) return;
     if (response?.status === "ok") {
-      onRecorded("saved");
+      onRecorded({ status: "saved" });
+      return;
+    }
+    if (response?.status === "cooldown") {
+      onRecorded({ status: "already-voted", nextVoteAt: response.nextVoteAt });
       return;
     }
     if (!response) {
@@ -225,8 +244,9 @@ function RatingChoices({
       }
     }
 
-    if (previous.score !== null) onRecorded("already-voted");
-    else if (previous.registered) await submit(credential, score);
+    if (previous.nextVoteAt != null) {
+      onRecorded({ status: "already-voted", nextVoteAt: previous.nextVoteAt });
+    } else if (previous.registered) await submit(credential, score);
     else setVerification({ credential, score });
   }
 
@@ -335,15 +355,22 @@ export function MemberRating({
           className="text-start text-base"
           showCloseButton={false}
           data-assembly-rating-dialog=""
-          data-rating-feedback={feedback || undefined}
+          data-rating-feedback={feedback?.status}
           initialFocus="content"
         >
           {feedback ? (
-            <DialogTitle className="assembly-rating-message" aria-live="polite">
-              {feedback === "saved"
-                ? "Ваш глас је забележен."
-                : "Ваш глас је већ забележен."}
-            </DialogTitle>
+            <div className="assembly-rating-feedback" aria-live="polite">
+              <DialogTitle>
+                {feedback.status === "saved"
+                  ? "Ваш глас је забележен."
+                  : "Ваш глас је већ забележен."}
+              </DialogTitle>
+              <DialogDescription>
+                {feedback.status === "saved"
+                  ? `Поново можете да гласате за ${ratingCooldownHours} сата.`
+                  : `Поново можете да гласате од ${voteTimeFormat.format(feedback.nextVoteAt)}.`}
+              </DialogDescription>
+            </div>
           ) : open ? (
             <RatingChoices
               term={term}
