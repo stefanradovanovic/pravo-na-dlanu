@@ -11,6 +11,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "/institucije",
     "/institucije/skupstina",
     "/institucije/skupstina/odbori",
+    "/institucije/skupstina/rang-lista",
     "/o-projektu",
     "/ucenje",
     "/ucenje/recnik",

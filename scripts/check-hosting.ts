@@ -30,6 +30,7 @@ const publicPages = [
   "/institucije",
   "/institucije/skupstina",
   "/institucije/skupstina/odbori",
+  "/institucije/skupstina/rang-lista",
   "/o-projektu",
   "/ucenje",
   "/ucenje/recnik",
@@ -144,7 +145,7 @@ assert.ok(
 const report = {
   generatedAt: new Date().toISOString(),
   deployment:
-    "Git-connected static export; no database, paid storage, or runtime functions",
+    "Git-connected static export with optional Assembly ratings on Convex",
   laws: registry.records.length,
   files: files.length,
   bytes: files.reduce((sum, file) => sum + file.bytes, 0),

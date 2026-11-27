@@ -876,7 +876,7 @@ html:has(.header-search .ui-input:focus) {
 .assembly-preview {
   padding-top: 0;
 }
-.assembly-preview h2 {
+.assembly-preview > .explorer-header h2 {
   font-size: var(--text-title);
   font-weight: 500;
   letter-spacing: -0.6px;

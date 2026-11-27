@@ -10,9 +10,11 @@ import {
 export function AssemblyMapPreview({
   members,
   groups,
+  term,
 }: {
   members: Member[];
   groups: Groups;
+  term: number;
 }) {
   const [selectedId, setSelectedId] = useState("");
 
@@ -20,6 +22,7 @@ export function AssemblyMapPreview({
     <MemberMap
       members={members}
       groups={groups}
+      term={term}
       visible={members}
       selectedId={selectedId}
       onSelect={setSelectedId}

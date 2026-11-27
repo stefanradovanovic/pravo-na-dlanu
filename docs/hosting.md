@@ -31,12 +31,34 @@ For example, the Labour Law HTML fell from 873,915 to 383,870 bytes (local gzip 
 
 1. In a personal Vercel Hobby account, import `stefanradovanovic/pravo-na-dlanu` through the GitHub integration. Use the repository root and Node.js 24.
 2. Keep the checked-in `vercel.json` settings: framework **Other** (`null`), install `npm ci`, build `npm run build && npm run hosting:check`, output `out`. This publishes the Next.js static export directly and creates no runtime functions.
-3. No environment variables, database, Blob subscription, API keys or Vercel cron jobs are required. The included `vercel.app` address avoids a domain registration cost.
+3. The static reader and directory deploy without environment variables. Guest ratings use the optional configuration below. The included `vercel.app` address avoids a domain registration cost.
 4. After the initial deployment, check a direct `/propisi/{id}` URL, browser refresh, search, a scan document and the 404 page. Git pushes then rebuild the snapshot automatically.
 
 **Use Git import** so source files are checked out directly during the build. Avoid the Hobby CLI's 100 MB source-upload limit as the corpus grows. Never exclude legal documents simply to fit an upload limit. Generated output and source uploads are different limits.
 
 `npm run hosting:check` checks that every canonical law has a static HTML page and writes file counts, total bytes and the largest files to `.cache/hosting-report.json`. Run it after `npm run build`. This is a local readiness check; no Vercel deployment has been performed by this change.
+
+## Assembly guest ratings
+
+The Assembly page enables ratings when the following three public variables are present at build time. Use a separate Convex deployment and Turnstile widget for each environment.
+
+| Location          | Variable                         | Value                                                          |
+| ----------------- | -------------------------------- | -------------------------------------------------------------- |
+| Next.js build     | `NEXT_PUBLIC_CONVEX_URL`         | Convex client URL (`.convex.cloud` in production)              |
+| Next.js build     | `NEXT_PUBLIC_CONVEX_SITE_URL`    | Convex HTTP actions URL (`.convex.site` in production)         |
+| Next.js build     | `NEXT_PUBLIC_TURNSTILE_SITE_KEY` | Public Turnstile site key                                      |
+| Convex deployment | `TURNSTILE_SECRET_KEY`           | Secret key for the matching Turnstile widget                   |
+| Convex deployment | `RATINGS_ALLOWED_ORIGINS`        | Comma-separated browser origins, with scheme and optional port |
+
+Add each browser hostname to the Turnstile widget. Deploy the Convex functions to the selected deployment before building the frontend. The frontend then connects to Convex directly while Vercel serves the static export. For Vercel previews, configure the preview frontend with its own backend URLs and allow its origin on that backend.
+
+Each browser profile keeps a voting credential that associates ratings with that guest. Convex stores its hash and checks the Assembly term and deputy ID against `content/assembly-directory.json`. A deputy profile displays its first published total at ten ratings. Later profile updates require changes from at least three guests and publish five minutes after becoming eligible. The profile total is removed immediately if the count drops below ten.
+
+The Assembly ranking at `/institucije/skupstina/rang-lista` shows the live sum of points and rating count from a deputy’s first rating. When upgrading a deployment with older profile snapshots, run `npx convex run ratings:backfillPublishedSums '{"term":15}'` against that deployment after updating its functions. The migration fills in exact historical profile totals when they can be recovered. Other older profile snapshots receive exact totals at the next eligible publication.
+
+For local testing, run `npx convex dev` and select local development. It writes the two Convex URLs to `.env.local`. Add `NEXT_PUBLIC_TURNSTILE_SITE_KEY` with the published Cloudflare always-pass test site key. Set `TURNSTILE_SECRET_KEY` on the local Convex deployment to the matching test secret and `RATINGS_ALLOWED_ORIGINS` to the preview origin, for example `http://127.0.0.1:3001`. The test key works only with a loopback frontend and backend. Start the Next.js dev server, then set `PLAYWRIGHT_PORT` to its port and `ASSEMBLY_RATINGS_E2E_URL` to the local HTTP actions URL to run `npm run test:e2e -- tests/e2e/assembly-ratings.spec.ts --project=desktop`.
+
+[Convex deployment guide](https://docs.convex.dev/production/hosting/vercel) · [Turnstile test keys](https://developers.cloudflare.com/turnstile/troubleshooting/testing/)
 
 ## Free-tier conditions
 

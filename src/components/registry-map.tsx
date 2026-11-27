@@ -128,14 +128,6 @@ function DocumentNode({ id, data }: NodeProps<MapNode>) {
         }
       }}
       onBlur={() => data.onFocusChange?.(null)}
-      style={
-        {
-          "--node-color":
-            data.kind === "root"
-              ? "var(--brand)"
-              : "var(--editorial-foreground)",
-        } as React.CSSProperties
-      }
     >
       {data.targetPosition && (
         <Handle type="target" position={data.targetPosition} />
@@ -567,6 +559,17 @@ function RegistryMapContent({
     xStep,
   ]);
   const highlightedNodeId = hoveredNodeId ?? focusedNodeId;
+  const displayNodes = useMemo(
+    () =>
+      highlightedNodeId === null
+        ? nodes
+        : nodes.map((node) =>
+            node.id === highlightedNodeId
+              ? { ...node, className: "is-highlighted" }
+              : node,
+          ),
+    [nodes, highlightedNodeId],
+  );
   const displayEdges = useMemo(
     () =>
       highlightedNodeId === null
@@ -602,7 +605,7 @@ function RegistryMapContent({
         }
       >
         <ReactFlow
-          nodes={nodes}
+          nodes={displayNodes}
           edges={displayEdges}
           nodeTypes={nodeTypes}
           edgeTypes={edgeTypes}

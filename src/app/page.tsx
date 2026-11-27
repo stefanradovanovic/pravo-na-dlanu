@@ -50,6 +50,7 @@ export default function Home() {
             }),
           )}
           groups={assembly.groups}
+          term={assembly.term}
         />
       </section>
     </main>
