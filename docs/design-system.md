@@ -32,7 +32,7 @@ UI SDK је закључан у package-lock датотеци на `0.1.0-beta.1
 | Папир / текст                  | background / foreground                    | #faf9f6 / #282824 |
 | Заглавље / текст               | chrome / chrome-foreground                 | #fffefa / #282824 |
 | Изабрана навигација у заглављу | chrome-selected                            | #963e35           |
-| Главна радња / текст           | primary / primary-foreground               | #292d28 / #fffefa |
+| Главна радња / текст           | brand / brand-foreground                   | #963e35 / #fff9ee |
 | Бочни садржај                  | sidebar                                    | #fffefa           |
 | Изабрана ставка                | sidebar-accent / sidebar-accent-foreground | #eeede8 / #292d28 |
 | Метаподаци                     | muted-foreground                           | #686b60           |
@@ -45,6 +45,8 @@ UI SDK је закључан у package-lock датотеци на `0.1.0-beta.1
 
 | Намена                | Фонт                          | Величина / проред                                    |
 | --------------------- | ----------------------------- | ---------------------------------------------------- |
+| Текст интерфејса и објашњења | IBM Plex Sans Variable | 15 px / 1,5 |
+| Питање у квизу | IBM Plex Sans Variable | 18 px / 1,25 |
 | Контроле и навигација | IBM Plex Sans Variable        | 15–16 px / 1,4–1,6                                   |
 | Метаподаци            | IBM Plex Sans Variable        | 13–14 px / 1,6                                       |
 | Наслов странице       | Literata Variable             | 30–48 px / 1,25                                      |

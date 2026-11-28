@@ -48,8 +48,8 @@
     cursor: not-allowed;
   }
   .ui-button-primary {
-    background: light-dark(var(--primary), var(--brand));
-    color: light-dark(var(--primary-foreground), var(--brand-foreground));
+    background: var(--brand);
+    color: var(--brand-foreground);
   }
   .ui-button-outline {
     background: var(--card);
@@ -401,10 +401,7 @@
 
   @media (hover: hover) and (pointer: fine) {
     .ui-button-primary:hover:not(:disabled) {
-      background: light-dark(
-        #0b5b54,
-        color-mix(in srgb, var(--brand) 90%, var(--foreground))
-      );
+      background: color-mix(in srgb, var(--brand) 90%, var(--foreground));
     }
     .ui-button-outline:hover:not(:disabled),
     .ui-button-ghost:hover:not(:disabled),

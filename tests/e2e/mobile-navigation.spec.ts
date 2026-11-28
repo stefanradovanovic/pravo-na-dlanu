@@ -6,6 +6,7 @@ const destinations = [
   { name: "Претрага", href: "/#pretraga" },
   { name: "Скупштина", href: "/institucije/skupstina" },
   { name: "Учење", href: "/ucenje" },
+  { name: "Речник", href: "/ucenje/recnik" },
 ] as const;
 
 test.beforeEach(({ page }) => {
@@ -16,6 +17,8 @@ test.beforeEach(({ page }) => {
 
 async function expectActive(page: Page, name: string) {
   const navigation = page.locator(".mobile-navigation");
+  if (!(await navigation.isVisible()))
+    await page.getByRole("button", { name: "Мени", exact: true }).click();
   await expect(navigation).toBeVisible();
   await expect(navigation.locator('a[aria-current="page"]')).toHaveCount(1);
   await expect(
@@ -41,13 +44,16 @@ test("mobile search expands in place across the header", async ({ page }) => {
     await page.goto(path);
     const url = page.url();
     const navigation = page.locator(".mobile-navigation");
+    await page.getByRole("button", { name: "Мени", exact: true }).click();
     const link = navigation.locator('a[href="/#pretraga"]');
     const input = page.getByRole("combobox", { name: "Претрага из заглавља" });
     await expect(input).toBeHidden();
     await link.click();
     await expect(page).toHaveURL(url);
     await expect(input).toBeFocused();
-    await expect(link).toHaveAttribute("aria-expanded", "true");
+    const searchTrigger = page.locator(".header-search-mobile");
+    await expect(navigation).toBeHidden();
+    await expect(searchTrigger).toHaveAttribute("aria-expanded", "true");
     const form = page.locator(".header-search");
     await expect(form).toHaveCSS(
       "animation-name",
@@ -72,8 +78,8 @@ test("mobile search expands in place across the header", async ({ page }) => {
     await expect(popup).toBeHidden();
     await form.getByRole("button", { name: "Затвори претрагу" }).click();
     await expect(input).toBeHidden();
-    await expect(link).toBeFocused();
-    await link.click();
+    await expect(searchTrigger).toBeFocused();
+    await searchTrigger.click();
     await expect(popup).toBeVisible();
     await input.fill("zakon o radu");
     await expect(
@@ -84,7 +90,7 @@ test("mobile search expands in place across the header", async ({ page }) => {
   await expect(page).toHaveURL(/\/propisi\/zakon-o-radu/);
 });
 
-test("bottom navigation crosses app and standalone law pages with correct history selection", async ({
+test("header menu crosses app and standalone law pages with correct history selection", async ({
   page,
 }) => {
   await page.setViewportSize({ width: 390, height: 844 });
@@ -120,11 +126,11 @@ test("bottom navigation crosses app and standalone law pages with correct histor
   await expect(page.locator("#clan-1")).toHaveCount(1);
   await expect(page.locator("#clan-206")).toHaveCount(1);
   await page.goBack();
-  await expectActive(page, "Учење");
+  await expectActive(page, "Речник");
   await page.goBack();
-  await expectActive(page, "Скупштина");
-  await page.goForward();
   await expectActive(page, "Учење");
+  await page.goForward();
+  await expectActive(page, "Речник");
   await page.goForward();
   await expectActive(page, "Претрага");
   await page
@@ -144,7 +150,7 @@ test("bottom navigation crosses app and standalone law pages with correct histor
   await expect(page.locator("#clan-18")).toBeInViewport();
 });
 
-test("mobile widths keep every navigation target reachable and leave room below the footer", async ({
+test("mobile widths keep menu targets reachable and dismiss the menu with Escape or an outside tap", async ({
   page,
 }) => {
   for (const width of [320, 390, 800]) {
@@ -152,6 +158,9 @@ test("mobile widths keep every navigation target reachable and leave room below 
     for (const route of ["/institucije/skupstina", "/propisi/zakon-o-radu"]) {
       await page.goto(route);
       const navigation = page.locator(".mobile-navigation");
+      const trigger = page.getByRole("button", { name: "Мени", exact: true });
+      await expect(navigation).toBeHidden();
+      await trigger.click();
       await expect(navigation).toBeVisible();
       await expect(page.locator(".site-header nav")).toBeHidden();
       for (const destination of destinations) {
@@ -175,37 +184,22 @@ test("mobile widths keep every navigation target reachable and leave room below 
           box!.x + box!.width,
         );
       }
-      await page.evaluate(() =>
-        window.scrollTo(0, document.documentElement.scrollHeight),
-      );
-      await expect
-        .poll(async () =>
-          page.evaluate(() => {
-            const nav =
-              document.querySelector<HTMLElement>(".mobile-navigation")!;
-            const navBox = nav.getBoundingClientRect();
-            const footerBox = document
-              .querySelector(".site-footer")!
-              .getBoundingClientRect();
-            return {
-              fixed: getComputedStyle(nav).position === "fixed",
-              bottom: Math.abs(navBox.bottom - innerHeight) <= 1,
-              footerClear: footerBox.bottom <= navBox.top + 1,
-              noOverflow: document.documentElement.scrollWidth <= innerWidth,
-            };
-          }),
-        )
-        .toEqual({
-          fixed: true,
-          bottom: true,
-          footerClear: true,
-          noOverflow: true,
-        });
+      await page.keyboard.press("Escape");
+      await expect(navigation).toBeHidden();
+      await expect(trigger).toBeFocused();
+      await trigger.click();
+      await page.mouse.click(4, 200);
+      await expect(navigation).toBeHidden();
+      expect(
+        await page.evaluate(
+          () => document.documentElement.scrollWidth <= innerWidth,
+        ),
+      ).toBe(true);
     }
   }
 });
 
-test("desktop keeps header navigation while the mobile bar is hidden for desktop and print", async ({
+test("desktop keeps header navigation while the hamburger is hidden for desktop and print", async ({
   page,
 }) => {
   for (const width of [801, 1280]) {
@@ -219,6 +213,7 @@ test("desktop keeps header navigation while the mobile bar is hidden for desktop
       "Институције",
       "Скупштина",
       "Учење",
+      "Речник",
     ]);
     await expect(
       page.getByRole("navigation", { name: "Главна навигација", exact: true }),
@@ -234,6 +229,7 @@ test("desktop keeps header navigation while the mobile bar is hidden for desktop
     );
   }
   await page.setViewportSize({ width: 390, height: 844 });
+  await page.getByRole("button", { name: "Мени", exact: true }).click();
   await expect(page.locator(".mobile-navigation")).toBeVisible();
   await page.emulateMedia({ media: "print" });
   await expect(page.locator(".mobile-navigation")).toBeHidden();

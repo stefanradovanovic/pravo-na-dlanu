@@ -1,6 +1,7 @@
+import { resumeSavedQuiz } from "./saved-quiz";
 import { test, expect, type Page } from "@playwright/test";
 import { getLearningCatalog } from "../../src/lib/learning-content";
-import { learningTopics, type LearningTopicId } from "../../src/lib/learning";
+import type { LearningTopicId } from "../../src/lib/learning";
 
 const questions = getLearningCatalog().questions;
 
@@ -52,53 +53,44 @@ async function answerWithKeyboard(
   return question;
 }
 
-test("citizen topic links open lessons and learning outcomes", async ({
+test("only the answered question exposes its related lesson", async ({
   page,
 }) => {
+  const catalog = getLearningCatalog();
   for (const id of ["ustav", "potrosaci"] as const) {
-    const topic = learningTopics.find((candidate) => candidate.id === id)!;
     await page.goto(`/ucenje?tema=${id}`);
-    await expect(
-      page.getByRole("heading", { name: topic.title, exact: true }),
-    ).toBeVisible();
-    await expect(
-      page.getByRole("heading", { name: "Шта ћете научити" }),
-    ).toBeVisible();
-    await expect(
-      page.locator(".learning-lessons article").first(),
-    ).toBeVisible();
+    await expect(page.locator("#question-title")).toBeFocused();
+    const lesson = page.locator(".learning-answer-lesson");
+    await expect(lesson).toHaveCount(0);
+    const question = await answerWithKeyboard(page, id);
+    await lesson.locator("summary").click();
+    await expect(lesson.locator("p")).toHaveText(
+      catalog.lessons.find((l) => l.source.href === question.source.href)!.text,
+    );
+    await page.getByRole("button", { name: "Следеће питање" }).click();
+    await expect(lesson).toHaveCount(0);
     await expectNoOverflow(page);
   }
 });
 
 test("constitutional practice works with a keyboard and allows mistakes to be reviewed", async ({
   page,
-  context,
 }) => {
   await page.goto("/ucenje?tema=ustav");
-  await page.getByRole("button", { name: "Почни вежбу", exact: true }).click();
   const first = await answerWithKeyboard(page, "ustav", false);
-  const sourcePromise = context.waitForEvent("page");
-  await page
-    .getByRole("link", {
-      name: `Прочитај члан ${first.source.article}`,
-      exact: false,
-    })
-    .click();
-  const source = await sourcePromise;
-  await source.waitForLoadState();
-  await expect(source).toHaveURL(
-    new RegExp(`${first.source.lawHref}#clan-${first.source.article}$`),
-  );
-  await expect(source.getByRole("heading", { level: 1 })).toHaveText(
-    first.source.title,
-  );
-  await expect(
-    source.locator(`#clan-${first.source.article}`),
-  ).toBeInViewport();
-  await expect(source.locator("#clan-1")).toHaveCount(1);
-  await expect(source.locator("#clan-206")).toHaveCount(1);
-  await source.close();
+  const trigger = page.getByRole("button", {
+    name: `Прочитај члан ${first.source.article}`,
+  });
+  await trigger.click();
+  const dialog = page.getByRole("dialog");
+  await expect(dialog).toBeVisible();
+  const frame = dialog.frameLocator("iframe");
+  const heading = frame.locator(`#clan-${first.source.article}`);
+  await expect(heading).toBeInViewport();
+  await heading.focus();
+  await page.keyboard.press("Escape");
+  await expect(dialog).toBeHidden();
+  await expect(trigger).toBeFocused();
   await page
     .getByRole("button", { name: "Следеће питање", exact: true })
     .click();
@@ -130,9 +122,7 @@ test("constitutional practice works with a keyboard and allows mistakes to be re
 test("consumer what-if practice explains how a changed fact changes the rule", async ({
   page,
 }) => {
-  await page.goto("/ucenje?tema=potrosaci");
-  await page.getByRole("tab", { name: "Шта ако…?", exact: true }).click();
-  await page.getByRole("button", { name: "Почни вежбу", exact: true }).click();
+  await resumeSavedQuiz(page, "potrosaci", "what-if");
   const original = await answerWithKeyboard(page, "potrosaci");
   await page
     .getByRole("button", { name: "Следеће питање", exact: true })
@@ -149,11 +139,13 @@ test("consumer what-if practice explains how a changed fact changes the rule", a
   // Opening the reminder moves focus; return to the current question before the keyboard exercise.
   await page.locator("#question-title").focus();
   await answerWithKeyboard(page, "potrosaci");
-  await expect(
-    page.getByRole("link", {
-      name: `Прочитај члан ${changed.source.article}`,
-      exact: false,
-    }),
-  ).toHaveAttribute("href", changed.source.href);
+  await page
+    .getByRole("button", { name: `Прочитај члан ${changed.source.article}` })
+    .click();
+  await expect(page.getByRole("dialog").locator("iframe")).toHaveAttribute(
+    "src",
+    changed.source.href,
+  );
+  await page.getByRole("button", { name: "Затвори", exact: true }).click();
   await expectNoOverflow(page);
 });

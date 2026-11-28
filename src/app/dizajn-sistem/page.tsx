@@ -147,7 +147,7 @@ export default function DesignSystemPage() {
             <div className="ds-type-specimen">
               <div className="ds-type-info">
                 <span>ИНТЕРФЕЈС</span>
-                <code>IBM Plex Sans · 15 / 24</code>
+                <code>IBM Plex Sans · 15 / 22,5</code>
               </div>
               <div className="ds-ui-text">
                 <strong>Пронађите пропис који вам је потребан.</strong>
@@ -160,7 +160,7 @@ export default function DesignSystemPage() {
             <div className="ds-type-specimen">
               <div className="ds-type-info">
                 <span>ЧИТАЊЕ</span>
-                <code>Literata · 18 / 30,6</code>
+                <code>Literata · 18 / 29</code>
               </div>
               <p className="ds-reading-text">
                 Ово је типографски узорак, а не цитат прописа. Дужи текст има

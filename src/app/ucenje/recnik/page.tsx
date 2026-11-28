@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { GlossaryBrowser } from "@/components/learning/glossary-browser";
 import { getGlossaryCatalog } from "@/lib/glossary-content";
 import { siteMetadata } from "@/lib/social-metadata";
@@ -17,9 +16,6 @@ export default function GlossaryPage() {
   return (
     <main id="main" className="learning-page">
       <header className="page-intro learning-intro">
-        <Link href="/ucenje" className="text-link">
-          Учење
-        </Link>
         <h1>Речник</h1>
         <p className="heading-description">
           Кратка уредничка објашњења правних и грађанских појмова.

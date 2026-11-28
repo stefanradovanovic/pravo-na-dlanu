@@ -1,10 +1,21 @@
 import { expect, test } from "@playwright/test";
 
-test("learning links to all 300 dictionary entries and supports Serbian search", async ({
+test("main navigation links to all 300 dictionary entries and supports Serbian search", async ({
   page,
 }) => {
   await page.goto("/ucenje");
-  await page.getByRole("link", { name: "Отвори речник" }).click();
+  await expect(
+    page.getByRole("main").getByRole("link", { name: /речник/i }),
+  ).toHaveCount(0);
+  const menu = page.getByRole("button", { name: "Мени", exact: true });
+  if (await menu.isVisible()) await menu.click();
+  const dictionary = page
+    .getByRole("navigation", { name: "Главна навигација" })
+    .getByRole("link", { name: "Речник", exact: true });
+  await dictionary.click();
+  await expect(
+    page.locator('a[aria-current="page"][href="/ucenje/recnik"]').first(),
+  ).toBeAttached();
   await expect(page).toHaveURL(/\/ucenje\/recnik\/?$/);
   await expect(
     page.getByRole("heading", { level: 1, name: "Речник" }),
