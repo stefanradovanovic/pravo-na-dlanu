@@ -8,6 +8,8 @@ import {
   emptyProgress,
   learningTopics,
   restoreProgress,
+  selectSession,
+  sessionForTopic,
   reviewQuestions,
   submitAnswer,
   type LearningProgress,
@@ -95,6 +97,41 @@ test("expert rounds stay in the selected topic, resume, and reach new cases", ()
       null,
     );
   }
+});
+
+test("legacy and paused rounds retain their place per topic and stale rounds are discarded independently", () => {
+  const legacy = start();
+  const first = catalog.questions.find(
+    (q) => q.id === legacy.session!.questionIds[0],
+  )!;
+  const answered = advanceSession(
+    submitAnswer(legacy, first, first.correctChoiceId, now),
+  );
+  const restored = restoreProgress(
+    JSON.stringify({
+      version: 1,
+      answers: answered.answers,
+      session: answered.session,
+    }),
+    catalog.questions,
+  );
+  const other = createSession(
+    catalog.questions,
+    restored,
+    "practice",
+    "ustav",
+    now,
+  )!;
+  const switched = selectSession(restored, other);
+  const reloaded = restoreProgress(JSON.stringify(switched), catalog.questions);
+  assert.deepEqual(sessionForTopic(reloaded, "rad"), answered.session);
+  assert.deepEqual(sessionForTopic(reloaded, "ustav"), other);
+  const changed = catalog.questions.map((q) =>
+    q.id === first.id ? { ...q, needsReview: true } : q,
+  );
+  const updated = restoreProgress(JSON.stringify(switched), changed);
+  assert.equal(sessionForTopic(updated, "rad"), null);
+  assert.deepEqual(updated.session, other);
 });
 
 test("confirmed answers survive reload, cannot be counted twice, and unconfirmed questions cannot advance", () => {

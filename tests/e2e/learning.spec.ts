@@ -1,3 +1,4 @@
+import { resumeSavedQuiz } from "./saved-quiz";
 import { test, expect, type Page } from "@playwright/test";
 import { getLearningCatalog } from "../../src/lib/learning-content";
 import { learningTopics } from "../../src/lib/learning";
@@ -32,26 +33,34 @@ test("homepage and mobile navigation expose learning; topic search accepts all S
   page,
 }) => {
   await page.goto("/");
+  const menu = page.getByRole("button", { name: "Мени", exact: true });
+  if (await menu.isVisible()) await menu.click();
   const learningLink = page
     .getByRole("navigation", { name: "Главна навигација" })
     .getByRole("link", { name: /^(Учи кроз примере|Учење)$/ });
   await learningLink.click();
   await expect(page).toHaveURL(/\/ucenje$/);
-  await expect(learningLink).toBeVisible();
+  await expect(
+    page.locator('a[aria-current="page"][href="/ucenje"]').first(),
+  ).toBeAttached();
+  await expect(
+    page.getByRole("heading", { level: 1, name: "Изаберите тему за квиз" }),
+  ).toBeInViewport();
+  const topics = page
+    .getByRole("list", { name: "Теме за учење" })
+    .getByRole("link");
+  await expect(topics.first()).toBeInViewport();
   const search = page.getByRole("textbox", { name: "Претрага тема за учење" });
   for (const term of ["годишњи одмор", "godišnji odmor", "godisnji odmor"]) {
     await search.fill(term);
-    await expect(page.locator(".learning-topic-card")).toHaveCount(1);
-    await expect(page.locator(".learning-topic-card")).toContainText(
-      "Права на послу",
-    );
+    await expect(topics).toHaveCount(1);
+    await expect(topics).toHaveAccessibleName("Права на послу");
   }
   await search.fill("ништа-не-постоји");
   await expect(page.getByText("Нема теме за", { exact: false })).toBeVisible();
   await page.getByRole("button", { name: "Прикажи све теме" }).click();
-  await expect(page.locator(".learning-topic-card")).toHaveCount(
-    learningTopics.length,
-  );
+  await expect(topics).toHaveCount(learningTopics.length);
+  await expect(page.locator("#vezba, .learning-editorial-note")).toHaveCount(0);
   expect(
     await page.evaluate(
       () => document.documentElement.scrollWidth <= innerWidth,
@@ -63,31 +72,57 @@ test("homepage and mobile navigation expose learning; topic search accepts all S
   });
 });
 
+test("each topic starts its quiz and resumes its own confirmed answer", async ({
+  page,
+}) => {
+  await page.goto("/ucenje");
+  const savedTitles = new Map<string, string>();
+  for (const topic of learningTopics) {
+    await page.getByRole("link", { name: topic.title, exact: true }).click();
+    await expect(page.locator("#question-title")).toBeFocused();
+    await expect(page.getByText("Друге вежбе", { exact: true })).toHaveCount(0);
+    const question = await answer(page);
+    expect(question.topicId).toBe(topic.id);
+    savedTitles.set(topic.id, question.title);
+    await page.goBack();
+    await expect(
+      page.getByRole("list", { name: "Теме за учење" }),
+    ).toBeVisible();
+  }
+  await page.reload();
+  for (const topic of learningTopics) {
+    await page.getByRole("link", { name: topic.title, exact: true }).click();
+    await expect(page.locator("#question-title")).toHaveText(
+      savedTitles.get(topic.id)!,
+    );
+    await expect(page.getByLabel("Објашњење одговора")).toBeVisible();
+    await page.getByRole("link", { name: "Сачувај и врати се" }).click();
+  }
+});
+
 test("quiz confirms once, resumes after reload, links to the real article and reviews mistakes", async ({
   page,
-  context,
 }) => {
   await page.goto("/ucenje?tema=rad");
-  await page.getByRole("button", { name: "Почни вежбу", exact: true }).click();
   await expect(
     page.getByRole("button", { name: "Провери одговор", exact: true }),
   ).toBeDisabled();
   const first = await answer(page, false);
-  const sourcePagePromise = context.waitForEvent("page");
-  await page
-    .getByRole("link", {
-      name: `Прочитај члан ${first.source.article}`,
-      exact: false,
-    })
-    .click();
-  const sourcePage = await sourcePagePromise;
-  await sourcePage.waitForLoadState();
+  const article = page.getByRole("button", {
+    name: `Прочитај члан ${first.source.article}`,
+  });
+  await article.click();
+  const dialog = page.getByRole("dialog");
+  await expect(dialog.locator("iframe")).toHaveAttribute(
+    "src",
+    first.source.href,
+  );
   await expect(
-    sourcePage.locator(`#clan-${first.source.article}`),
+    dialog.frameLocator("iframe").locator(`#clan-${first.source.article}`),
   ).toBeInViewport();
-  await sourcePage.close();
+  await dialog.getByRole("button", { name: "Затвори", exact: true }).click();
+  await expect(article).toBeFocused();
   await page.reload();
-  await page.getByRole("button", { name: "Настави сесију" }).click();
   await expect(page.locator("#question-title")).toHaveText(first.title);
   await expect(page.getByLabel("Објашњење одговора")).toBeVisible();
   const attempts = await page.evaluate(
@@ -153,9 +188,7 @@ test("quiz confirms once, resumes after reload, links to the real article and re
 test("what-if pairs show the changed fact; research uses the real collection", async ({
   page,
 }) => {
-  await page.goto("/ucenje?tema=privatnost");
-  await page.getByRole("tab", { name: "Шта ако…?", exact: true }).click();
-  await page.getByRole("button", { name: "Почни вежбу", exact: true }).click();
+  await resumeSavedQuiz(page, "privatnost", "what-if");
   const base = await answer(page);
   await page
     .getByRole("button", { name: "Следеће питање", exact: true })
@@ -173,9 +206,7 @@ test("what-if pairs show the changed fact; research uses the real collection", a
     path: test.info().outputPath("learning-what-if.png"),
     fullPage: true,
   });
-  await page.getByRole("button", { name: "Сачувај и врати се" }).click();
-  await page.getByRole("tab", { name: "Пронађи правило", exact: true }).click();
-  await page.getByRole("button", { name: "Почни вежбу", exact: true }).click();
+  await resumeSavedQuiz(page, "privatnost", "research");
   await expect(
     page.getByRole("link", { name: "Претражи збирку" }),
   ).toHaveAttribute("href", /q=/);
@@ -196,7 +227,6 @@ test("bad saved data and unavailable storage leave quizzes usable", async ({
     storageKey,
   );
   await page.goto("/ucenje?tema=informacije");
-  await page.getByRole("button", { name: "Почни вежбу", exact: true }).click();
   await answer(page);
   await page.evaluate(() => {
     Storage.prototype.setItem = () => {
@@ -220,42 +250,23 @@ test("bad saved data and unavailable storage leave quizzes usable", async ({
   );
 });
 
-test("expert studies can be selected by keyboard, resumed, and continued", async ({
-  page,
-}) => {
+test("saved expert studies can be resumed and continued", async ({ page }) => {
   if (test.info().project.name === "mobile")
     await page.setViewportSize({ width: 320, height: 844 });
-  await page.goto("/ucenje?tema=privatnost#vezba");
-  const levels = page.getByRole("tablist", { name: "Ниво вежбања" });
-  const basic = levels.getByRole("tab", { name: "Основни ниво" });
-  const expert = levels.getByRole("tab", { name: "Напредни ниво" });
-  await expect(basic).toHaveAttribute("aria-selected", "true");
-  await basic.focus();
-  await page.keyboard.press("ArrowRight");
-  await expect(expert).toBeFocused();
-  await page.keyboard.press("Enter");
-  await expect(expert).toHaveAttribute("aria-selected", "true");
-  await expect(
-    page.getByRole("tablist", { name: "Начин вежбања" }),
-  ).toBeHidden();
-  await expect(page.getByText(/\d+ студија случаја/)).toBeVisible();
-  await page.locator("#vezba").screenshot({
-    path: test.info().outputPath("learning-expert-setup.png"),
-  });
-  const start = page.getByRole("button", { name: "Почни студије случаја" });
-  await start.click();
+  await resumeSavedQuiz(page, "privatnost", "expert");
   await expect(page.getByText("Измишљена студија случаја")).toBeVisible();
   const first = await answer(page);
   expect(first.kind).toBe("case-study");
   await expect(
-    page.getByRole("link", { name: `Прочитај члан ${first.source.article}` }),
-  ).toHaveAttribute("href", first.source.href);
+    page.getByRole("button", { name: `Прочитај члан ${first.source.article}` }),
+  ).toBeVisible();
   await page.screenshot({
     path: test.info().outputPath("learning-expert-feedback.png"),
   });
   await page.reload();
-  await expect(page.locator(".learning-resume")).toContainText("Напредни ниво");
-  await page.getByRole("button", { name: "Настави сесију" }).click();
+  await expect(
+    page.getByText("Измишљена студија случаја", { exact: true }),
+  ).toBeVisible();
   await expect(page.locator("#question-title")).toHaveText(first.title);
   const answered = [first.id];
   for (let i = 1; i < 5; i++) {
@@ -298,28 +309,18 @@ test("the three additional topics are discoverable and link answers to their own
       .getByRole("textbox", { name: "Претрага тема за учење" })
       .fill(search);
     const topic = learningTopics.find((item) => item.id === topicId)!;
-    const card = page.locator(".learning-topic-card").filter({
-      has: page.getByRole("heading", { name: topic.title, exact: true }),
-    });
-    const count = questions.filter((q) => q.topicId === topicId).length;
-    await expect(card).toContainText(count + " питања");
-    await card.getByRole("link", { name: "Изабери тему" }).click();
+    await page.getByRole("link", { name: topic.title, exact: true }).click();
     await expect(page).toHaveURL("/ucenje?tema=" + topicId);
-    await expect(page.getByRole("tab", { name: "Шта ако…?" })).toBeVisible();
-    await expect(
-      page.getByRole("tab", { name: "Пронађи правило" }),
-    ).toBeVisible();
-    await page.getByRole("tab", { name: "Напредни ниво" }).click();
-    await page.getByRole("button", { name: "Почни студије случаја" }).click();
     const question = await answer(page);
-    expect(question.kind).toBe("case-study");
     expect(question.topicId).toBe(topicId);
     expect(question.source.lawHref).toBe("/propisi/" + law);
-    await expect(
-      page.getByRole("link", {
-        name: "Прочитај члан " + question.source.article,
-      }),
-    ).toHaveAttribute("href", question.source.href);
+    await page
+      .getByRole("button", { name: `Прочитај члан ${question.source.article}` })
+      .click();
+    await expect(page.getByRole("dialog").locator("iframe")).toHaveAttribute(
+      "src",
+      question.source.href,
+    );
   }
 });
 

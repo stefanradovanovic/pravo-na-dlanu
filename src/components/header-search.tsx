@@ -61,7 +61,7 @@ export function HeaderSearch() {
     const covered = form.current
       ?.closest(".site-header")
       ?.querySelectorAll<HTMLElement>(
-        ".brand, nav, .header-search-mobile, #site-theme-toggle",
+        ".brand, nav, .header-search-mobile, .mobile-navigation-trigger, #site-theme-toggle",
       );
     covered?.forEach((element) => {
       element.inert = true;
@@ -96,9 +96,16 @@ export function HeaderSearch() {
           return;
         }
         mobileTrigger.current?.setAttribute("aria-expanded", "false");
-        mobileTrigger.current = anchor;
-        anchor.setAttribute("aria-controls", searchFormId);
-        anchor.setAttribute("aria-expanded", "true");
+        const menu = anchor.closest<HTMLElement>(".mobile-navigation");
+        menu?.hidePopover();
+        const trigger = menu
+          ? (document.querySelector<HTMLAnchorElement>(
+              ".header-search-mobile",
+            ) ?? anchor)
+          : anchor;
+        mobileTrigger.current = trigger;
+        trigger.setAttribute("aria-controls", searchFormId);
+        trigger.setAttribute("aria-expanded", "true");
         // Focus in the original tap so mobile browsers can open the keyboard.
         flushSync(() => {
           setMobileExpanded(true);

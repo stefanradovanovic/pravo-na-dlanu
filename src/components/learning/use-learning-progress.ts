@@ -1,5 +1,5 @@
 "use client";
-import { useMemo, useState, useSyncExternalStore } from "react";
+import { useCallback, useMemo, useState, useSyncExternalStore } from "react";
 import {
   restoreProgress,
   type LearningProgress,
@@ -55,9 +55,14 @@ export function useLearningProgress(questions: LearningQuestion[]) {
     () => restoreProgress(snapshot?.slice(2) ?? "", questions),
     [snapshot, questions],
   );
-  function update(change: (current: LearningProgress) => LearningProgress) {
-    store.save(change(restoreProgress(store.snapshot().slice(2), questions)));
-  }
+  const update = useCallback(
+    (change: (current: LearningProgress) => LearningProgress) => {
+      const current = restoreProgress(store.snapshot().slice(2), questions);
+      const next = change(current);
+      if (next !== current) store.save(next);
+    },
+    [store, questions],
+  );
   return {
     progress,
     ready: snapshot !== null,

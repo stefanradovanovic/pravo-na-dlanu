@@ -175,11 +175,13 @@ export type LearningProgress = {
   version: 1;
   answers: Record<string, AnswerRecord>;
   session: LearningSession | null;
+  savedSessions: Partial<Record<LearningSession["topicId"], LearningSession>>;
 };
 export const emptyProgress = (): LearningProgress => ({
   version: 1,
   answers: {},
   session: null,
+  savedSessions: {},
 });
 
 function isObject(value: unknown): value is Record<string, unknown> {
@@ -224,54 +226,90 @@ export function restoreProgress(
           continue;
         result.answers[id] = record as AnswerRecord;
       }
-    const s = value.session;
-    if (
-      !isObject(s) ||
-      typeof s.mode !== "string" ||
-      !Object.hasOwn(modeLabels, s.mode) ||
-      !(
-        s.topicId === "all" || learningTopics.some((t) => t.id === s.topicId)
-      ) ||
-      !Array.isArray(s.questionIds) ||
-      s.questionIds.length < 1 ||
-      s.questionIds.length > 5 ||
-      new Set(s.questionIds).size !== s.questionIds.length ||
-      !Array.isArray(s.revisions) ||
-      s.revisions.length !== s.questionIds.length ||
-      !Number.isInteger(s.cursor) ||
-      Number(s.cursor) < 0 ||
-      Number(s.cursor) > s.questionIds.length ||
-      !isObject(s.answers)
-    )
-      return result;
-    const ids = s.questionIds;
-    const revisions = s.revisions;
-    const answers = s.answers;
-    const cursor = Number(s.cursor);
-    if (
-      !ids.every((id, i) => {
-        const q = typeof id === "string" ? available.get(id) : undefined;
-        return (
-          q &&
-          q.revision === revisions[i] &&
-          (s.topicId === "all" || q.topicId === s.topicId) &&
-          (s.mode === "expert"
-            ? q.kind === "case-study"
-            : s.mode === "review" || q.kind !== "case-study") &&
-          (i < cursor
-            ? q.choices.some((c) => c.id === answers[id])
-            : answers[id] === undefined ||
-              (i === cursor && q.choices.some((c) => c.id === answers[id])))
-        );
-      }) ||
-      Object.keys(answers).some((id) => !ids.includes(id))
-    )
-      return result;
-    result.session = s as LearningSession;
+    result.session = restoreSession(value.session, available);
+    if (isObject(value.savedSessions)) {
+      for (const [key, candidate] of Object.entries(value.savedSessions)) {
+        const session = restoreSession(candidate, available);
+        if (
+          session &&
+          key === session.topicId &&
+          key !== result.session?.topicId
+        )
+          result.savedSessions[session.topicId] = session;
+      }
+    }
   } catch {
     /* Invalid or older browser data starts a fresh learning history. */
   }
   return result;
+}
+
+function restoreSession(
+  s: unknown,
+  available: Map<string, LearningQuestion>,
+): LearningSession | null {
+  if (
+    !isObject(s) ||
+    typeof s.mode !== "string" ||
+    !Object.hasOwn(modeLabels, s.mode) ||
+    !(s.topicId === "all" || learningTopics.some((t) => t.id === s.topicId)) ||
+    !Array.isArray(s.questionIds) ||
+    s.questionIds.length < 1 ||
+    s.questionIds.length > 5 ||
+    new Set(s.questionIds).size !== s.questionIds.length ||
+    !Array.isArray(s.revisions) ||
+    s.revisions.length !== s.questionIds.length ||
+    !Number.isInteger(s.cursor) ||
+    Number(s.cursor) < 0 ||
+    Number(s.cursor) > s.questionIds.length ||
+    !isObject(s.answers)
+  )
+    return null;
+  const ids = s.questionIds;
+  const revisions = s.revisions;
+  const answers = s.answers;
+  const cursor = Number(s.cursor);
+  if (
+    !ids.every((id, i) => {
+      const q = typeof id === "string" ? available.get(id) : undefined;
+      return (
+        q &&
+        q.revision === revisions[i] &&
+        (s.topicId === "all" || q.topicId === s.topicId) &&
+        (s.mode === "expert"
+          ? q.kind === "case-study"
+          : s.mode === "review" || q.kind !== "case-study") &&
+        (i < cursor
+          ? q.choices.some((c) => c.id === answers[id])
+          : answers[id] === undefined ||
+            (i === cursor && q.choices.some((c) => c.id === answers[id])))
+      );
+    }) ||
+    Object.keys(answers).some((id) => !ids.includes(id))
+  )
+    return null;
+  return s as LearningSession;
+}
+
+export function sessionForTopic(
+  progress: LearningProgress,
+  topicId: LearningSession["topicId"],
+) {
+  return progress.session?.topicId === topicId
+    ? progress.session
+    : (progress.savedSessions[topicId] ?? null);
+}
+
+export function selectSession(
+  progress: LearningProgress,
+  session: LearningSession,
+): LearningProgress {
+  if (progress.session === session) return progress;
+  const savedSessions = { ...progress.savedSessions };
+  if (progress.session && progress.session.topicId !== session.topicId)
+    savedSessions[progress.session.topicId] = progress.session;
+  delete savedSessions[session.topicId];
+  return { ...progress, session, savedSessions };
 }
 
 export function reviewQuestions(

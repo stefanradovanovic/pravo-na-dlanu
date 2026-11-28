@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Scale, Search } from "lucide-react";
+import { Menu, Scale, Search } from "lucide-react";
 import { buttonVariants } from "@/components/ui/button";
 import { HeaderSearch } from "./header-search";
 import { ThemeToggle } from "./theme-toggle";
@@ -37,6 +37,7 @@ export function SiteHeader() {
             <Link
               key={href}
               href={href}
+              prefetch={href === "/ucenje/recnik" ? false : undefined}
               aria-label={desktop.accessibleLabel}
               aria-current={selectedHref === href ? "page" : undefined}
             >
@@ -62,6 +63,18 @@ export function SiteHeader() {
         <div id="site-theme-toggle" className="contents">
           <ThemeToggle />
         </div>
+        <button
+          type="button"
+          popoverTarget="mobile-site-navigation"
+          aria-label="Мени"
+          className={buttonVariants({
+            variant: "ghost",
+            size: "icon",
+            className: "mobile-navigation-trigger",
+          })}
+        >
+          <Menu size={22} aria-hidden="true" />
+        </button>
       </div>
     </header>
   );

@@ -1,19 +1,14 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
-import { ArrowRight, Check, Lightbulb, Search, Shuffle } from "lucide-react";
+import { ArrowRight, Check, Lightbulb, Search, Shuffle, X } from "lucide-react";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion";
-import type { LearningQuestion } from "@/lib/learning";
-import { SourceDetails } from "./source-details";
+import type { LearningCatalog, LearningQuestion } from "@/lib/learning";
+import { ArticleDialog } from "./article-dialog";
 
 export function QuestionCard({
   question,
+  lesson,
   answer,
   index,
   count,
@@ -21,6 +16,7 @@ export function QuestionCard({
   onNext,
 }: {
   question: LearningQuestion;
+  lesson?: LearningCatalog["lessons"][number];
   answer?: string;
   index: number;
   count: number;
@@ -118,19 +114,44 @@ export function QuestionCard({
             role="group"
             aria-label="Понуђени одговори"
           >
-            {question.choices.map((choice, i) => (
-              <Button
-                key={choice.id}
-                type="button"
-                variant={selected === choice.id ? "default" : "outline"}
-                aria-pressed={selected === choice.id}
-                onClick={() => setSelected(choice.id)}
-                className="h-auto min-h-11 w-full justify-start whitespace-normal py-3 text-left"
-              >
-                <span aria-hidden="true">{["А", "Б", "В", "Г"][i]}.</span>{" "}
-                {choice.text}
-              </Button>
-            ))}
+            {question.choices.map((choice, i) => {
+              let result: "correct" | "incorrect" | undefined;
+              if (answer) {
+                if (choice.id === question.correctChoiceId) result = "correct";
+                else if (choice.id === answer) result = "incorrect";
+              }
+              return (
+                <Button
+                  key={choice.id}
+                  type="button"
+                  variant={
+                    !answer && selected === choice.id ? "default" : "outline"
+                  }
+                  aria-pressed={(answer ?? selected) === choice.id}
+                  data-result={result}
+                  onClick={() => setSelected(choice.id)}
+                  className="h-auto min-h-11 w-full justify-start whitespace-normal py-3 text-left"
+                >
+                  {result ? (
+                    <>
+                      {result === "correct" ? (
+                        <Check aria-hidden="true" />
+                      ) : (
+                        <X aria-hidden="true" />
+                      )}
+                      <span className="sr-only">
+                        {result === "correct"
+                          ? "Тачан одговор."
+                          : "Нетачан одговор."}{" "}
+                      </span>
+                    </>
+                  ) : (
+                    <span aria-hidden="true">{["А", "Б", "В", "Г"][i]}.</span>
+                  )}
+                  {choice.text}
+                </Button>
+              );
+            })}
           </div>
         </fieldset>
         {!answer && (
@@ -142,6 +163,7 @@ export function QuestionCard({
       {answer && (
         <div
           className="learning-feedback"
+          data-result={correct ? "correct" : "incorrect"}
           ref={feedback}
           tabIndex={-1}
           aria-label="Објашњење одговора"
@@ -157,28 +179,19 @@ export function QuestionCard({
               <p>{right.explanation}</p>
             </div>
           )}
-          <Accordion>
-            <AccordionItem value="alternatives">
-              <AccordionTrigger>
-                Зашто остали одговори нису тачни?
-              </AccordionTrigger>
-              <AccordionContent>
-                {question.choices
-                  .filter((c) => c.id !== question.correctChoiceId)
-                  .map((c) => (
-                    <div className="learning-alternative" key={c.id}>
-                      <strong>{c.text}</strong>
-                      <p>{c.explanation}</p>
-                    </div>
-                  ))}
-              </AccordionContent>
-            </AccordionItem>
-          </Accordion>
-          <SourceDetails source={question.source} />
-          <Button onClick={onNext} size="lg">
-            {index + 1 === count ? "Погледај резултат" : "Следеће питање"}{" "}
-            <ArrowRight />
-          </Button>
+          {lesson && (
+            <details className="learning-answer-lesson">
+              <summary>Кратка лекција: {lesson.title}</summary>
+              <p>{lesson.text}</p>
+            </details>
+          )}
+          <div className="learning-actions">
+            <ArticleDialog source={question.source} />
+            <Button onClick={onNext}>
+              {index + 1 === count ? "Погледај резултат" : "Следеће питање"}{" "}
+              <ArrowRight />
+            </Button>
+          </div>
         </div>
       )}
     </article>

@@ -1,4 +1,11 @@
-import { BookOpen, House, Landmark, Search, UsersRound } from "lucide-react";
+import {
+  BookA,
+  BookOpen,
+  House,
+  Landmark,
+  Search,
+  UsersRound,
+} from "lucide-react";
 
 export const searchNavigationHref = "/#pretraga";
 
@@ -27,6 +34,12 @@ export const siteNavigation = [
     label: "Учење",
     icon: BookOpen,
     desktop: { label: "Учење", accessibleLabel: "Учи кроз примере" },
+  },
+  {
+    href: "/ucenje/recnik",
+    label: "Речник",
+    icon: BookA,
+    desktop: { label: "Речник", accessibleLabel: "Речник" },
   },
 ] as const;
 

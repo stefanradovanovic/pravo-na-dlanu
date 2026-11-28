@@ -535,6 +535,26 @@ html:has(.header-search .ui-input:focus) {
     justify-content: flex-end;
   }
 }
+@media (min-width: 801px) and (max-width: 1023px) {
+  .site-header nav {
+    gap: var(--space-1);
+  }
+  .site-header nav a,
+  .site-header .brand {
+    padding-inline-end: var(--space-2);
+  }
+  .site-header nav a {
+    padding-inline-start: var(--space-2);
+  }
+  .site-header {
+    gap: var(--space-2);
+  }
+}
+@media (min-width: 801px) and (max-width: 900px) {
+  .site-header .brand > span:not(.brand-mark) {
+    display: none;
+  }
+}
 @media (max-width: 1023px) {
   .full-document {
     display: block;
@@ -611,6 +631,11 @@ html:has(.header-search .ui-input:focus) {
     grid-column: 2;
   }
 }
+@media (max-width: 360px) {
+  .site-header .brand-mark {
+    display: none;
+  }
+}
 @media (max-width: 800px) {
   .site-header {
     gap: var(--space-4);
@@ -662,7 +687,7 @@ html:has(.header-search .ui-input:focus) {
   }
   .back-to-top {
     inset-inline-end: max(var(--space-4), env(safe-area-inset-right, 0px));
-    inset-block-end: calc(var(--mobile-navigation-height) + var(--space-3));
+    inset-block-end: max(var(--space-4), env(safe-area-inset-bottom, 0px));
   }
   .mobile-navigation-link[aria-current="page"] {
     background: var(--accent);

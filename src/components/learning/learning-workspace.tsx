@@ -1,27 +1,16 @@
 "use client";
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import {
-  ArrowLeft,
   ArrowRight,
   BookOpen,
-  BriefcaseBusiness,
   Check,
-  Equal,
-  FileText,
   Flag,
-  Landmark,
   RotateCcw,
   Search,
-  ShieldCheck,
-  Scale,
-  ShoppingBag,
-  Shuffle,
-  UsersRound,
 } from "lucide-react";
 import { Button, buttonVariants } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
@@ -49,7 +38,9 @@ import {
   modeQuestionKinds,
   reviewQuestions,
   submitAnswer,
-  type BasicLearningMode,
+  selectSession,
+  sessionForTopic,
+  type LearningSession,
   type LearningCatalog,
   type LearningMode,
   type LearningProgress,
@@ -58,27 +49,14 @@ import {
 } from "@/lib/learning";
 import { useLearningProgress } from "./use-learning-progress";
 import { QuestionCard } from "./question-card";
-import { SourceDetails } from "./source-details";
+import { ArticleDialog } from "./article-dialog";
 
-const topicIcons = {
-  ustav: Scale,
-  potrosaci: ShoppingBag,
-  rad: BriefcaseBusiness,
-  privatnost: ShieldCheck,
-  informacije: Landmark,
-  ravnopravnost: Equal,
-  "upravni-postupak": FileText,
-  porodica: UsersRound,
-};
-const modeDescriptions = {
-  practice:
-    "До пет кратких питања. Изаберите одговор и откријте зашто правило важи.",
-  "what-if":
-    "Две приче, по две верзије. Једна промењена чињеница може да промени закључак.",
-  research: "Отворите збирку и пронађите правило које објашњава ситуацију.",
-};
+function quizHref(topicId: LearningSession["topicId"]) {
+  return `/ucenje?tema=${topicId === "all" ? "sve" : topicId}`;
+}
 
 function SessionResults({
+  session,
   progress,
   questions,
   onContinue,
@@ -86,6 +64,7 @@ function SessionResults({
   onClose,
   onTopic,
 }: {
+  session: LearningSession;
   progress: LearningProgress;
   questions: LearningQuestion[];
   onContinue: () => void;
@@ -97,7 +76,6 @@ function SessionResults({
   useEffect(() => {
     heading.current?.focus();
   }, []);
-  const session = progress.session!;
   const attempted = session.questionIds.map((id) =>
     questions.find((q) => q.id === id)!,
   );
@@ -177,24 +155,22 @@ function SessionResults({
               <p>
                 {q.choices.find((c) => c.id === q.correctChoiceId)?.explanation}
               </p>
-              <SourceDetails source={q.source} />
+              <ArticleDialog source={q.source} />
             </AccordionContent>
           </AccordionItem>
         ))}
       </Accordion>
       <div className="learning-actions">
         {correct.length < attempted.length && (
-          <Button onClick={onRetry}>
+          <Button
+            variant={session.mode === "review" ? "default" : "outline"}
+            onClick={onRetry}
+          >
             <RotateCcw /> Понови питања која су била тешка
           </Button>
         )}
         {session.mode !== "review" && (
-          <Button
-            variant={
-              correct.length === attempted.length ? "default" : "outline"
-            }
-            onClick={onContinue}
-          >
+          <Button onClick={onContinue}>
             Следећа рунда <ArrowRight />
           </Button>
         )}
@@ -221,9 +197,10 @@ export function LearningWorkspace({ catalog }: { catalog: LearningCatalog }) {
   const topic = learningTopics.find((t) => t.id === params.get("tema"));
   const [panel, setPanel] = useState("topics");
   const [query, setQuery] = useState("");
-  const [level, setLevel] = useState<"basic" | "expert">("basic");
-  const [basicMode, setBasicMode] = useState<BasicLearningMode>("practice");
-  const [sessionOpen, setSessionOpen] = useState(false);
+  const router = useRouter();
+  const quizTopic = topic?.id ?? (params.get("tema") === "sve" ? "all" : null);
+  const enteredTopic = useRef<LearningSession["topicId"] | null>(null);
+  const [roundNumber, setRoundNumber] = useState(0);
   const [resetOpen, setResetOpen] = useState(false);
   const [now, setNow] = useState(Date.now);
   useEffect(() => {
@@ -239,7 +216,28 @@ export function LearningWorkspace({ catalog }: { catalog: LearningCatalog }) {
     useLearningProgress(questions);
   const available = questions.filter((q) => !q.needsReview);
   const due = ready ? reviewQuestions(questions, progress, now) : [];
-  const session = progress.session;
+  const session = quizTopic
+    ? sessionForTopic(progress, quizTopic)
+    : progress.session;
+  useEffect(() => {
+    if (!ready || (enteredTopic.current === quizTopic && session)) return;
+    enteredTopic.current = quizTopic;
+    if (!quizTopic) return;
+    update((current) => {
+      const saved = sessionForTopic(current, quizTopic);
+      const next =
+        saved && saved.cursor < saved.questionIds.length
+          ? saved
+          : createSession(
+              questions,
+              current,
+              "practice",
+              quizTopic,
+              Date.now(),
+            );
+      return next ? selectSession(current, next) : current;
+    });
+  }, [ready, quizTopic, questions, update, session]);
   const activeQuestion =
     session &&
     questions.find((q) => q.id === session.questionIds[session.cursor]);
@@ -257,12 +255,10 @@ export function LearningWorkspace({ catalog }: { catalog: LearningCatalog }) {
   const relevant = topic
     ? available.filter((q) => q.topicId === topic.id)
     : available;
-  const topicLessons = lessons.filter((lesson) => lesson.topicId === topic?.id);
-  const mode = level === "expert" ? "expert" : basicMode;
-  const modeAvailable = relevant.some(
-    (q) => q.kind === modeQuestionKinds[mode],
+  const lesson = lessons.find(
+    (item) =>
+      !item.needsReview && item.source.href === activeQuestion?.source.href,
   );
-  const expertCount = relevant.filter((q) => q.kind === "case-study").length;
   const filteredTopics = learningTopics.filter((t) =>
     normalizeSearch(
       `${t.title} ${t.description} ${t.keywords} ${lessons
@@ -291,13 +287,46 @@ export function LearningWorkspace({ catalog }: { catalog: LearningCatalog }) {
         Date.now(),
       );
       started = !!next;
-      return next ? { ...current, session: next } : current;
+      return next ? selectSession(current, next) : current;
     });
-    if (started) setSessionOpen(true);
+    if (started) {
+      setRoundNumber((n) => n + 1);
+      if (quizTopic !== topicId) router.push(quizHref(topicId));
+    }
   }
   function closeSession() {
-    setSessionOpen(false);
     setPanel("topics");
+    router.push("/ucenje");
+  }
+
+  function updateCurrentRound(
+    change: (current: LearningProgress) => LearningProgress,
+  ) {
+    if (!session) return;
+    update((current) => {
+      const saved = sessionForTopic(current, session.topicId);
+      if (
+        !saved ||
+        saved.cursor !== session.cursor ||
+        saved.questionIds[saved.cursor] !== session.questionIds[session.cursor]
+      )
+        return current;
+      return change(selectSession(current, saved));
+    });
+  }
+  if (
+    !ready ||
+    (quizTopic &&
+      !session &&
+      relevant.some((q) => q.kind === modeQuestionKinds.practice))
+  ) {
+    return (
+      <div className="learning-workspace">
+        <p role="status">
+          {quizTopic ? "Припремамо питање…" : "Припремамо теме…"}
+        </p>
+      </div>
+    );
   }
 
   return (
@@ -314,37 +343,45 @@ export function LearningWorkspace({ catalog }: { catalog: LearningCatalog }) {
           та питања су привремено изостављена из вежбања.
         </p>
       )}
-      {sessionOpen && session ? (
+      {quizTopic ? (
         <div className="learning-session">
-          <div className="learning-session-header">
-            <Button variant="ghost" onClick={closeSession}>
-              <ArrowLeft /> Сачувај и врати се
-            </Button>
-            <span>{modeLabels[session.mode]}</span>
-          </div>
-          {activeQuestion ? (
+          <h1>{topic?.title ?? "Питања из свих тема"}</h1>
+          <Link
+            href="/ucenje"
+            className="text-link"
+            onNavigate={() => setPanel("topics")}
+          >
+            Сачувај и врати се
+          </Link>
+          {!session ? (
+            <p role="status">Ова тема тренутно нема доступних питања.</p>
+          ) : activeQuestion ? (
             <QuestionCard
-              key={activeQuestion.id}
+              key={`${quizTopic}-${session.mode}-${roundNumber}-${activeQuestion.id}`}
               question={activeQuestion}
+              lesson={lesson}
               answer={session.answers[activeQuestion.id]}
               index={session.cursor}
               count={session.questionIds.length}
               onSubmit={(choice) =>
-                update((p) =>
+                updateCurrentRound((p) =>
                   submitAnswer(p, activeQuestion, choice, Date.now()),
                 )
               }
-              onNext={() => update(advanceSession)}
+              onNext={() => updateCurrentRound(advanceSession)}
             />
           ) : (
             <SessionResults
+              session={session}
               progress={progress}
               questions={questions}
               onContinue={() => start(session.mode, session.topicId)}
               onClose={closeSession}
-              onTopic={(id) =>
-                start(session.mode === "expert" ? "expert" : "practice", id)
-              }
+              onTopic={(id) => {
+                if (sessionForTopic(progress, id)) router.push(quizHref(id));
+                else
+                  start(session.mode === "expert" ? "expert" : "practice", id);
+              }}
               onRetry={() =>
                 start(
                   "review",
@@ -371,13 +408,7 @@ export function LearningWorkspace({ catalog }: { catalog: LearningCatalog }) {
                   {session.questionIds.length} питања
                 </p>
               </div>
-              <Button
-                onClick={() => {
-                  if (session.mode !== "review")
-                    setLevel(session.mode === "expert" ? "expert" : "basic");
-                  setSessionOpen(true);
-                }}
-              >
+              <Button onClick={() => router.push(quizHref(session.topicId))}>
                 Настави сесију <ArrowRight />
               </Button>
             </div>
@@ -386,269 +417,65 @@ export function LearningWorkspace({ catalog }: { catalog: LearningCatalog }) {
             value={panel}
             onValueChange={(value) => setPanel(String(value))}
           >
-            <TabsList aria-label="Учење">
-              <TabsTrigger value="topics">
-                <BookOpen /> Теме и вежбе
-              </TabsTrigger>
-              <TabsTrigger value="progress">
-                <Flag /> Моје учење
-              </TabsTrigger>
-            </TabsList>
+            <div className="learning-page-heading">
+              <h1>
+                {panel === "progress" ? "Моје учење" : "Изаберите тему за квиз"}
+              </h1>
+              <TabsList aria-label="Учење">
+                <TabsTrigger value="topics">
+                  <BookOpen /> Теме
+                </TabsTrigger>
+                <TabsTrigger value="progress">
+                  <Flag /> Моје учење
+                </TabsTrigger>
+              </TabsList>
+            </div>
             <TabsContent value="topics">
-              {topic ? (
-                <section className="learning-topic-detail">
-                  <Link href="/ucenje" className="text-link">
-                    ← Све теме
-                  </Link>
-                  <h2>{topic.title}</h2>
-                  <p className="heading-description">{topic.description}</p>
-                  <div className="learning-actions">
-                    <a
-                      href="#vezba"
-                      className={buttonVariants({ variant: "outline" })}
+              <div className="learning-search">
+                <Search size={17} />
+                <Input
+                  aria-label="Претрага тема за учење"
+                  placeholder="Посао, куповина, подаци…"
+                  value={query}
+                  onValueChange={setQuery}
+                />
+              </div>
+              <ul className="learning-topic-list" aria-label="Теме за учење">
+                {filteredTopics.map((t) => (
+                  <li key={t.id}>
+                    <Link
+                      href={`/ucenje?tema=${t.id}`}
+                      aria-labelledby={`topic-${t.id}`}
                     >
-                      Пређи на вежбу <ArrowRight />
-                    </a>
-                  </div>
-                  <div className="learning-outcomes">
-                    <h3>Шта ћете научити</h3>
-                    <ul>
-                      {topic.outcomes.map((outcome) => (
-                        <li key={outcome}>
-                          <Check size={17} aria-hidden="true" />
-                          {outcome}
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                  <section
-                    className="learning-lessons"
-                    aria-label="Кратке лекције"
-                  >
-                    <h3>1. Упознајте правила</h3>
-                    <p className="learning-caption">
-                      Уредничка објашњења. За изворни текст отворите везу ка
-                      члану у целом закону.
-                    </p>
-                    <Accordion
-                      defaultValue={topicLessons[0] ? [topicLessons[0].id] : []}
-                      key={topic.id}
-                    >
-                      {topicLessons.map((l) => (
-                        <AccordionItem value={l.id} key={l.id}>
-                          <AccordionTrigger>{l.title}</AccordionTrigger>
-                          <AccordionContent>
-                            <article aria-label={l.title}>
-                              {l.needsReview ? (
-                                <p>
-                                  Објашњење је на поновној провери због промене
-                                  извора.
-                                </p>
-                              ) : (
-                                <>
-                                  <p>{l.text}</p>
-                                  <SourceDetails source={l.source} />
-                                </>
-                              )}
-                            </article>
-                          </AccordionContent>
-                        </AccordionItem>
-                      ))}
-                    </Accordion>
-                  </section>
-                </section>
-              ) : (
-                <>
-                  <div className="learning-section-heading">
-                    <div>
-                      <h2>Која тема вас занима?</h2>
-                      <p className="heading-description">
-                        Почните од ситуација које препознајете.
-                      </p>
-                    </div>
-                    <div className="learning-search">
-                      <Search size={17} />
-                      <Input
-                        aria-label="Претрага тема за учење"
-                        placeholder="Посао, куповина, подаци…"
-                        value={query}
-                        onValueChange={setQuery}
-                      />
-                    </div>
-                  </div>
-                  <div className="learning-topic-grid">
-                    {filteredTopics.map((t) => {
-                      const Icon = topicIcons[t.id];
-                      const topicQuestions = available.filter(
-                        (q) => q.topicId === t.id,
-                      );
-                      const count = topicQuestions.filter(
-                        (q) => progress.answers[q.id],
-                      ).length;
-                      return (
-                        <article className="learning-topic-card" key={t.id}>
-                          <div className="learning-row">
-                            <Icon size={25} />
-                            <span className="eyebrow">
-                              ТЕМА{" "}
-                              {String(learningTopics.indexOf(t) + 1).padStart(
-                                2,
-                                "0",
-                              )}
-                            </span>
-                          </div>
-                          <h3>{t.title}</h3>
-                          <p>{t.description}</p>
-                          <span className="learning-caption">
-                            {topicQuestions.length} питања · кратке сесије
-                          </span>
-                          <progress
-                            className="learning-progress"
-                            aria-label={`Пређено: ${t.title}`}
-                            value={count}
-                            max={Math.max(1, topicQuestions.length)}
-                          />
-                          <div className="learning-row">
-                            <span className="learning-caption">
-                              Пређено {count} / {topicQuestions.length}
-                            </span>
-                            <Link
-                              href={`/ucenje?tema=${t.id}`}
-                              className={buttonVariants({ variant: "outline" })}
-                            >
-                              Изабери тему <ArrowRight />
-                            </Link>
-                          </div>
-                        </article>
-                      );
-                    })}
-                  </div>
-                  {filteredTopics.length === 0 && (
-                    <div className="learning-empty">
-                      <p>
-                        Нема теме за „{query}“. Пробајте „рад“, „куповина“,
-                        „подаци“ или „Устав“.
-                      </p>
-                      <Button variant="ghost" onClick={() => setQuery("")}>
-                        Прикажи све теме
-                      </Button>
-                      <Link
-                        href={`/?q=${encodeURIComponent(query)}&mode=full&view=list`}
-                        className={buttonVariants({ variant: "outline" })}
-                      >
-                        Потражи у тексту закона <ArrowRight />
-                      </Link>
-                    </div>
-                  )}
-                </>
-              )}
-              <section id="vezba" className="learning-practice-panel">
-                <div className="learning-section-heading">
-                  <div>
-                    <span className="eyebrow">МАЛА ВЕЖБА, ЈАСНИЈЕ ПРАВИЛО</span>
-                    <h2>
-                      {topic
-                        ? "2. Проверите разумевање"
-                        : "Испробајте питања из свих тема"}
-                    </h2>
-                  </div>
-                  <Badge variant="outline">Без временског ограничења</Badge>
-                </div>
-                <Tabs
-                  value={level}
-                  onValueChange={(value) => {
-                    if (value === "basic" || value === "expert")
-                      setLevel(value);
-                  }}
-                >
-                  <TabsList aria-label="Ниво вежбања">
-                    <TabsTrigger value="basic">Основни ниво</TabsTrigger>
-                    <TabsTrigger value="expert">Напредни ниво</TabsTrigger>
-                  </TabsList>
-                  <TabsContent value="basic">
-                    <p className="learning-caption">
-                      {relevant.length - expertCount} питања на основном нивоу
-                    </p>
-                    <Tabs
-                      value={basicMode}
-                      onValueChange={(value) => {
-                        if (
-                          value === "practice" ||
-                          value === "what-if" ||
-                          value === "research"
-                        )
-                          setBasicMode(value);
-                      }}
-                    >
-                      <TabsList aria-label="Начин вежбања" variant="line">
-                        <TabsTrigger value="practice">
-                          <BookOpen /> Ситуације
-                        </TabsTrigger>
-                        <TabsTrigger value="what-if">
-                          <Shuffle /> Шта ако…?
-                        </TabsTrigger>
-                        <TabsTrigger value="research">
-                          <Search /> Пронађи правило
-                        </TabsTrigger>
-                      </TabsList>
-                      {(["practice", "what-if", "research"] as const).map(
-                        (m) => (
-                          <TabsContent value={m} key={m}>
-                            <p>{modeDescriptions[m]}</p>
-                          </TabsContent>
-                        ),
-                      )}
-                    </Tabs>
-                  </TabsContent>
-                  <TabsContent value="expert">
-                    <p className="learning-caption">
-                      {expertCount} студија случаја
-                    </p>
-                    <p>
-                      До пет измишљених случајева по рунди. Процените које су
-                      чињенице важне, да ли постоји изузетак и шта следи.
-                    </p>
-                  </TabsContent>
-                </Tabs>
-                <div className="learning-actions">
-                  <Button
-                    size="lg"
-                    disabled={!ready || !modeAvailable}
-                    onClick={() => start(mode, topic?.id ?? "all")}
-                  >
-                    {mode === "expert"
-                      ? "Почни студије случаја"
-                      : "Почни вежбу"}{" "}
-                    <ArrowRight />
+                      <span>
+                        <strong id={`topic-${t.id}`}>{t.title}</strong>
+                        <span>{t.description}</span>
+                      </span>
+                      <ArrowRight size={18} aria-hidden="true" />
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+              {filteredTopics.length === 0 && (
+                <div className="learning-empty">
+                  <p>
+                    Нема теме за „{query}“. Пробајте „рад“, „куповина“, „подаци“
+                    или „Устав“.
+                  </p>
+                  <Button variant="ghost" onClick={() => setQuery("")}>
+                    Прикажи све теме
                   </Button>
-                  {due.length > 0 && (
-                    <Button
-                      variant="outline"
-                      onClick={() => start("review", topic?.id ?? "all")}
-                      disabled={
-                        !due.some((q) => !topic || q.topicId === topic.id)
-                      }
-                    >
-                      <RotateCcw /> Понови и утврди
-                    </Button>
-                  )}
+                  <Link
+                    href={`/?q=${encodeURIComponent(query)}&mode=full&view=list`}
+                    className={buttonVariants({ variant: "outline" })}
+                  >
+                    Потражи у тексту закона <ArrowRight />
+                  </Link>
                 </div>
-                {inProgress && (
-                  <p className="learning-caption">
-                    Нова вежба замењује незавршену сесију. Претходни одговори
-                    остају у напретку.
-                  </p>
-                )}
-                {!modeAvailable && (
-                  <p className="learning-caption">
-                    Ова вежба тренутно нема питања доступна за изабрану тему.
-                  </p>
-                )}
-              </section>
+              )}
             </TabsContent>
             <TabsContent value="progress">
               <section className="learning-personal">
-                <h2>Моје учење</h2>
                 <p>
                   Ваши одговори остају у овом прегледачу. Напредак се не преноси
                   на друге уређаје.
@@ -672,7 +499,7 @@ export function LearningWorkspace({ catalog }: { catalog: LearningCatalog }) {
                     <BookOpen />
                     <p>Ваш први корак почиње једном ситуацијом.</p>
                     <Button
-                      onClick={() => start("practice", "rad")}
+                      onClick={() => router.push(quizHref("rad"))}
                       disabled={
                         !ready || !available.some((q) => q.topicId === "rad")
                       }
@@ -737,7 +564,7 @@ export function LearningWorkspace({ catalog }: { catalog: LearningCatalog }) {
                     render={
                       <Button
                         variant="ghost"
-                        disabled={!ready || !answered.length}
+                        disabled={!ready || (!session && !answered.length)}
                       />
                     }
                   >
@@ -763,7 +590,6 @@ export function LearningWorkspace({ catalog }: { catalog: LearningCatalog }) {
                         onClick={() => {
                           reset();
                           setResetOpen(false);
-                          setSessionOpen(false);
                         }}
                       >
                         Обриши напредак
@@ -776,15 +602,6 @@ export function LearningWorkspace({ catalog }: { catalog: LearningCatalog }) {
           </Tabs>
         </>
       )}
-      <aside className="learning-editorial-note">
-        <strong>Учење уз извор.</strong>
-        <p>
-          Ситуације су измишљене и поједностављене. Питања и објашњења су
-          машински припремљени уреднички материјал, без стручне правне
-          рецензије. Нису део закона нити правни савет. За конкретан случај
-          важни су цео важећи текст, чињенице и стручна помоћ.
-        </p>
-      </aside>
     </div>
   );
 }
